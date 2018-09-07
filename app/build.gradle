@@ -7,7 +7,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "me.jameshunt.template"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -27,6 +27,7 @@ dependencies {
     implementation project(':base')
     implementation project(':androidbase')
     implementation project(':account')
+    implementation project(':home')
 
     implementation "io.reactivex.rxjava2:rxkotlin:$rxjava_kotlin_version"
     implementation "io.reactivex.rxjava2:rxandroid:$rxjava_android_version"

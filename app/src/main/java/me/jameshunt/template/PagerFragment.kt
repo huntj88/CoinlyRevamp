@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_pager.*
 import me.jameshunt.appbase.BaseFragment
 import me.jameshunt.appbase.TestFragment
+import me.jameshunt.home.HomeFragment
 
 class PagerFragment: BaseFragment() {
 
@@ -67,7 +68,7 @@ class PagerAdapter(fragmentManager: FragmentManager): FragmentStatePagerAdapter(
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
-            0 -> TestFragment()
+            0 -> HomeFragment()
             1 -> TestFragment()
             else -> throw NotImplementedError("wow, ryan wants me to add more screens to the view pager or something")
         }

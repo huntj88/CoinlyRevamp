@@ -5,7 +5,7 @@ import me.jameshunt.base.BaseActivityComponent
 
 abstract class BaseActivity : AppCompatActivity() {
 
-    lateinit var activityComponent: BaseActivityComponent
+    lateinit var activityComponent: BaseAndroidActivityComponent
 
     private var cleanedUp = false
 

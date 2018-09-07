@@ -7,7 +7,7 @@ import timber.log.Timber
 
 abstract class BaseApplication: Application() {
 
-    lateinit var appComponent: BaseAppComponent
+    lateinit var appComponent: BaseAndroidAppComponent
 
     override fun onCreate() {
         super.onCreate()
