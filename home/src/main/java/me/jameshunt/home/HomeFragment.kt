@@ -16,10 +16,10 @@ class HomeFragment : BaseFragment() {
     @Inject
     lateinit var visibilityManager: HomeFragmentVisibilityManager
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         homeComponent.inject(this)
+        visibilityManager.showCurrentPage()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -27,6 +27,6 @@ class HomeFragment : BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        visibilityManager.showCurrentPage()
+
     }
 }

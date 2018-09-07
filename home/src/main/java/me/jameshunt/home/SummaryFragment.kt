@@ -13,8 +13,8 @@ class SummaryFragment : BaseFragment() {
     @Inject
     lateinit var visibilityManager: HomeFragmentVisibilityManager
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
         parentFragment!!.homeComponent().inject(this)
     }
