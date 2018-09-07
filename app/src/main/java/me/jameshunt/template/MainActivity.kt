@@ -4,15 +4,9 @@ import android.os.Bundle
 import io.reactivex.rxkotlin.subscribeBy
 import me.jameshunt.account.LoginFragment
 import me.jameshunt.appbase.BaseActivity
-import okhttp3.OkHttpClient
 import timber.log.Timber
-import javax.inject.Inject
 
 class MainActivity : BaseActivity() {
-
-    @Inject
-    lateinit var okHttpClient: OkHttpClient
-    // see OkHttpModule
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,8 +18,7 @@ class MainActivity : BaseActivity() {
                 onError = { Timber.e(it) },
                 onComplete = {
                     //stop showing splash screen, dependencies ready to go
-                    showLoginFragment()
-                    Timber.i(okHttpClient.toString())
+                    showPagerFragment()
                 }
         )
     }
@@ -41,6 +34,13 @@ class MainActivity : BaseActivity() {
         supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.fragmentContainer, LoginFragment(), LoginFragment::class.java.simpleName)
+                .commit()
+    }
+
+    private fun showPagerFragment() {
+        supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, PagerFragment(), PagerFragment::class.java.simpleName)
                 .commit()
     }
 

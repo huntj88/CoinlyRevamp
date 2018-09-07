@@ -1,8 +1,6 @@
 package me.jameshunt.base
 
-import okhttp3.OkHttpClient
 import javax.inject.Scope
-
 
 
 interface BaseAppComponent: AppDependenciesEverywhere
@@ -11,7 +9,6 @@ interface BaseActivityComponent: AppDependenciesEverywhere, ActivityDependencies
 
 interface AppDependenciesEverywhere {
     //these appScopedDependencies that need to be available everywhere
-    fun getOkHttpClient(): OkHttpClient
 }
 
 interface ActivityDependenciesEverywhere {

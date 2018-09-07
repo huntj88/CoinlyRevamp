@@ -18,6 +18,11 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        cleanUpIfNotAlreadyDone()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         cleanUpIfNotAlreadyDone()

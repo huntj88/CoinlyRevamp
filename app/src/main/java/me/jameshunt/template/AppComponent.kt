@@ -1,13 +1,12 @@
 package me.jameshunt.template
 
 import dagger.Component
-import me.jameshunt.base.BaseAppComponent
-import me.jameshunt.base.OkHttpModule
+import me.jameshunt.appbase.BaseAndroidAppComponent
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [OkHttpModule::class])
-interface AppComponent: BaseAppComponent {
+@Component(modules = [])
+interface AppComponent : BaseAndroidAppComponent {
     //see BaseAppComponent too
 
     companion object {

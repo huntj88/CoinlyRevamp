@@ -1,12 +1,12 @@
 package me.jameshunt.template
 
 import dagger.Component
+import me.jameshunt.appbase.BaseAndroidActivityComponent
 import me.jameshunt.base.ActivityScope
-import me.jameshunt.base.BaseActivityComponent
 
 @ActivityScope
 @Component(modules = [], dependencies = [(AppComponent::class)])
-interface ActivityComponent: BaseActivityComponent {
+interface ActivityComponent: BaseAndroidActivityComponent {
 
     companion object {
         fun create(appComponent: AppComponent): ActivityComponent = DaggerActivityComponent
