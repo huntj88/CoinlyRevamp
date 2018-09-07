@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import me.jameshunt.appbase.BaseFragment
 import javax.inject.Inject
 
-class HomeFragment: BaseFragment() {
+class HomeFragment : BaseFragment() {
 
     internal val homeComponent: HomeComponent by lazy {
         HomeComponent.create(activity!!.activityComponent(), childFragmentManager)

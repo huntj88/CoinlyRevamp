@@ -2,7 +2,6 @@ package me.jameshunt.template
 
 import android.os.Bundle
 import io.reactivex.rxkotlin.subscribeBy
-import me.jameshunt.account.LoginFragment
 import me.jameshunt.appbase.BaseActivity
 import timber.log.Timber
 
@@ -27,13 +26,6 @@ class MainActivity : BaseActivity() {
         supportFragmentManager
                 .beginTransaction()
                 .add(R.id.fragmentContainer, SplashFragment(), SplashFragment::class.java.simpleName)
-                .commit()
-    }
-
-    private fun showLoginFragment() {
-        supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.fragmentContainer, LoginFragment(), LoginFragment::class.java.simpleName)
                 .commit()
     }
 

@@ -1,7 +1,6 @@
 package me.jameshunt.appbase
 
 import android.support.v7.app.AppCompatActivity
-import me.jameshunt.base.BaseActivityComponent
 
 abstract class BaseActivity : AppCompatActivity() {
 
