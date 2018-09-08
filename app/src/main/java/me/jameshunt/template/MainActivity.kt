@@ -25,7 +25,7 @@ class MainActivity : BaseActivity() {
     private fun showSplashFragment() {
         supportFragmentManager
                 .beginTransaction()
-                .add(R.id.fragmentContainer, SplashFragment(), SplashFragment::class.java.simpleName)
+                .replace(R.id.fragmentContainer, SplashFragment(), SplashFragment::class.java.simpleName)
                 .commit()
     }
 

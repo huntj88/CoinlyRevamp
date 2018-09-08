@@ -39,10 +39,6 @@ class HomeModule(private val childFragmentManager: FragmentManager) {
 annotation class HomeScope
 
 
-fun Activity.activityComponent(): BaseAndroidActivityComponent {
-    return (this as BaseActivity).activityComponent
-}
-
 fun Fragment.homeComponent(): HomeComponent {
     return (this as HomeFragment).homeComponent
 }

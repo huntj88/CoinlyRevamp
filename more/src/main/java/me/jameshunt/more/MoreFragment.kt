@@ -1,4 +1,4 @@
-package me.jameshunt.home
+package me.jameshunt.more
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,28 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import me.jameshunt.appbase.BaseFragment
 import me.jameshunt.appbase.activityComponent
-import javax.inject.Inject
 
-class HomeFragment : BaseFragment() {
+class MoreFragment : BaseFragment() {
 
-    internal val homeComponent: HomeComponent by lazy {
-        HomeComponent.create(activity!!.activityComponent(), childFragmentManager)
+    internal val moreComponent: MoreComponent by lazy {
+        MoreComponent.create(activity!!.activityComponent())
     }
-
-    @Inject
-    lateinit var visibilityManager: HomeFragmentVisibilityManager
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        homeComponent.inject(this)
-        visibilityManager.showCurrentPage()
+
+        moreComponent.inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_frame_layout, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
     }
 }

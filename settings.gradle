@@ -1,1 +1,1 @@
-include ':app', ':base', ':androidbase', ':home'
+include ':app', ':base', ':androidbase', ':home', ':more'
