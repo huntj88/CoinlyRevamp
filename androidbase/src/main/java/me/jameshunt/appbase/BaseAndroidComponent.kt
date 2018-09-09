@@ -1,5 +1,8 @@
 package me.jameshunt.appbase
 
+import android.support.v4.app.FragmentManager
+import dagger.Module
+import dagger.Provides
 import me.jameshunt.base.BaseActivityComponent
 import me.jameshunt.base.BaseAppComponent
 
@@ -14,4 +17,11 @@ interface AndroidAppDependenciesEverywhere {
 
 interface AndroidActivityDependenciesEverywhere {
     //these ActivityScopedDependencies that need to be available everywhere except as dependencies for @Singleton's
+}
+
+@Module
+class FragmentManagerModule(private val fragmentManager: FragmentManager) {
+
+    @Provides
+    fun getFragmentManager(): FragmentManager = fragmentManager
 }

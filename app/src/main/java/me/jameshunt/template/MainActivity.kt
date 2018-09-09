@@ -7,17 +7,25 @@ import timber.log.Timber
 
 class MainActivity : BaseActivity() {
 
+    companion object {
+        var showSplashFragment = true
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        showSplashFragment()
+        if(showSplashFragment) {
+            showSplashFragment()
+        }
 
         AsyncInjector.inject(this).subscribeBy(
                 onError = { Timber.e(it) },
                 onComplete = {
                     //stop showing splash screen, dependencies ready to go
-                    showPagerFragment()
+                    if(showSplashFragment) {
+                        showPagerFragment()
+                    }
                 }
         )
     }
@@ -34,6 +42,8 @@ class MainActivity : BaseActivity() {
                 .beginTransaction()
                 .replace(R.id.fragmentContainer, PagerFragment(), PagerFragment::class.java.simpleName)
                 .commit()
+
+        showSplashFragment = false
     }
 
     override fun cleanUp() {
