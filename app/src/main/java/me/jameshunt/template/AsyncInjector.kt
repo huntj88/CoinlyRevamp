@@ -4,6 +4,7 @@ import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import me.jameshunt.appbase.BaseActivity
+import java.util.concurrent.TimeUnit
 
 class AsyncInjector private constructor() {
     companion object {
@@ -13,7 +14,7 @@ class AsyncInjector private constructor() {
             return Completable
                     .fromAction { mainActivity.activityComponent().inject(mainActivity) }
                     .subscribeOn(Schedulers.computation())
-                    //.delay(1, TimeUnit.SECONDS) //to see splash screen. currently dependency graph initializes too fast
+                    .delay(1, TimeUnit.SECONDS) //to see splash screen. currently dependency graph initializes too fast
                     .observeOn(AndroidSchedulers.mainThread())
         }
     }

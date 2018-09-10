@@ -9,36 +9,42 @@ import javax.inject.Inject
 @HomeScope
 class HomeFragmentVisibilityManager @Inject constructor(private val fragmentManager: FragmentManager): VisibilityManager {
 
-    private var currentPage: HomeFragmentID = HomeFragmentID.SUMMARY
+    private val currentPage: HomeFragmentID
+    get() {
+        val visibleFragmentIDs = fragmentManager.fragments.filter { it.isVisible }.map { HomeFragmentID.valueOf(it.tag!!) }
+        if(visibleFragmentIDs.size > 1) throw IllegalStateException("multiple visible fragments")
+
+        return visibleFragmentIDs.firstOrNull()?: HomeFragmentID.NONE
+    }
 
     fun showCurrentPage() {
         when(currentPage) {
-            HomeFragmentID.SUMMARY -> showFragmentRemoveOld(HomeFragmentID.SUMMARY, HomeFragmentID.PORTFOLIO, fragmentManager)
-            HomeFragmentID.PORTFOLIO -> hideOldFragmentShowNewInstance(HomeFragmentID.SUMMARY, HomeFragmentID.PORTFOLIO, fragmentManager)
+            HomeFragmentID.NONE, HomeFragmentID.SUMMARY -> showSummary()
+            HomeFragmentID.PORTFOLIO -> showPortfolio()
         }
     }
 
     fun showSummary() {
         when(currentPage) {
+            HomeFragmentID.NONE -> showFragmentRemoveOld(HomeFragmentID.SUMMARY, currentPage, fragmentManager)
             HomeFragmentID.SUMMARY -> { /*don't do anything, already on page*/ }
-            HomeFragmentID.PORTFOLIO -> showFragmentRemoveOld(HomeFragmentID.SUMMARY, HomeFragmentID.PORTFOLIO, fragmentManager)
+            HomeFragmentID.PORTFOLIO -> showFragmentRemoveOld(HomeFragmentID.SUMMARY, currentPage, fragmentManager)
         }
-
-        currentPage = HomeFragmentID.SUMMARY
     }
 
     fun showPortfolio() {
         when (currentPage) {
-            HomeFragmentID.SUMMARY -> hideOldFragmentShowNewInstance(HomeFragmentID.SUMMARY, HomeFragmentID.PORTFOLIO, fragmentManager)
+            HomeFragmentID.SUMMARY -> hideOldFragmentShowNewInstance(currentPage, HomeFragmentID.PORTFOLIO, fragmentManager)
             HomeFragmentID.PORTFOLIO -> { /*don't do anything, already on page*/ }
             else -> throw IllegalStateException("invalid navigation")
         }
-
-        currentPage = HomeFragmentID.PORTFOLIO
     }
 }
 
 enum class HomeFragmentID : FragmentID {
+    NONE {
+        override fun newInstance(): BaseFragment = throw IllegalStateException("cant instantiate none fragment")
+    },
     SUMMARY {
         override fun newInstance(): BaseFragment = SummaryFragment()
     },
