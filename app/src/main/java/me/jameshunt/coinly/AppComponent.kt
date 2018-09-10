@@ -1,4 +1,4 @@
-package me.jameshunt.template
+package me.jameshunt.coinly
 
 import dagger.Component
 import me.jameshunt.appbase.BaseAndroidAppComponent

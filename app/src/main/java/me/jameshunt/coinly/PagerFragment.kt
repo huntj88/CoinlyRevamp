@@ -1,4 +1,4 @@
-package me.jameshunt.template
+package me.jameshunt.coinly
 
 import android.os.Bundle
 import android.support.v4.app.Fragment

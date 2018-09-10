@@ -1,4 +1,4 @@
-package me.jameshunt.template
+package me.jameshunt.coinly
 
 import android.app.Application
 import android.os.Looper

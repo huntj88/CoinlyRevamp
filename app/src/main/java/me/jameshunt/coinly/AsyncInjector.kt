@@ -1,4 +1,4 @@
-package me.jameshunt.template
+package me.jameshunt.coinly
 
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
