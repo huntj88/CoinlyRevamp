@@ -12,6 +12,7 @@ import javax.inject.Scope
 interface MoreComponent {
     fun inject(moreFragment: MoreFragment)
     fun inject(moreMenuFragment: MoreMenuFragment)
+    fun inject(exampleTemplateFragment: ExampleTemplateFragment)
 
     companion object {
         fun create(activityComponent: BaseAndroidActivityComponent, childFragmentManager: FragmentManager): MoreComponent = DaggerMoreComponent

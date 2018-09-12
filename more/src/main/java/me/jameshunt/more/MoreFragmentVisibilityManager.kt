@@ -28,10 +28,31 @@ class MoreFragmentVisibilityManager @Inject constructor(private val fragmentMana
         currentPage = MoreFragmentID.MENU
     }
 
+    fun showExampleTemplate() {
+        val exampleFragment: ExampleTemplateFragment? = fragmentManager.findFragmentByTag(MoreFragmentID.EXAMPLE.name) as ExampleTemplateFragment?
+        val ft = fragmentManager.beginTransaction()
+
+        fragmentManager
+                .fragments
+                .filter { exampleFragment != it }
+                .forEach { ft.hide(it) }
+
+        exampleFragment
+                ?.let { if (!it.isVisible) ft.show(it) }
+                ?: ft.add(R.id.fragmentFrameLayout, MoreFragmentID.EXAMPLE.newInstance(), MoreFragmentID.EXAMPLE.name)
+
+        ft.commit()
+
+        currentPage = MoreFragmentID.EXAMPLE
+    }
+
 }
 
 enum class MoreFragmentID : FragmentID {
     MENU {
         override fun newInstance(): BaseFragment = MoreMenuFragment()
+    },
+    EXAMPLE {
+        override fun newInstance(): BaseFragment = ExampleTemplateFragment()
     }
 }

@@ -30,7 +30,7 @@ class MoreMenuFragment: BaseFragment() {
 
         val button = Button(context)
         button.setOnClickListener {
-            visibilityManager.showMenu()
+            visibilityManager.showExampleTemplate()
         }
         layout.addView(button)
 
