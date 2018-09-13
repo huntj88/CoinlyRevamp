@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3A6073</color>
+    <color name="colorPrimaryDark">#232526</color>
+    <color name="colorAccent">#FFFFFF</color>
+
+    <!--card template colors-->
+    <color name="divider">#efeff4</color>
+
+</resources>
