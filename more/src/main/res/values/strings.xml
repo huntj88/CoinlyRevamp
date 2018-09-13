@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">more</string>
+
+    <!--menu-->
+    <string name="additional_features">Additional Features</string>
+    <string name="integrations">Integrations</string>
+    <string name="news">News</string>
+    <string name="security">Security</string>
+    <string name="notifications">Notifications</string>
+
+    <string name="get_in_touch">Get in Touch</string>
+    <string name="give_feedback">Give Feedback</string>
+    <string name="write_a_review">Write a Review</string>
+    <string name="report_a_bug">Report a bug</string>
+    <string name="telegram">Telegram</string>
+    <string name="invite_a_friend">Invite a Friend</string>
 </resources>
