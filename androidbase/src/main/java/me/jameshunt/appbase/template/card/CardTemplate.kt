@@ -1,18 +1,16 @@
-package me.jameshunt.appbase.template
+package me.jameshunt.appbase.template.card
 
 import android.support.v7.widget.CardView
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
-import me.jameshunt.appbase.R
 import me.jameshunt.appbase.SystemUtils
+import me.jameshunt.appbase.template.BaseTemplate
+import me.jameshunt.appbase.template.BaseTemplateData
 import timber.log.Timber
 
 class CardTemplate(view: View) : BaseTemplate<CardTemplateData>(view) {
@@ -65,30 +63,3 @@ class CardTemplate(view: View) : BaseTemplate<CardTemplateData>(view) {
 }
 
 data class CardTemplateData(val sections: List<CardSectionData>) : BaseTemplateData
-
-
-interface CardSectionData
-
-data class CardHeaderData(val text: String) : CardSectionData
-
-data class CardTextIcon(val text: String, val icon: Int, val action: () -> Unit): CardSectionData
-
-class CardSectionFactory {
-
-    fun create(cardSectionData: CardSectionData, parentView: LinearLayout) {
-        when (cardSectionData) {
-            is CardHeaderData -> {
-                val view = LayoutInflater.from(parentView.context).inflate(R.layout.card_header_title, parentView, false)
-                view.findViewById<TextView>(R.id.cardHeaderTitle).text = cardSectionData.text
-                parentView.addView(view)
-            }
-            is CardTextIcon -> {
-                val view = LayoutInflater.from(parentView.context).inflate(R.layout.card_text_icon, parentView, false)
-                view.findViewById<TextView>(R.id.cardText).text = cardSectionData.text
-                view.findViewById<ImageView>(R.id.cardIcon).setImageDrawable(parentView.context.getDrawable(cardSectionData.icon))
-                parentView.addView(view)
-            }
-            else -> throw NotImplementedError()
-        }
-    }
-}

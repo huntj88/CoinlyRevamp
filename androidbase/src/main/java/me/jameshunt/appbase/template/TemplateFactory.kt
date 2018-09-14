@@ -1,6 +1,7 @@
 package me.jameshunt.appbase.template
 
 import android.view.ViewGroup
+import me.jameshunt.appbase.template.card.CardTemplate
 
 class TemplateFactory {
 
