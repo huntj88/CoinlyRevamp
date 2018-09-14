@@ -22,6 +22,23 @@ class ExampleViewModel @Inject constructor() : TemplateViewModel {
     override fun getAdapterData(): Observable<List<TemplateObservableWrapper>> {
         return Observable.just(listOf(
                 TemplateObservableWrapper(
+                        observable = Observable.just(HeaderTemplateData(
+                                title = "wow",
+                                value = "a value",
+                                subValue = "a sub value",
+                                subViews = listOf(
+                                        HeaderTemplateDataItem(title = "wow0", value = "0000"),
+                                        HeaderTemplateDataItem(title = "wow1", value = "0100"),
+                                        HeaderTemplateDataItem(title = "wow2", value = "0020"),
+                                        HeaderTemplateDataItem(title = "wow3", value = "0003"),
+                                        HeaderTemplateDataItem(title = "wow3", value = "0003"),
+                                        HeaderTemplateDataItem(title = "wow3", value = "0003"),
+                                        HeaderTemplateDataItem(title = "wow3", value = "0003")
+                                )
+                        )),
+                        templateType = TemplateFactory.HEADER
+                ),
+                TemplateObservableWrapper(
                         observable = Observable.just(CardTemplateData(sections = listOf(
                                 CardHeaderData(text = L10n.additional_features),
                                 CardDividerData(height = 1, margin = 0),
