@@ -49,6 +49,15 @@ class ExampleViewModel @Inject constructor() : TemplateViewModel {
                                 CardTitleTwoValueData(title = "hello", value = "sup dog", subValue = "Homie G"),
                                 CardTextIconData(text = L10n.report_a_bug, icon = R.drawable.leak_canary_icon, action = {}),
                                 CardTextIconData(text = L10n.telegram, icon = R.drawable.leak_canary_icon, action = {}),
+                                CardSlidingData(data = listOf(
+                                        CardSlidingData.CardSlideItemData(title = "sup0", value = "dog4"),
+                                        CardSlidingData.CardSlideItemData(title = "sup1", value = "dog3"),
+                                        CardSlidingData.CardSlideItemData(title = "sup2", value = "dog2"),
+                                        CardSlidingData.CardSlideItemData(title = "sup3", value = "dog1"),
+                                        CardSlidingData.CardSlideItemData(title = "sup4", value = "cat"),
+                                        CardSlidingData.CardSlideItemData(title = "sup5", value = "catdfgd"),
+                                        CardSlidingData.CardSlideItemData(title = "sup6", value = "catfdgdfg")
+                                )),
                                 CardTextIconData(text = L10n.invite_a_friend, icon = R.drawable.leak_canary_icon, action = {})
                         ))),
                         templateType = TemplateFactory.CARD

@@ -30,6 +30,10 @@ data class CardTimeSelectData(
         val year: () -> Unit
 ) : CardSectionData
 
+data class CardSlidingData(val data: List<CardSlideItemData>) : CardSectionData {
+    data class CardSlideItemData(val title: String, val value: String)
+}
+
 class CardSectionFactory {
 
     fun create(cardSectionData: CardSectionData, parentView: LinearLayout) {
@@ -91,6 +95,20 @@ class CardSectionFactory {
 
                 yearButton.setOnClickListener {
                     cardSectionData.year()
+                }
+
+                view
+            }
+            is CardSlidingData -> {
+                val view = LayoutInflater.from(parentView.context).inflate(R.layout.card_sliding, parentView, false)
+                val subLinearLayout = view.findViewById<LinearLayout>(R.id.subLinearLayout)
+
+                cardSectionData.data.forEach {
+                    val subView = LayoutInflater.from(parentView.context).inflate(R.layout.card_sliding_item, parentView, false)
+                    subView.findViewById<TextView>(R.id.titleText).text = it.title
+                    subView.findViewById<TextView>(R.id.valueText).text = it.value
+
+                    subLinearLayout.addView(subView)
                 }
 
                 view
