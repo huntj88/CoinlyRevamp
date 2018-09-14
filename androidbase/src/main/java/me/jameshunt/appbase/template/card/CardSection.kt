@@ -2,10 +2,12 @@ package me.jameshunt.appbase.template.card
 
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import me.jameshunt.appbase.R
+import me.jameshunt.appbase.SystemUtils
 import me.jameshunt.base.TimeType
 
 
@@ -13,9 +15,11 @@ interface CardSectionData
 
 data class CardHeaderData(val text: String) : CardSectionData
 
+data class CardDividerData(val height: Int, val margin: Int) : CardSectionData
+
 data class CardTextIconData(val text: String, val icon: Int, val action: () -> Unit) : CardSectionData
 
-data class CardTitleTwoValueData(val title: String, val value: String, val subValue: String): CardSectionData
+data class CardTitleTwoValueData(val title: String, val value: String, val subValue: String) : CardSectionData
 
 data class CardTimeSelectData(
         val selected: TimeType,
@@ -24,7 +28,7 @@ data class CardTimeSelectData(
         val week: () -> Unit,
         val month: () -> Unit,
         val year: () -> Unit
-): CardSectionData
+) : CardSectionData
 
 class CardSectionFactory {
 
@@ -33,6 +37,18 @@ class CardSectionFactory {
             is CardHeaderData -> {
                 val view = LayoutInflater.from(parentView.context).inflate(R.layout.card_header_title, parentView, false)
                 view.findViewById<TextView>(R.id.cardHeaderTitle).text = cardSectionData.text
+                view
+            }
+            is CardDividerData -> {
+                val view = View(parentView.context)
+                view.setBackgroundColor(parentView.context.getColor(R.color.divider))
+
+                val height = SystemUtils.dpToPx(cardSectionData.height, parentView.context)
+                val margin = SystemUtils.dpToPx(cardSectionData.margin, parentView.context)
+
+                val layoutParams = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height)
+                layoutParams.setMargins(margin, 0, margin, 0)
+                view.layoutParams = layoutParams
                 view
             }
             is CardTextIconData -> {
