@@ -2,10 +2,7 @@ package me.jameshunt.more
 
 import io.reactivex.Observable
 import me.jameshunt.appbase.template.*
-import me.jameshunt.appbase.template.card.CardHeaderData
-import me.jameshunt.appbase.template.card.CardTemplateData
-import me.jameshunt.appbase.template.card.CardTextIconData
-import me.jameshunt.appbase.template.card.CardTimeSelectData
+import me.jameshunt.appbase.template.card.*
 import me.jameshunt.base.TimeType
 import timber.log.Timber
 import javax.inject.Inject
@@ -47,6 +44,7 @@ class ExampleViewModel @Inject constructor() : TemplateViewModel {
                                 CardHeaderData(text = L10n.get_in_touch),
                                 CardTextIconData(text = L10n.give_feedback, icon = R.drawable.leak_canary_icon, action = {}),
                                 CardTextIconData(text = L10n.write_a_review, icon = R.drawable.leak_canary_icon, action = {}),
+                                CardTitleTwoValueData(title = "hello", value = "sup dog", subValue = "Homie G"),
                                 CardTextIconData(text = L10n.report_a_bug, icon = R.drawable.leak_canary_icon, action = {}),
                                 CardTextIconData(text = L10n.telegram, icon = R.drawable.leak_canary_icon, action = {}),
                                 CardTextIconData(text = L10n.invite_a_friend, icon = R.drawable.leak_canary_icon, action = {})

@@ -1,6 +1,7 @@
 package me.jameshunt.appbase.template.card
 
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -14,6 +15,8 @@ data class CardHeaderData(val text: String) : CardSectionData
 
 data class CardTextIconData(val text: String, val icon: Int, val action: () -> Unit) : CardSectionData
 
+data class CardTitleTwoValueData(val title: String, val value: String, val subValue: String): CardSectionData
+
 data class CardTimeSelectData(
         val selected: TimeType,
         val hour: () -> Unit,
@@ -26,17 +29,24 @@ data class CardTimeSelectData(
 class CardSectionFactory {
 
     fun create(cardSectionData: CardSectionData, parentView: LinearLayout) {
-        when (cardSectionData) {
+        val view: View = when (cardSectionData) {
             is CardHeaderData -> {
                 val view = LayoutInflater.from(parentView.context).inflate(R.layout.card_header_title, parentView, false)
                 view.findViewById<TextView>(R.id.cardHeaderTitle).text = cardSectionData.text
-                parentView.addView(view)
+                view
             }
             is CardTextIconData -> {
                 val view = LayoutInflater.from(parentView.context).inflate(R.layout.card_text_icon, parentView, false)
                 view.findViewById<TextView>(R.id.cardText).text = cardSectionData.text
                 view.findViewById<ImageView>(R.id.cardIcon).setImageDrawable(parentView.context.getDrawable(cardSectionData.icon))
-                parentView.addView(view)
+                view
+            }
+            is CardTitleTwoValueData -> {
+                val view = LayoutInflater.from(parentView.context).inflate(R.layout.card_title_two_value, parentView, false)
+                view.findViewById<TextView>(R.id.titleText).text = cardSectionData.title
+                view.findViewById<TextView>(R.id.valueText).text = cardSectionData.value
+                view.findViewById<TextView>(R.id.subValueText).text = cardSectionData.subValue
+                view
             }
             is CardTimeSelectData -> {
                 val view = LayoutInflater.from(parentView.context).inflate(R.layout.card_time_select, parentView, false)
@@ -67,9 +77,11 @@ class CardSectionFactory {
                     cardSectionData.year()
                 }
 
-                parentView.addView(view)
+                view
             }
             else -> throw NotImplementedError()
         }
+
+        parentView.addView(view)
     }
 }
