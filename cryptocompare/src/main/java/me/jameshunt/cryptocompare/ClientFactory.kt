@@ -4,7 +4,9 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import me.jameshunt.base.CurrencyType
 import me.jameshunt.base.UnixMilliSeconds
+import me.jameshunt.cryptocompare.domain.TimeRangeRaw
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -44,18 +46,55 @@ internal class ClientFactory {
     }
 }
 
+//internal class CurrencyTypeListConverter : Converter.Factory() {
+//    override fun stringConverter(type: Type, annotations: Array<out Annotation>, retrofit: Retrofit): Converter<List<CurrencyType>, String>? {
+////        val isSameType = type.typeName == (CurrencyType::class.java).canonicalName
+////
+//        val same = type == List::class.java
+//
+//        Converter<List<CurrencyType>, String> {  }
+//
+////        return when (isSameType) {
+////            true -> Converter { it.name.toLowerCase() }
+////            false -> null
+////        }
+//    }
+//}
+
 interface CryptoCompareApi {
 
     @GET("price")
     fun getCurrentPrices(
-            @Query("fsym") base: String,
+            @Query("fsym") base: CurrencyType,
             @Query("tsyms") others: String
     ): Single<CurrentPricesRaw>
 
     @GET("pricehistorical?markets=coinbase")
     fun getHistoricalPrice(
-            @Query("fsym") base: String,
+            @Query("fsym") base: CurrencyType,
             @Query("tsyms") others: String,
             @Query("ts") time: UnixMilliSeconds
     ): Single<HistoricalPrice>
+
+
+    @GET("histoday")
+    fun getDailyPrices(
+            @Query("fsym") base: CurrencyType,
+            @Query("tsym") other: CurrencyType,
+            @Query("limit") numDaysAgo: Int
+    ): Single<TimeRangeRaw>
+
+    @GET("histohour")
+    fun getHourlyPrices(
+            @Query("fsym") base: CurrencyType,
+            @Query("tsym") other: CurrencyType,
+            @Query("limit") numHoursAgo: Int
+    ): Single<TimeRangeRaw>
+
+    @GET("histominute")
+    fun getMinutePrices(
+            @Query("fsym") base: CurrencyType,
+            @Query("tsym") other: CurrencyType,
+            @Query("limit") numMinAgo: Int
+    ): Single<TimeRangeRaw>
 }
