@@ -12,4 +12,12 @@ class CryptoCompareTest: BaseTester() {
                 .doOnSuccess { print(it) }
                 .testSingle()
     }
+
+    @Test
+    fun getHistoricalPrice() {
+        CryptoCompare()
+                .getHistoricalPrices(CurrencyType.USD, CurrencyType.ETH, time = 1537206634471)
+                .doOnSuccess { print(it) }
+                .testSingle()
+    }
 }

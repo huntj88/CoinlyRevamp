@@ -23,6 +23,7 @@ internal class ClientFactory {
     private val moshi = Moshi
             .Builder()
             .add(CurrentPricesRawAdapter())
+            .add(HistoricalPriceRawAdapter())
             .add(KotlinJsonAdapterFactory())
             .build()
 
@@ -56,5 +57,5 @@ interface CryptoCompareApi {
             @Query("fsym") base: String,
             @Query("tsyms") others: String,
             @Query("ts") time: UnixMilliSeconds
-    ): Single<CurrentPricesRaw>
+    ): Single<HistoricalPrice>
 }
