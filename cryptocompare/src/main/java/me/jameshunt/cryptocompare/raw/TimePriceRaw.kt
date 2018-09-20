@@ -1,4 +1,4 @@
-package me.jameshunt.cryptocompare.domain
+package me.jameshunt.cryptocompare.raw
 
 import com.squareup.moshi.Json
 

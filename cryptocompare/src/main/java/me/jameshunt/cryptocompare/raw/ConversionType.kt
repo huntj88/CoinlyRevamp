@@ -1,4 +1,4 @@
-package me.jameshunt.cryptocompare.domain
+package me.jameshunt.cryptocompare.raw
 
 data class ConversionType(
         val type: String,

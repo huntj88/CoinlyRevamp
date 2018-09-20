@@ -6,7 +6,7 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import me.jameshunt.base.CurrencyType
 import me.jameshunt.base.UnixMilliSeconds
-import me.jameshunt.cryptocompare.domain.TimeRangeRaw
+import me.jameshunt.cryptocompare.raw.TimeRangeRaw
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -24,8 +24,8 @@ internal class ClientFactory {
 
     private val moshi = Moshi
             .Builder()
-            .add(CurrentPricesRawAdapter())
-            .add(HistoricalPriceRawAdapter())
+            .add(CurrentPricesAdapter())
+            .add(HistoricalPriceAdapter())
             .add(KotlinJsonAdapterFactory())
             .build()
 
@@ -67,14 +67,14 @@ interface CryptoCompareApi {
     fun getCurrentPrices(
             @Query("fsym") base: CurrencyType,
             @Query("tsyms") others: String
-    ): Single<CurrentPricesRaw>
+    ): Single<CurrentPrices>
 
     @GET("pricehistorical?markets=coinbase")
     fun getHistoricalPrice(
             @Query("fsym") base: CurrencyType,
             @Query("tsyms") others: String,
             @Query("ts") time: UnixMilliSeconds
-    ): Single<List<HistoricalPriceRaw>>
+    ): Single<List<HistoricalPrice>>
 
 
     @GET("histoday")
