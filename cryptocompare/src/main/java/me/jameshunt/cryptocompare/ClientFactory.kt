@@ -74,7 +74,7 @@ interface CryptoCompareApi {
             @Query("fsym") base: CurrencyType,
             @Query("tsyms") others: String,
             @Query("ts") time: UnixMilliSeconds
-    ): Single<HistoricalPrice>
+    ): Single<List<HistoricalPriceRaw>>
 
 
     @GET("histoday")

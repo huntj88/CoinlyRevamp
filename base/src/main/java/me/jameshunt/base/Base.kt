@@ -1,6 +1,7 @@
 package me.jameshunt.base
 
 typealias UnixMilliSeconds = Long
+typealias CurrencyAmount = Double
 
 enum class TimeType {
     HOUR,
@@ -29,4 +30,11 @@ enum class CurrencyType(val fullName: String) {
     VEN("VeChain"),
     IOTA( "Iota"),
     BAT("Basic Attention Token");
+}
+
+interface TimePrice {
+    val time: UnixMilliSeconds
+    val base: CurrencyType
+    val other: CurrencyType
+    val price: CurrencyAmount
 }
