@@ -1,6 +1,7 @@
 package me.jameshunt.cryptocompare
 
 import io.reactivex.Single
+import me.jameshunt.base.TimePrice
 
 abstract class BaseTester {
 
@@ -10,5 +11,13 @@ abstract class BaseTester {
 
     fun <T : Any> Single<T>.testSingle() {
         this.test().assertNoErrors().assertComplete()
+    }
+
+    fun List<TimePrice>.printTimePrices() {
+        this.forEach { it.print() }
+    }
+
+    fun TimePrice.print() {
+        println("time: $time - base: $base - other: $other - price: $price")
     }
 }

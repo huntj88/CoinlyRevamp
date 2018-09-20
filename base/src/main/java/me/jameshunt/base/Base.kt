@@ -28,7 +28,7 @@ enum class CurrencyType(val fullName: String) {
     ADA("Cardano"),
     NEO("NEO"),
     VEN("VeChain"),
-    IOTA( "Iota"),
+    IOTA("Iota"),
     BAT("Basic Attention Token");
 }
 

@@ -3,13 +3,13 @@ package me.jameshunt.cryptocompare
 import me.jameshunt.base.CurrencyType
 import org.junit.Test
 
-class CryptoCompareTest: BaseTester() {
+class CryptoCompareTest : BaseTester() {
 
     @Test
     fun getCurrentPrices() {
         CryptoCompare()
                 .getCurrentPrices(CurrencyType.USD, setOf(CurrencyType.ETH, CurrencyType.BTC))
-                .doOnSuccess { print(it) }
+                .doOnSuccess { it.printTimePrices() }
                 .testSingle()
     }
 
@@ -17,7 +17,7 @@ class CryptoCompareTest: BaseTester() {
     fun getHistoricalPrice() {
         CryptoCompare()
                 .getHistoricalPrices(CurrencyType.USD, setOf(CurrencyType.ETH, CurrencyType.BTC), time = 1537206634471)
-                .doOnSuccess { print(it) }
+                .doOnSuccess { it.printTimePrices() }
                 .testSingle()
     }
 
@@ -25,7 +25,7 @@ class CryptoCompareTest: BaseTester() {
     fun getDailyPrices() {
         CryptoCompare()
                 .getDailyPrices(CurrencyType.USD, CurrencyType.ETH, 20)
-                .doOnSuccess { print(it) }
+                .doOnSuccess { it.printTimePrices() }
                 .testSingle()
     }
 
@@ -33,7 +33,7 @@ class CryptoCompareTest: BaseTester() {
     fun getHourlyPrices() {
         CryptoCompare()
                 .getHourlyPrices(CurrencyType.USD, CurrencyType.ETH, 20)
-                .doOnSuccess { print(it) }
+                .doOnSuccess { it.printTimePrices() }
                 .testSingle()
     }
 
@@ -41,7 +41,7 @@ class CryptoCompareTest: BaseTester() {
     fun getMinutePrices() {
         CryptoCompare()
                 .getMinutePrices(CurrencyType.USD, CurrencyType.ETH, 20)
-                .doOnSuccess { print(it) }
+                .doOnSuccess { it.printTimePrices() }
                 .testSingle()
     }
 }
