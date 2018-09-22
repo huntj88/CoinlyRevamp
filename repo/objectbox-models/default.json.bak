@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:5026290877162870235",
-      "lastPropertyId": "4:7657682035243289038",
+      "lastPropertyId": "6:3631605769761615409",
       "name": "TimePriceObjectBox",
       "properties": [
         {
@@ -24,6 +24,14 @@
         {
           "id": "4:7657682035243289038",
           "name": "price"
+        },
+        {
+          "id": "5:3902025655316724683",
+          "name": "id"
+        },
+        {
+          "id": "6:3631605769761615409",
+          "name": "updateCategory"
         }
       ],
       "relations": []

@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:5026290877162870235",
-      "lastPropertyId": "5:3902025655316724683",
+      "lastPropertyId": "6:3631605769761615409",
       "name": "TimePriceObjectBox",
       "properties": [
         {
@@ -28,13 +28,18 @@
         {
           "id": "5:3902025655316724683",
           "name": "id"
+        },
+        {
+          "id": "6:3631605769761615409",
+          "indexId": "2:8415678239215778340",
+          "name": "updateCategory"
         }
       ],
       "relations": []
     }
   ],
   "lastEntityId": "1:5026290877162870235",
-  "lastIndexId": "1:8135126397680690062",
+  "lastIndexId": "2:8415678239215778340",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 4,

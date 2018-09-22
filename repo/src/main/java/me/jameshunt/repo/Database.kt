@@ -13,11 +13,11 @@ import me.jameshunt.base.CurrencyType
 import me.jameshunt.base.TimePrice
 import me.jameshunt.base.UnixMilliSeconds
 
-class Database(context: Any) {
+internal class Database(context: Any) {
 
     private val box = MyObjectBox.builder().androidContext(context).build()
 
-    fun writeTimePrice(timePrices: List<TimePrice>): Completable {
+    fun writeTimePrice(timePrices: List<TimePrice>, updateCategory: TimePriceUpdateCategory): Completable {
         return Completable.fromAction {
             val timePriceBox = box.boxFor<TimePriceObjectBox>()
 
@@ -35,25 +35,62 @@ class Database(context: Any) {
 
                 timePrices.forEach { timePrice ->
                     if (existingPrices[timePrice.time] == null) {
-                        timePriceBox.put(timePrice.toObjectBox())
+                        timePriceBox.put(timePrice.toObjectBox(updateCategory))
                     }
                 }
             }
         }.subscribeOn(Schedulers.io())
     }
 
-    private fun TimePrice.toObjectBox(): TimePriceObjectBox {
+    private fun TimePrice.toObjectBox(timePriceUpdateCategory: TimePriceUpdateCategory): TimePriceObjectBox {
         return TimePriceObjectBox(
                 time = time,
                 base = base,
                 other = other,
-                price = price
+                price = price,
+                updateCategory = timePriceUpdateCategory.updateCategory
         )
     }
 
-    fun readLastDay(): UnixMilliSeconds = 1537388014000
-    fun readLastHour(): UnixMilliSeconds = 1537480014000
-    fun readLastMinute(): UnixMilliSeconds = 1537488014000
+    enum class TimePriceUpdateCategory(val updateCategory: Long) {
+        Day(1),
+        Hour(2),
+        Min(3)
+    }
+
+    fun readLastDay(): UnixMilliSeconds {
+        val milliInDay = 86_400_000L
+        val milliInYear = milliInDay * 365
+
+        return getLatestTime(TimePriceUpdateCategory.Day, milliInYear)
+    }
+
+    fun readLastHour(): UnixMilliSeconds {
+        val milliInHour = 3_600_000L
+        val milliInWeek = milliInHour * 24 * 7
+
+        return getLatestTime(TimePriceUpdateCategory.Hour, milliInWeek)
+    }
+
+    fun readLastMinute(): UnixMilliSeconds {
+        val milliInDay = 86_400_000L
+        return getLatestTime(TimePriceUpdateCategory.Min, milliInDay)
+    }
+
+    private fun getLatestTime(updateCategory: TimePriceUpdateCategory, earliestPossible: UnixMilliSeconds): UnixMilliSeconds {
+        val timePriceBox = box.boxFor<TimePriceObjectBox>()
+
+        val latestTimePrice: TimePriceObjectBox? =
+                timePriceBox
+                        .query()
+                        .equal(TimePriceObjectBox_.updateCategory, updateCategory.updateCategory)
+                        .greater(TimePriceObjectBox_.time, earliestPossible)
+                        .orderDesc(TimePriceObjectBox_.time)
+                        .build()
+                        .findFirst()
+
+        return latestTimePrice?.time ?: System.currentTimeMillis()-earliestPossible
+    }
 }
 
 @Entity
@@ -70,10 +107,13 @@ data class TimePriceObjectBox(
         @Convert(converter = CurrencyTypeConverter::class, dbType = String::class)
         override val other: CurrencyType,
 
-        override val price: CurrencyAmount
+        override val price: CurrencyAmount,
+
+        @Index
+        val updateCategory: Long
 ) : TimePrice
 
-class CurrencyTypeConverter : PropertyConverter<CurrencyType, String> {
+internal class CurrencyTypeConverter : PropertyConverter<CurrencyType, String> {
     override fun convertToDatabaseValue(entityProperty: CurrencyType): String {
         return entityProperty.name
     }
