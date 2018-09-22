@@ -59,21 +59,16 @@ internal class Database(context: Any) {
     }
 
     fun readLastDay(): UnixMilliSeconds {
-        val milliInDay = 86_400_000L
         val milliInYear = milliInDay * 365
-
         return getLatestTime(TimePriceUpdateCategory.Day, milliInYear)
     }
 
     fun readLastHour(): UnixMilliSeconds {
-        val milliInHour = 3_600_000L
-        val milliInWeek = milliInHour * 24 * 7
-
+        val milliInWeek = milliInDay * 7
         return getLatestTime(TimePriceUpdateCategory.Hour, milliInWeek)
     }
 
     fun readLastMinute(): UnixMilliSeconds {
-        val milliInDay = 86_400_000L
         return getLatestTime(TimePriceUpdateCategory.Min, milliInDay)
     }
 
