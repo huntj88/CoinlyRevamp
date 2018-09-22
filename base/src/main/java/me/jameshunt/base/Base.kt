@@ -11,25 +11,24 @@ enum class TimeType {
     YEAR
 }
 
-enum class CurrencyType(val fullName: String) {
-    UNSUPPORTED("Unsupported"),
+enum class CurrencyType(val id: Long, val fullName: String) {
+    UNSUPPORTED(-1, "Unsupported"),
 
-    // Fiat
-    USD("Dollar"),
-    EUR("Euro"),
+    USD(0, "Dollar"),
+    EUR(1, "Euro"),
 
-    // Crypto
-    BTC("Bitcoin"),
-    ETH("Ethereum"),
-    LTC("Litecoin"),
-    BCH("Bitcoin Cash"),
-    FUN("Funfair"),
-    XLM("Stellar"),
-    ADA("Cardano"),
-    NEO("NEO"),
-    VEN("VeChain"),
-    IOTA("Iota"),
-    BAT("Basic Attention Token");
+
+    BTC(1000, "Bitcoin"),
+    ETH(1001, "Ethereum"),
+    LTC(1002, "Litecoin"),
+    BCH(1003, "Bitcoin Cash"),
+    FUN(1004, "Funfair"),
+    XLM(1005, "Stellar"),
+    ADA(1006, "Cardano"),
+    NEO(1007, "NEO"),
+    VEN(1008, "VeChain"),
+    IOTA(1009, "Iota"),
+    BAT(1010, "Basic Attention Token");
 }
 
 interface TimePrice {

@@ -26,8 +26,8 @@ internal class Database(context: Any) {
                         timePriceBox
                                 .query()
                                 .between(TimePriceObjectBox_.time, timePrices.first().time, timePrices.last().time)
-                                .equal(TimePriceObjectBox_.base, timePrices.first().base.name)
-                                .equal(TimePriceObjectBox_.other, timePrices.first().other.name)
+                                .equal(TimePriceObjectBox_.base, timePrices.first().base.id)
+                                .equal(TimePriceObjectBox_.other, timePrices.first().other.id)
                                 .build()
                                 .find()
                                 .map { Pair(it.time, it) }
@@ -97,10 +97,10 @@ data class TimePriceObjectBox(
         @Index
         override val time: UnixMilliSeconds,
 
-        @Convert(converter = CurrencyTypeConverter::class, dbType = String::class)
+        @Convert(converter = CurrencyTypeConverter::class, dbType = Long::class)
         override val base: CurrencyType,
 
-        @Convert(converter = CurrencyTypeConverter::class, dbType = String::class)
+        @Convert(converter = CurrencyTypeConverter::class, dbType = Long::class)
         override val other: CurrencyType,
 
         override val price: CurrencyAmount,
@@ -109,12 +109,12 @@ data class TimePriceObjectBox(
         val updateCategory: Long
 ) : TimePrice
 
-internal class CurrencyTypeConverter : PropertyConverter<CurrencyType, String> {
-    override fun convertToDatabaseValue(entityProperty: CurrencyType): String {
-        return entityProperty.name
+internal class CurrencyTypeConverter : PropertyConverter<CurrencyType, Long> {
+    override fun convertToDatabaseValue(entityProperty: CurrencyType): Long {
+        return entityProperty.id
     }
 
-    override fun convertToEntityProperty(databaseValue: String): CurrencyType {
-        return CurrencyType.valueOf(databaseValue)
+    override fun convertToEntityProperty(databaseValue: Long): CurrencyType {
+        return CurrencyType.values().first { it.id == databaseValue }
     }
 }
