@@ -53,6 +53,7 @@ internal class Database(context: Any) {
     }
 
     enum class TimePriceUpdateCategory(val updateCategory: Long) {
+        CurrentPrice(0),
         Day(1),
         Hour(2),
         Min(3)

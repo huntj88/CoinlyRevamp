@@ -33,13 +33,18 @@ class TemplateApplication : BaseApplication() {
 
     private fun testRepo() {
         // todo: remove
-
         repo
                 .updateTimeRanges(CurrencyType.ETH, CurrencyType.USD)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
                         onError = { it.printStackTrace() },
-                        onComplete = { Timber.i("wooooo") }
+                        onComplete = { Timber.i("time ranges updated") }
+                )
+
+        repo.updateCurrentPrices(CurrencyType.USD, setOf(CurrencyType.BTC, CurrencyType.ETH))
+                .subscribeBy(
+                        onError = { it.printStackTrace() },
+                        onComplete = { Timber.i("current prices updated") }
                 )
     }
 }

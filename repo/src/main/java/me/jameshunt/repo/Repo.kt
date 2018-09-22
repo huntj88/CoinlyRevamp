@@ -12,4 +12,10 @@ class Repo(context: Any) {
     fun updateTimeRanges(base: CurrencyType, other: CurrencyType): Completable {
         return WriteTimeRange(cryptoCompare = cryptoCompare, database = database).update(base, other)
     }
+
+    fun updateCurrentPrices(base: CurrencyType, others: Set<CurrencyType>): Completable {
+        return cryptoCompare.getCurrentPrices(base = base, others = others).flatMapCompletable {
+            database.writeTimePrice(it, Database.TimePriceUpdateCategory.CurrentPrice)
+        }
+    }
 }
