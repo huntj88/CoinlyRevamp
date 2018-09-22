@@ -1,0 +1,36 @@
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'io.objectbox'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation project(':base')
+    implementation project(':cryptocompare')
+
+    implementation "io.reactivex.rxjava2:rxkotlin:$rxjava_kotlin_version"
+    implementation "io.objectbox:objectbox-rxjava:$object_box_version"
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    testImplementation "junit:junit:$junit_version"
+}
+
+sourceSets {
+    main.kotlin.srcDirs += 'src/kotlin'
+
+    objectBox {
+        kotlin.srcDir 'build/generated/source/kapt/main'
+    }
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}

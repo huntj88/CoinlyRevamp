@@ -37,4 +37,6 @@ interface TimePrice {
     val base: CurrencyType
     val other: CurrencyType
     val price: CurrencyAmount
+
+    fun string(): String = "time: $time - base: $base - other: $other - price: $price"
 }
