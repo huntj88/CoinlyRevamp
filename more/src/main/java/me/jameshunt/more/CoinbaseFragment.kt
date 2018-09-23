@@ -11,22 +11,20 @@ import me.jameshunt.appbase.template.card.CardTemplateData
 import me.jameshunt.appbase.template.card.CardTextIconData
 import javax.inject.Inject
 
-class IntegrationsFragment: TemplateFragment<IntegrationsViewModel>() {
+class CoinbaseFragment: TemplateFragment<CoinbaseViewModel>() {
     override fun inject() {
         parentFragment!!.moreComponent().inject(this)
     }
 }
 
-class IntegrationsViewModel @Inject constructor(private val moreFragmentVisibilityManager: MoreFragmentVisibilityManager) : TemplateViewModel {
+class CoinbaseViewModel @Inject constructor() : TemplateViewModel {
     override fun getAdapterData(): Observable<List<TemplateObservableWrapper>> {
         return Observable.just(listOf(
                 TemplateObservableWrapper(
                         observable = Observable.just(CardTemplateData(sections = listOf(
-                                CardHeaderData(text = L10n.integrations),
+                                CardHeaderData(text = "Coinbase"),
                                 CardDividerData(height = 1, margin = 0),
-                                CardTextIconData(text = "Coinbase", icon = R.drawable.leak_canary_icon, action = {
-                                    moreFragmentVisibilityManager.showCoinbase()
-                                })
+                                CardTextIconData(text = "do stuff", icon = R.drawable.leak_canary_icon, action = {})
                         ))),
                         templateType = TemplateFactory.CARD
                 )

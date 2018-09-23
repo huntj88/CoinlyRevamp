@@ -13,6 +13,7 @@ interface MoreComponent {
     fun inject(moreFragment: MoreFragment)
     fun inject(moreMenuFragment: MoreMenuFragment)
     fun inject(integrationsFragment: IntegrationsFragment)
+    fun inject(coinbaseFragment: CoinbaseFragment)
 
     fun inject(exampleTemplateFragment: ExampleTemplateFragment)
 

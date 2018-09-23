@@ -12,6 +12,7 @@ interface MoreFragmentVisibilityManager: VisibilityManager {
     fun showCurrent()
     fun showMenu()
     fun showIntegrations()
+    fun showCoinbase()
     fun showExampleTemplate()
     fun onBackPressed(): Boolean
 }
@@ -48,6 +49,7 @@ class MoreFragmentVisibilityManagerImpl @Inject constructor(private val fragment
             MoreFragmentID.NONE, MoreFragmentID.MENU -> showMenu()
             MoreFragmentID.EXAMPLE -> showExampleTemplate()
             MoreFragmentID.INTEGRATIONS -> showIntegrations()
+            MoreFragmentID.COINBASE -> showCoinbase()
         }
     }
 
@@ -57,6 +59,7 @@ class MoreFragmentVisibilityManagerImpl @Inject constructor(private val fragment
             MoreFragmentID.NONE -> showFragmentRemoveOld(MoreFragmentID.MENU, currentPage, fragmentManager)
             MoreFragmentID.MENU -> { /*don't do anything, already on page*/ }
             MoreFragmentID.EXAMPLE, MoreFragmentID.INTEGRATIONS -> showFragmentRemoveOld(MoreFragmentID.MENU, currentPage, fragmentManager)
+            else -> throw IllegalStateException("invalid navigation")
         }
     }
 
@@ -64,6 +67,15 @@ class MoreFragmentVisibilityManagerImpl @Inject constructor(private val fragment
         when (currentPage) {
             MoreFragmentID.MENU -> hideOldFragmentShowNewInstance(currentPage, MoreFragmentID.INTEGRATIONS, fragmentManager)
             MoreFragmentID.INTEGRATIONS -> { /*don't do anything, already on page*/ }
+            MoreFragmentID.COINBASE -> showFragmentRemoveOld(MoreFragmentID.INTEGRATIONS, currentPage, fragmentManager)
+            else -> throw IllegalStateException("invalid navigation")
+        }
+    }
+
+    override fun showCoinbase() {
+        when(currentPage) {
+            MoreFragmentID.INTEGRATIONS -> hideOldFragmentShowNewInstance(currentPage, MoreFragmentID.COINBASE, fragmentManager)
+            MoreFragmentID.COINBASE ->  {/*don't do anything, already on page*/ }
             else -> throw IllegalStateException("invalid navigation")
         }
     }
@@ -83,6 +95,10 @@ class MoreFragmentVisibilityManagerImpl @Inject constructor(private val fragment
                 showMenu()
                 false
             }
+            MoreFragmentID.COINBASE -> {
+                showIntegrations()
+                false
+            }
         }
         return shouldClose
     }
@@ -97,6 +113,9 @@ enum class MoreFragmentID : FragmentID {
     },
     INTEGRATIONS {
         override fun newInstance(): BaseFragment = IntegrationsFragment()
+    },
+    COINBASE {
+        override fun newInstance(): BaseFragment = CoinbaseFragment()
     },
     EXAMPLE {
         override fun newInstance(): BaseFragment = ExampleTemplateFragment()
