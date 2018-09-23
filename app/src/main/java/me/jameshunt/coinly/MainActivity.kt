@@ -7,15 +7,13 @@ import timber.log.Timber
 
 class MainActivity : BaseActivity() {
 
+    private val visibilityManager = MainVisibilityManager(supportFragmentManager)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val visibilityManager = MainVisibilityManager(supportFragmentManager)
-
-        if(savedInstanceState == null) {
-            visibilityManager.showSplash()
-        }
+        visibilityManager.showCurrent()
 
         AsyncInjector.inject(this).subscribeBy(
                 onError = { Timber.e(it) },
@@ -24,6 +22,15 @@ class MainActivity : BaseActivity() {
                     visibilityManager.showPager()
                 }
         )
+    }
+
+    override fun onBackPressed() {
+
+        val shouldClose = visibilityManager.onBackPressed()
+
+        if(shouldClose) {
+            super.onBackPressed()
+        }
     }
 
     override fun cleanUp() {

@@ -3,52 +3,76 @@ package me.jameshunt.coinly
 import android.support.v4.app.FragmentManager
 import me.jameshunt.appbase.BaseFragment
 import me.jameshunt.appbase.FragmentID
+import me.jameshunt.appbase.VisibilityManager
 
-class MainVisibilityManager(private val fragmentManager: FragmentManager) {
+class MainVisibilityManager(private val fragmentManager: FragmentManager) : VisibilityManager {
 
-//    fun showCurrent() {
-//
-//        val visibleFragmentIDs = fragmentManager.fragments.filter { it.isVisible }.map { MainFragmentID.valueOf(it.tag!!) }
-//        if(visibleFragmentIDs.size > 1) throw IllegalStateException("multiple visible fragments")
-//
-//        visibleFragmentIDs.firstOrNull()?.let {
-//            when(it) {
-//                MainFragmentID.SPLASH -> showSplash()
-//                MainFragmentID.PAGER -> showCurrent()
-//            }
-//        }
-//    }
+    //todo consolidate all the visibility manager logic
+    private val currentPage: MainFragmentID
+        get() {
+            val visibleFragmentIDs = fragmentManager
+                    .fragments
+                    .asSequence()
+                    .filter { it.isVisible || !it.isHidden }
+                    .map { fragment ->
+                        fragment.tag ?: run {
+                            when(fragment) {
+                                is SplashFragment -> MainFragmentID.SPLASH.name
+                                is PagerFragment -> MainFragmentID.PAGER.name
+                                else -> throw NotImplementedError()
+                            }
+                        }
+                    }
+                    .map { MainFragmentID.valueOf(it) }
+                    .toList()
+
+            if (visibleFragmentIDs.size > 1) throw IllegalStateException("multiple visible fragments")
+
+            return visibleFragmentIDs.firstOrNull() ?: MainFragmentID.NONE
+        }
+
+    fun showCurrent() {
+        when (currentPage) {
+            MainFragmentID.NONE, MainFragmentID.SPLASH -> showSplash()
+            MainFragmentID.PAGER -> showPager()
+        }
+    }
 
     fun showSplash() {
-        val fragment = fragmentManager.findFragmentByTag(MainFragmentID.SPLASH.name) as BaseFragment?
-        showFragment(fragment, MainFragmentID.SPLASH)
+        when (currentPage) {
+            MainFragmentID.NONE -> showFragmentRemoveOld(MainFragmentID.SPLASH, currentPage, fragmentManager)
+            MainFragmentID.SPLASH -> { /*don't do anything, already on page*/
+            }
+            MainFragmentID.PAGER -> throw IllegalStateException("should not go from pager to splash")
+        }
     }
 
     fun showPager() {
-        val fragment = fragmentManager.findFragmentByTag(MainFragmentID.PAGER.name) as BaseFragment?
-        showFragment(fragment, MainFragmentID.PAGER)
+        when (currentPage) {
+            MainFragmentID.SPLASH -> removeOldFragmentReplaceWith(MainFragmentID.PAGER, fragmentManager)
+            MainFragmentID.PAGER -> { /*don't do anything, already on page*/
+            }
+            else -> throw IllegalStateException("invalid navigation")
+        }
     }
 
-    private fun showFragment(fragment: BaseFragment?, fragmentID: MainFragmentID) {
-        fragment?.let {
-            val fragmentVisible = it.isVisible
-
-            if (!fragmentVisible) {
-                fragmentManager
-                        .beginTransaction()
-                        .show(fragment)
-                        .commit()
+    fun onBackPressed(): Boolean {
+        val shouldClose = when (currentPage) {
+            MainFragmentID.SPLASH, MainFragmentID.NONE -> true
+            MainFragmentID.PAGER -> {
+                val fragment = fragmentManager.findFragmentByTag(MainFragmentID.PAGER.name) as PagerFragment
+                fragment.onBackPressed()
             }
-        } ?: let {
-            fragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fragmentContainer, fragmentID.newInstance(), fragmentID.name)
-                    .commit()
         }
+
+        return shouldClose
     }
 }
 
 enum class MainFragmentID : FragmentID {
+    NONE {
+        override fun newInstance(): BaseFragment = throw IllegalStateException("cant instantiate none fragment")
+    },
     SPLASH {
         override fun newInstance(): BaseFragment = SplashFragment()
     },

@@ -33,4 +33,8 @@ class HomeFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
     }
+
+    fun onBackPressed(): Boolean {
+        return true
+    }
 }

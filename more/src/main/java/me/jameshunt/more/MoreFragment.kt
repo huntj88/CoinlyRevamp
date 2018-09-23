@@ -23,6 +23,11 @@ class MoreFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             moreComponent.inject(this)
-            moreFragmentVisibilityManager.showMenu()
+            moreFragmentVisibilityManager.showCurrent()
+    }
+
+    fun onBackPressed(): Boolean {
+        val shouldClose = moreFragmentVisibilityManager.onBackPressed()
+        return shouldClose
     }
 }

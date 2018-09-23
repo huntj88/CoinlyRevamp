@@ -9,9 +9,16 @@ import javax.inject.Inject
 @HomeScope
 class HomeFragmentVisibilityManager @Inject constructor(private val fragmentManager: FragmentManager): VisibilityManager {
 
+    //todo consolidate all the visibility manager logic
     private val currentPage: HomeFragmentID
     get() {
-        val visibleFragmentIDs = fragmentManager.fragments.filter { it.isVisible }.map { HomeFragmentID.valueOf(it.tag!!) }
+        val visibleFragmentIDs = fragmentManager
+                .fragments
+                .asSequence()
+                .filter { it.isVisible }
+                .map { HomeFragmentID.valueOf(it.tag!!) }
+                .toList()
+
         if(visibleFragmentIDs.size > 1) throw IllegalStateException("multiple visible fragments")
 
         return visibleFragmentIDs.firstOrNull()?: HomeFragmentID.NONE

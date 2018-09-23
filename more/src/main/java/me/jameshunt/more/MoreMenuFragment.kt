@@ -1,43 +1,49 @@
 package me.jameshunt.more
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
-import me.jameshunt.appbase.BaseFragment
+import io.reactivex.Observable
+import me.jameshunt.appbase.template.*
+import me.jameshunt.appbase.template.card.*
 import javax.inject.Inject
 
-class MoreMenuFragment: BaseFragment() {
+class MoreMenuFragment : TemplateFragment<MoreMenuViewModel>() {
 
-    @Inject
-    lateinit var visibilityManager: MoreFragmentVisibilityManager
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
+    override fun inject() {
         parentFragment!!.moreComponent().inject(this)
     }
+}
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val layout = LinearLayout(context)
-
-        val textView = TextView(context)
-        textView.text = "more menu"
-        layout.addView(textView)
-
-        val button = Button(context)
-        button.setOnClickListener {
-            visibilityManager.showExampleTemplate()
-        }
-        layout.addView(button)
-
-        return layout
+class MoreMenuViewModel @Inject constructor(private val moreFragmentVisibilityManager: MoreFragmentVisibilityManager) : TemplateViewModel {
+    override fun getAdapterData(): Observable<List<TemplateObservableWrapper>> {
+        return Observable.just(listOf(
+                TemplateObservableWrapper(
+                        observable = Observable.just(CardTemplateData(sections = listOf(
+                                CardHeaderData(text = L10n.additional_features),
+                                CardDividerData(height = 1, margin = 0),
+                                CardTextIconData(text = L10n.integrations, icon = R.drawable.leak_canary_icon, action = {}),
+                                CardTextIconData(text = L10n.news, icon = R.drawable.leak_canary_icon, action = {}),
+                                CardTextIconData(text = L10n.security, icon = R.drawable.leak_canary_icon, action = {}),
+                                CardTextIconData(text = L10n.notifications, icon = R.drawable.leak_canary_icon, action = {
+                                    moreFragmentVisibilityManager.showExampleTemplate()
+                                })
+                        ))),
+                        templateType = TemplateFactory.CARD
+                ),
+                TemplateObservableWrapper(
+                        observable = Observable.just(CardTemplateData(sections = listOf(
+                                CardHeaderData(text = L10n.get_in_touch),
+                                CardDividerData(height = 1, margin = 0),
+                                CardTextIconData(text = L10n.give_feedback, icon = R.drawable.leak_canary_icon, action = {}),
+                                CardTextIconData(text = L10n.write_a_review, icon = R.drawable.leak_canary_icon, action = {}),
+                                CardTextIconData(text = L10n.report_a_bug, icon = R.drawable.leak_canary_icon, action = {}),
+                                CardTextIconData(text = L10n.telegram, icon = R.drawable.leak_canary_icon, action = {}),
+                                CardTextIconData(text = L10n.invite_a_friend, icon = R.drawable.leak_canary_icon, action = {})
+                        ))),
+                        templateType = TemplateFactory.CARD
+                )
+        ))
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun cleanUp() {
+
     }
 }

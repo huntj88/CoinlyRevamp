@@ -23,7 +23,7 @@ class TemplateApplication : BaseApplication() {
         this.appComponent = AppComponent.create(this)
         (appComponent as AppComponent).inject(this)
 
-        testRepo()
+        //testRepo()
 
     }
 

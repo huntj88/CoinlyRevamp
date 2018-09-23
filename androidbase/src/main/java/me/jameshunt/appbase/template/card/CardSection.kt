@@ -59,6 +59,7 @@ class CardSectionFactory {
                 val view = LayoutInflater.from(parentView.context).inflate(R.layout.card_text_icon, parentView, false)
                 view.findViewById<TextView>(R.id.cardText).text = cardSectionData.text
                 view.findViewById<ImageView>(R.id.cardIcon).setImageDrawable(parentView.context.getDrawable(cardSectionData.icon))
+                view.setOnClickListener { cardSectionData.action() }
                 view
             }
             is CardTitleTwoValueData -> {

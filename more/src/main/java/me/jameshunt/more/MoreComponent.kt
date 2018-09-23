@@ -8,7 +8,7 @@ import me.jameshunt.appbase.FragmentManagerModule
 import javax.inject.Scope
 
 @MoreScope
-@Component(modules = [FragmentManagerModule::class], dependencies = [BaseAndroidActivityComponent::class])
+@Component(modules = [FragmentManagerModule::class, MoreFragmentVisibilityModule::class], dependencies = [BaseAndroidActivityComponent::class])
 interface MoreComponent {
     fun inject(moreFragment: MoreFragment)
     fun inject(moreMenuFragment: MoreMenuFragment)

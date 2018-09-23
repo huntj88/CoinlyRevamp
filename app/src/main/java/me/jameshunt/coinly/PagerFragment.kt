@@ -13,7 +13,7 @@ import me.jameshunt.appbase.BaseFragment
 import me.jameshunt.home.HomeFragment
 import me.jameshunt.more.MoreFragment
 
-class PagerFragment: BaseFragment() {
+class PagerFragment : BaseFragment() {
 
     private val pagerAdapter: PagerAdapter by lazy { PagerAdapter(childFragmentManager) }
 
@@ -62,9 +62,21 @@ class PagerFragment: BaseFragment() {
         //unsubscribe here
     }
 
+    fun onBackPressed(): Boolean {
+        val currentFragment = (viewPager.adapter as PagerAdapter).getCurrentFragment(viewPager)
+
+        val shouldClose: Boolean = when(currentFragment) {
+            is HomeFragment -> currentFragment.onBackPressed()
+            is MoreFragment -> currentFragment.onBackPressed()
+            else -> throw NotImplementedError()
+        }
+
+        return shouldClose
+    }
+
 }
 
-class PagerAdapter(fragmentManager: FragmentManager): FragmentStatePagerAdapter(fragmentManager) {
+class PagerAdapter(fragmentManager: FragmentManager) : FragmentStatePagerAdapter(fragmentManager) {
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
