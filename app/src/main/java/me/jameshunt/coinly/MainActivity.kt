@@ -1,5 +1,7 @@
 package me.jameshunt.coinly
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import io.reactivex.rxkotlin.subscribeBy
 import me.jameshunt.appbase.BaseActivity
@@ -22,6 +24,19 @@ class MainActivity : BaseActivity() {
                     visibilityManager.showPager()
                 }
         )
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+
+        Timber.i(intent.dataString)
+
+        if(!intent.dataString.contains("huntj88://me.jameshunt.coinly")) return
+
+        val deepLink = Uri.parse(intent.dataString)
+        when(deepLink.lastPathSegment) {
+            "coinbase" -> Timber.i(deepLink.getQueryParameter("code"))
+        }
     }
 
     override fun onBackPressed() {

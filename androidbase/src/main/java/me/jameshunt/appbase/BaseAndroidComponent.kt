@@ -1,5 +1,6 @@
 package me.jameshunt.appbase
 
+import android.content.Context
 import android.support.v4.app.FragmentManager
 import dagger.Module
 import dagger.Provides
@@ -17,6 +18,8 @@ interface AndroidAppDependenciesEverywhere {
 
 interface AndroidActivityDependenciesEverywhere {
     //these ActivityScopedDependencies that need to be available everywhere except as dependencies for @Singleton's
+
+    fun getUrlLauncher(): UrlLauncher
 }
 
 @Module
@@ -24,4 +27,12 @@ class FragmentManagerModule(private val fragmentManager: FragmentManager) {
 
     @Provides
     fun getFragmentManager(): FragmentManager = fragmentManager
+}
+
+@Module
+class UrlLauncherModule(private val context: Context) {
+    @Provides
+    fun getUrlLauncher(): UrlLauncher {
+        return UrlLauncherImpl(context)
+    }
 }

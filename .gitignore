@@ -9,3 +9,4 @@
 /captures
 .externalNativeBuild
 /.idea/
+/coinbase/src/main/java/me/jameshunt/coinbase/CoinbaseKeys.kt

@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
 class AsyncInjector private constructor() {
     companion object {
         fun inject(mainActivity: MainActivity): Completable {
-            mainActivity.activityComponent = ActivityComponent.create(mainActivity.application.appComponent())
+            mainActivity.activityComponent = ActivityComponent.create(mainActivity.application.appComponent(), mainActivity)
 
             return Completable
                     .fromAction { mainActivity.activityComponent().inject(mainActivity) }
