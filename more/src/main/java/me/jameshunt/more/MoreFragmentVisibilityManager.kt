@@ -24,8 +24,17 @@ class MoreFragmentVisibilityManagerImpl @Inject constructor(private val fragment
             val visibleFragmentIDs = fragmentManager
                     .fragments
                     .asSequence()
-                    .filter { it.isVisible || (it.isAdded && !it.isHidden) }
-                    .map { MoreFragmentID.valueOf(it.tag!!) }
+                    .filter { it.isVisible || !it.isHidden }
+                    .map { fragment ->
+                        fragment.tag ?: run {
+                            when(fragment) {
+                                is MoreMenuFragment -> MoreFragmentID.MENU.name
+                                is ExampleTemplateFragment -> MoreFragmentID.EXAMPLE.name
+                                else -> throw NotImplementedError()
+                            }
+                        }
+                    }
+                    .map { MoreFragmentID.valueOf(it) }
                     .toList()
 
             if(visibleFragmentIDs.size > 1) throw IllegalStateException("multiple visible fragments")

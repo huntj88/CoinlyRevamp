@@ -21,9 +21,7 @@ class HomeFragment : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
         homeComponent.inject(this)
 
-        if (savedInstanceState == null) {
-            visibilityManager.showCurrentPage()
-        }
+        visibilityManager.showCurrentPage()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {

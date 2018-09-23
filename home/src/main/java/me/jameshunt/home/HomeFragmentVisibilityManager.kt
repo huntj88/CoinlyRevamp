@@ -15,8 +15,17 @@ class HomeFragmentVisibilityManager @Inject constructor(private val fragmentMana
         val visibleFragmentIDs = fragmentManager
                 .fragments
                 .asSequence()
-                .filter { it.isVisible }
-                .map { HomeFragmentID.valueOf(it.tag!!) }
+                .filter { it.isVisible || !it.isHidden }
+                .map { fragment ->
+                    fragment.tag ?: run {
+                        when(fragment) {
+                            is SummaryFragment -> HomeFragmentID.SUMMARY.name
+                            is PortfolioFragment -> HomeFragmentID.PORTFOLIO.name
+                            else -> throw NotImplementedError()
+                        }
+                    }
+                }
+                .map { HomeFragmentID.valueOf(it) }
                 .toList()
 
         if(visibleFragmentIDs.size > 1) throw IllegalStateException("multiple visible fragments")
