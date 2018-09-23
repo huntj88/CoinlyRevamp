@@ -11,6 +11,7 @@ import javax.inject.Inject
 interface MoreFragmentVisibilityManager: VisibilityManager {
     fun showCurrent()
     fun showMenu()
+    fun showIntegrations()
     fun showExampleTemplate()
     fun onBackPressed(): Boolean
 }
@@ -46,6 +47,7 @@ class MoreFragmentVisibilityManagerImpl @Inject constructor(private val fragment
         when(currentPage) {
             MoreFragmentID.NONE, MoreFragmentID.MENU -> showMenu()
             MoreFragmentID.EXAMPLE -> showExampleTemplate()
+            MoreFragmentID.INTEGRATIONS -> showIntegrations()
         }
     }
 
@@ -54,7 +56,15 @@ class MoreFragmentVisibilityManagerImpl @Inject constructor(private val fragment
         when(currentPage) {
             MoreFragmentID.NONE -> showFragmentRemoveOld(MoreFragmentID.MENU, currentPage, fragmentManager)
             MoreFragmentID.MENU -> { /*don't do anything, already on page*/ }
-            MoreFragmentID.EXAMPLE -> showFragmentRemoveOld(MoreFragmentID.MENU, currentPage, fragmentManager)
+            MoreFragmentID.EXAMPLE, MoreFragmentID.INTEGRATIONS -> showFragmentRemoveOld(MoreFragmentID.MENU, currentPage, fragmentManager)
+        }
+    }
+
+    override fun showIntegrations() {
+        when (currentPage) {
+            MoreFragmentID.MENU -> hideOldFragmentShowNewInstance(currentPage, MoreFragmentID.INTEGRATIONS, fragmentManager)
+            MoreFragmentID.INTEGRATIONS -> { /*don't do anything, already on page*/ }
+            else -> throw IllegalStateException("invalid navigation")
         }
     }
 
@@ -69,7 +79,7 @@ class MoreFragmentVisibilityManagerImpl @Inject constructor(private val fragment
     override fun onBackPressed(): Boolean {
         val shouldClose = when (currentPage) {
             MoreFragmentID.MENU, MoreFragmentID.NONE -> true
-            MoreFragmentID.EXAMPLE -> {
+            MoreFragmentID.EXAMPLE, MoreFragmentID.INTEGRATIONS -> {
                 showMenu()
                 false
             }
@@ -84,6 +94,9 @@ enum class MoreFragmentID : FragmentID {
     },
     MENU {
         override fun newInstance(): BaseFragment = MoreMenuFragment()
+    },
+    INTEGRATIONS {
+        override fun newInstance(): BaseFragment = IntegrationsFragment()
     },
     EXAMPLE {
         override fun newInstance(): BaseFragment = ExampleTemplateFragment()

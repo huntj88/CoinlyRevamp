@@ -19,7 +19,9 @@ class MoreMenuViewModel @Inject constructor(private val moreFragmentVisibilityMa
                         observable = Observable.just(CardTemplateData(sections = listOf(
                                 CardHeaderData(text = L10n.additional_features),
                                 CardDividerData(height = 1, margin = 0),
-                                CardTextIconData(text = L10n.integrations, icon = R.drawable.leak_canary_icon, action = {}),
+                                CardTextIconData(text = L10n.integrations, icon = R.drawable.leak_canary_icon, action = {
+                                    moreFragmentVisibilityManager.showIntegrations()
+                                }),
                                 CardTextIconData(text = L10n.news, icon = R.drawable.leak_canary_icon, action = {}),
                                 CardTextIconData(text = L10n.security, icon = R.drawable.leak_canary_icon, action = {}),
                                 CardTextIconData(text = L10n.notifications, icon = R.drawable.leak_canary_icon, action = {

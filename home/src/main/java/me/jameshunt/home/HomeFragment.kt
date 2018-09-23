@@ -21,7 +21,7 @@ class HomeFragment : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
         homeComponent.inject(this)
 
-        visibilityManager.showCurrentPage()
+        visibilityManager.showCurrent()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -33,6 +33,7 @@ class HomeFragment : BaseFragment() {
     }
 
     fun onBackPressed(): Boolean {
-        return true
+        val shouldClose = visibilityManager.onBackPressed()
+        return shouldClose
     }
 }
