@@ -1,15 +1,19 @@
 package me.jameshunt.coinly
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import io.reactivex.rxkotlin.subscribeBy
 import me.jameshunt.appbase.BaseActivity
+import me.jameshunt.appbase.IntegrationDeepLinkHandler
 import timber.log.Timber
+import javax.inject.Inject
 
 class MainActivity : BaseActivity() {
 
     private val visibilityManager = MainVisibilityManager(supportFragmentManager)
+
+    @Inject
+    lateinit var deepLinkHandler: IntegrationDeepLinkHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,19 +32,10 @@ class MainActivity : BaseActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-
-        Timber.i(intent.dataString)
-
-        if(!intent.dataString.contains("huntj88://me.jameshunt.coinly")) return
-
-        val deepLink = Uri.parse(intent.dataString)
-        when(deepLink.lastPathSegment) {
-            "coinbase" -> Timber.i(deepLink.getQueryParameter("code"))
-        }
+        deepLinkHandler.handleIntent(intentString = intent.dataString)
     }
 
     override fun onBackPressed() {
-
         val shouldClose = visibilityManager.onBackPressed()
 
         if(shouldClose) {

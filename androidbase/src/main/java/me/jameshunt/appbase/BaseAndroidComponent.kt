@@ -20,6 +20,7 @@ interface AndroidActivityDependenciesEverywhere {
     //these ActivityScopedDependencies that need to be available everywhere except as dependencies for @Singleton's
 
     fun getUrlLauncher(): UrlLauncher
+    fun getIntegrationDeepLinkHandler(): IntegrationDeepLinkHandler
 }
 
 @Module
