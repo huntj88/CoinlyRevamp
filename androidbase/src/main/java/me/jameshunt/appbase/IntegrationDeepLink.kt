@@ -28,9 +28,8 @@ class IntegrationDeepLinkHandler @Inject constructor() {
 
         when (uri.path) {
             "/coinbase" -> {
-                val code = Regex("[a-zA-Z]*=([a-zA-Z0-9]*)").findAll(uri.query).map {
-                    it.groups[1]?.value
-                }.first()!!
+                val queryPattern = Regex("[a-zA-Z]*=([a-zA-Z0-9]*)")
+                val code = queryPattern.findAll(uri.query).map { it.groups[1]?.value }.first()!!
 
                 deepLink = IntegrationDeepLink.Coinbase(code = code)
             }

@@ -8,7 +8,7 @@ import me.jameshunt.appbase.FragmentID
 import me.jameshunt.appbase.VisibilityManager
 import javax.inject.Inject
 
-interface MoreFragmentVisibilityManager: VisibilityManager {
+interface MoreFragmentVisibilityManager : VisibilityManager {
     fun showCurrent()
     fun showMenu()
     fun showIntegrations()
@@ -29,7 +29,8 @@ class MoreFragmentVisibilityManagerImpl @Inject constructor(private val fragment
                     .filter { it.isVisible || !it.isHidden }
                     .map { fragment ->
                         fragment.tag ?: run {
-                            when(fragment) {
+                            // todo: do i need this when() here?
+                            when (fragment) {
                                 is MoreMenuFragment -> MoreFragmentID.MENU.name
                                 is ExampleTemplateFragment -> MoreFragmentID.EXAMPLE.name
                                 else -> throw NotImplementedError()
@@ -39,13 +40,13 @@ class MoreFragmentVisibilityManagerImpl @Inject constructor(private val fragment
                     .map { MoreFragmentID.valueOf(it) }
                     .toList()
 
-            if(visibleFragmentIDs.size > 1) throw IllegalStateException("multiple visible fragments")
+            if (visibleFragmentIDs.size > 1) throw IllegalStateException("multiple visible fragments")
 
-            return visibleFragmentIDs.firstOrNull()?: MoreFragmentID.NONE
+            return visibleFragmentIDs.firstOrNull() ?: MoreFragmentID.NONE
         }
 
     override fun showCurrent() {
-        when(currentPage) {
+        when (currentPage) {
             MoreFragmentID.NONE, MoreFragmentID.MENU -> showMenu()
             MoreFragmentID.EXAMPLE -> showExampleTemplate()
             MoreFragmentID.INTEGRATIONS -> showIntegrations()
@@ -55,7 +56,7 @@ class MoreFragmentVisibilityManagerImpl @Inject constructor(private val fragment
 
     override fun showMenu() {
 
-        when(currentPage) {
+        when (currentPage) {
             MoreFragmentID.NONE -> showFragmentRemoveOld(MoreFragmentID.MENU, currentPage, fragmentManager)
             MoreFragmentID.MENU -> { /*don't do anything, already on page*/ }
             MoreFragmentID.EXAMPLE, MoreFragmentID.INTEGRATIONS -> showFragmentRemoveOld(MoreFragmentID.MENU, currentPage, fragmentManager)
@@ -73,7 +74,7 @@ class MoreFragmentVisibilityManagerImpl @Inject constructor(private val fragment
     }
 
     override fun showCoinbase() {
-        when(currentPage) {
+        when (currentPage) {
             MoreFragmentID.INTEGRATIONS -> hideOldFragmentShowNewInstance(currentPage, MoreFragmentID.COINBASE, fragmentManager)
             MoreFragmentID.COINBASE ->  {/*don't do anything, already on page*/ }
             else -> throw IllegalStateException("invalid navigation")
