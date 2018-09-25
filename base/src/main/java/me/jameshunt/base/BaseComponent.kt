@@ -9,6 +9,8 @@ interface BaseActivityComponent: AppDependenciesEverywhere, ActivityDependencies
 
 interface AppDependenciesEverywhere {
     //these appScopedDependencies that need to be available everywhere
+
+    fun getObjectBoxContext(): ObjectBoxContext
 }
 
 interface ActivityDependenciesEverywhere {

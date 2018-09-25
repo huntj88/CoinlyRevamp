@@ -39,3 +39,5 @@ interface TimePrice {
 
     fun string(): String = "time: $time - base: $base - other: $other - price: $price"
 }
+
+data class ObjectBoxContext(val context: Any)

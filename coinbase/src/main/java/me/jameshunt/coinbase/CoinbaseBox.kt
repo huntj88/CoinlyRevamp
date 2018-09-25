@@ -6,7 +6,7 @@ import io.reactivex.Completable
 
 class CoinbaseBox(context: Any) {
 
-    private val box = MyObjectBox.builder().androidContext(context).build()
+    private val box = MyObjectBox.builder().androidContext(context).name("coinbase").build()
 
     fun writeCredentials(tokenResponse: TokenResponse): Completable {
 

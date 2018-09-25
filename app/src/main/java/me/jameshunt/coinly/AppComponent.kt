@@ -5,29 +5,37 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import me.jameshunt.appbase.BaseAndroidAppComponent
+import me.jameshunt.base.ObjectBoxContext
 import me.jameshunt.repo.Repo
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [RepoModule::class])
+@Component(modules = [ObjectBoxContextModule::class, RepoModule::class])
 interface AppComponent : BaseAndroidAppComponent {
     //see BaseAppComponent too
 
     companion object {
         fun create(context: Context): AppComponent = DaggerAppComponent
                 .builder()
-                .repoModule(RepoModule(context))
+                .objectBoxContextModule(ObjectBoxContextModule(context))
+                .repoModule(RepoModule())
                 .build()
     }
 
     fun inject(templateApplication: TemplateApplication)
 }
 
+@Module
+class ObjectBoxContextModule(private val context: Context) {
+
+    @Provides
+    fun getObjectBoxContext(): ObjectBoxContext = ObjectBoxContext(context)
+}
 
 @Module
-class RepoModule(private val context: Context) {
+class RepoModule {
 
     @Singleton
     @Provides
-    fun getRepo(): Repo = Repo(context)
+    fun getRepo(objectBoxContext: ObjectBoxContext): Repo = Repo(objectBoxContext.context)
 }

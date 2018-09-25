@@ -33,6 +33,7 @@ dependencies {
     implementation project(':base')
     implementation project(':androidbase')
     implementation project(':coinbase')
+    implementation project(':business')
 
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
