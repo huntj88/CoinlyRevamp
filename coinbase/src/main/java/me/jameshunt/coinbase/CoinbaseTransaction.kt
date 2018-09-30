@@ -132,7 +132,7 @@ data class NativeAmount(
 data class Buy(
         val id: String,
         val resource: String,
-        val resourcePath: String
+        val resourcePath: String?
 )
 
 data class Details(

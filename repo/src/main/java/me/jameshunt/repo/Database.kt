@@ -40,15 +40,37 @@ internal class Database(context: Any) {
     }
 
     fun writeTransactions(transactions: List<Transaction>): Completable {
-        return Completable.complete()
+        return Completable.fromAction {
+            val transactionBox = box.boxFor(TransactionObjectBox::class.java)
+
+            box.runInTx {
+                transactions
+                        .map { it.toObjectBox() }
+                        .forEach { transactionBox.put(it) }
+            }
+        }.subscribeOn(Schedulers.io())
+    }
+
+    private fun Transaction.toObjectBox(): TransactionObjectBox {
+        return TransactionObjectBox(
+                transactionId = this.transactionId,
+                fromCurrencyType = this.fromCurrencyType,
+                fromAmount = this.fromAmount,
+                toCurrencyType = this.toCurrencyType,
+                toAmount = this.toAmount,
+                time = this.time,
+                status = this.status,
+                exchangeType = this.exchangeType,
+                exchangeExtraJson = this.exchangeExtraJson
+        )
     }
 
     private fun TimePrice.toObjectBox(timePriceUpdateCategory: TimePriceUpdateCategory): TimePriceObjectBox {
         return TimePriceObjectBox(
-                time = time,
-                base = base,
-                other = other,
-                price = price,
+                time = this.time,
+                base = this.base,
+                other = this.other,
+                price = this.price,
                 updateCategory = timePriceUpdateCategory.updateCategory
         )
     }

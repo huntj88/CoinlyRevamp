@@ -20,6 +20,10 @@ class CoinbaseBox(context: Any) {
         }
     }
 
+    internal fun getCredentials(): CredentialsObjectBox? {
+        return box.boxFor(CredentialsObjectBox::class.java).all.firstOrNull()
+    }
+
     private fun TokenResponse.toObjectBox(): CredentialsObjectBox {
         return CredentialsObjectBox(accessToken = this.accessToken, refreshToken = this.refreshToken)
     }

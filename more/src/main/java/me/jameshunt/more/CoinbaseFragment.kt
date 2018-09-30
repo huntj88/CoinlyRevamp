@@ -53,7 +53,7 @@ class CoinbaseViewModel @Inject constructor(
 
             integrationUseCase
                     .integrateCoinbase(code = this.code)
-                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(
                             onError = {it.printStackTrace()},
                             onComplete = {Timber.i("saved credentials")}

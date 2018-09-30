@@ -59,7 +59,6 @@ interface TimePrice {
     fun string(): String = "time: $time - base: $base - other: $other - price: $price"
 }
 
-//todo needs to be interface
 interface Transaction {
     val transactionId: TransactionId
     val fromCurrencyType: CurrencyType

@@ -4,6 +4,7 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import me.jameshunt.base.CurrencyType
 import me.jameshunt.base.Transaction
+import java.lang.IllegalStateException
 
 class CoinbaseIntegration(context: Any) {
     companion object {
@@ -21,12 +22,16 @@ class CoinbaseIntegration(context: Any) {
     fun integrate(code: String): Completable {
         return service
                 .exchangeCodeForToken(code = code)
-                .doOnSuccess { coinbaseBox.writeCredentials(tokenResponse = it) }
-                .toCompletable()
+                .flatMapCompletable { coinbaseBox.writeCredentials(tokenResponse = it) }
     }
 
-    fun updateTransactions(): Single<List<Transaction>> {
-//        service.setAccessToken(accessToken)
+    fun getTransactions(): Single<List<Transaction>> {
+
+        // todo: handle refreshing credentials
+
+        coinbaseBox.getCredentials()?.let {
+            service.setAccessToken(it.accessToken)
+        }?: throw IllegalStateException("coinbase credentials don't exist")
 
         return service.getTransactionsForCoin(CurrencyType.ETH)
     }
