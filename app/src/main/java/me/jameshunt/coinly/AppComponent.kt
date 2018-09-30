@@ -6,6 +6,7 @@ import dagger.Module
 import dagger.Provides
 import me.jameshunt.appbase.BaseAndroidAppComponent
 import me.jameshunt.base.ObjectBoxContext
+import me.jameshunt.base.Repository
 import me.jameshunt.repo.Repo
 import javax.inject.Singleton
 
@@ -37,5 +38,5 @@ class RepoModule {
 
     @Singleton
     @Provides
-    fun getRepo(objectBoxContext: ObjectBoxContext): Repo = Repo(objectBoxContext.context)
+    fun getRepo(objectBoxContext: ObjectBoxContext): Repository = Repo(objectBoxContext.context)
 }

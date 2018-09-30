@@ -38,6 +38,7 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
 
     implementation "com.jakewharton.timber:timber:$timber_version"
+    implementation "com.jakewharton.threetenabp:threetenabp:$three_ten_abp_version"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "com.android.support:appcompat-v7:$android_support_version"

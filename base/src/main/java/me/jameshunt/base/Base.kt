@@ -2,6 +2,7 @@ package me.jameshunt.base
 
 typealias UnixMilliSeconds = Long
 typealias CurrencyAmount = Double
+typealias TransactionId = String
 
 enum class TimeType {
     HOUR,
@@ -31,6 +32,24 @@ enum class CurrencyType(val id: Long, val fullName: String) {
     BAT(1010, "Basic Attention Token");
 }
 
+enum class TransactionStatus(val id: Long) {
+    UNSUPPORTED(-1),
+    COMPLETE(0),
+    PENDING(1);
+}
+
+enum class TransferType(val id: Long) {
+    SEND(0),
+    RECEIVED(1);
+}
+
+enum class ExchangeType(val id: Long) {
+    NONE(0),
+    COINBASE(1),
+    //BINANCE(2);
+}
+
+
 interface TimePrice {
     val time: UnixMilliSeconds
     val base: CurrencyType
@@ -39,5 +58,29 @@ interface TimePrice {
 
     fun string(): String = "time: $time - base: $base - other: $other - price: $price"
 }
+
+//todo needs to be interface
+interface Transaction {
+    val transactionId: TransactionId
+    val fromCurrencyType: CurrencyType
+    val fromAmount: Double
+    val toCurrencyType: CurrencyType
+    val toAmount: Double
+    val time: UnixMilliSeconds
+    val status: TransactionStatus
+    val exchangeType: ExchangeType
+    val exchangeExtraJson: String
+}
+
+interface Transfer {
+    val transferId: String
+    val time: UnixMilliSeconds
+    val hash: String
+    val currencyType: CurrencyType
+    val amount: Double
+    val fee: Double
+    val type: TransferType
+}
+
 
 data class ObjectBoxContext(val context: Any)

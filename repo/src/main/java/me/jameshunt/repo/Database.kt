@@ -8,10 +8,7 @@ import io.objectbox.converter.PropertyConverter
 import io.objectbox.kotlin.boxFor
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers
-import me.jameshunt.base.CurrencyAmount
-import me.jameshunt.base.CurrencyType
-import me.jameshunt.base.TimePrice
-import me.jameshunt.base.UnixMilliSeconds
+import me.jameshunt.base.*
 
 internal class Database(context: Any) {
 
@@ -40,6 +37,10 @@ internal class Database(context: Any) {
                 }
             }
         }.subscribeOn(Schedulers.io())
+    }
+
+    fun writeTransactions(transactions: List<Transaction>): Completable {
+        return Completable.complete()
     }
 
     private fun TimePrice.toObjectBox(timePriceUpdateCategory: TimePriceUpdateCategory): TimePriceObjectBox {
@@ -109,6 +110,32 @@ data class TimePriceObjectBox(
         val updateCategory: Long
 ) : TimePrice
 
+@Entity
+data class TransactionObjectBox(
+        @Id
+        var id: Long = 0,
+
+        @Index
+        override val transactionId: TransactionId,
+
+        @Convert(converter = CurrencyTypeConverter::class, dbType = Long::class)
+        override val fromCurrencyType: CurrencyType,
+        override val fromAmount: CurrencyAmount,
+
+        @Convert(converter = CurrencyTypeConverter::class, dbType = Long::class)
+        override val toCurrencyType: CurrencyType,
+        override val toAmount: CurrencyAmount,
+        override val time: UnixMilliSeconds,
+
+        @Convert(converter = TransactionStatusConverter::class, dbType = Long::class)
+        override val status: TransactionStatus,
+
+        @Convert(converter = ExchangeTypeConverter::class, dbType = Long::class)
+        override val exchangeType: ExchangeType,
+        override val exchangeExtraJson: String
+
+) : Transaction
+
 internal class CurrencyTypeConverter : PropertyConverter<CurrencyType, Long> {
     override fun convertToDatabaseValue(entityProperty: CurrencyType): Long {
         return entityProperty.id
@@ -116,5 +143,25 @@ internal class CurrencyTypeConverter : PropertyConverter<CurrencyType, Long> {
 
     override fun convertToEntityProperty(databaseValue: Long): CurrencyType {
         return CurrencyType.values().first { it.id == databaseValue }
+    }
+}
+
+internal class ExchangeTypeConverter : PropertyConverter<ExchangeType, Long> {
+    override fun convertToDatabaseValue(entityProperty: ExchangeType): Long {
+        return entityProperty.id
+    }
+
+    override fun convertToEntityProperty(databaseValue: Long): ExchangeType {
+        return ExchangeType.values().first { it.id == databaseValue }
+    }
+}
+
+internal class TransactionStatusConverter : PropertyConverter<TransactionStatus, Long> {
+    override fun convertToDatabaseValue(entityProperty: TransactionStatus): Long {
+        return entityProperty.id
+    }
+
+    override fun convertToEntityProperty(databaseValue: Long): TransactionStatus {
+        return TransactionStatus.values().first { it.id == databaseValue }
     }
 }
