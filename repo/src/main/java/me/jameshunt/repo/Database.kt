@@ -60,8 +60,7 @@ internal class Database(context: Any) {
                 toAmount = this.toAmount,
                 time = this.time,
                 status = this.status,
-                exchangeType = this.exchangeType,
-                exchangeExtraJson = this.exchangeExtraJson
+                exchangeType = this.exchangeType
         )
     }
 
@@ -153,8 +152,7 @@ data class TransactionObjectBox(
         override val status: TransactionStatus,
 
         @Convert(converter = ExchangeTypeConverter::class, dbType = Long::class)
-        override val exchangeType: ExchangeType,
-        override val exchangeExtraJson: String
+        override val exchangeType: ExchangeType
 
 ) : Transaction
 

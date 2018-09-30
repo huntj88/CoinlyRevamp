@@ -2,21 +2,19 @@ package me.jameshunt.coinbase
 
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
-import io.reactivex.Completable
+import me.jameshunt.base.Transaction
+import me.jameshunt.base.TransactionId
 
 class CoinbaseBox(context: Any) {
 
     private val box = MyObjectBox.builder().androidContext(context).name("coinbase").build()
 
-    fun writeCredentials(tokenResponse: TokenResponse): Completable {
+    fun writeCredentials(tokenResponse: TokenResponse) {
+        val credentialsBox = box.boxFor(CredentialsObjectBox::class.java)
 
-        return Completable.fromAction {
-            val credentialsBox = box.boxFor(CredentialsObjectBox::class.java)
-
-            box.runInTx {
-                credentialsBox.removeAll()
-                credentialsBox.put(tokenResponse.toObjectBox())
-            }
+        box.runInTx {
+            credentialsBox.removeAll()
+            credentialsBox.put(tokenResponse.toObjectBox())
         }
     }
 
@@ -27,6 +25,19 @@ class CoinbaseBox(context: Any) {
     private fun TokenResponse.toObjectBox(): CredentialsObjectBox {
         return CredentialsObjectBox(accessToken = this.accessToken, refreshToken = this.refreshToken)
     }
+
+    fun writeMostRecentTransactionId(transaction: Transaction) {
+        val mostRecentBox = box.boxFor(MostRecentTransaction::class.java)
+
+        box.runInTx {
+            mostRecentBox.removeAll()
+            mostRecentBox.put(MostRecentTransaction(transactionId = transaction.transactionId))
+        }
+    }
+
+    internal fun getMostRecentTransactionId(): TransactionId? {
+        return box.boxFor(MostRecentTransaction::class.java).all.firstOrNull()?.transactionId
+    }
 }
 
 @Entity
@@ -36,4 +47,11 @@ data class CredentialsObjectBox(
         var id: Long = 0,
         val accessToken: String = "",
         val refreshToken: String = ""
+)
+
+@Entity
+data class MostRecentTransaction(
+        @Id
+        var id: Long = 0,
+        val transactionId: TransactionId
 )

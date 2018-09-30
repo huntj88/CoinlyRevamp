@@ -78,10 +78,6 @@
         {
           "id": "9:856525012965042177",
           "name": "exchangeType"
-        },
-        {
-          "id": "10:3538812599355279843",
-          "name": "exchangeExtraJson"
         }
       ],
       "relations": []
@@ -95,7 +91,9 @@
   "modelVersionParserMinimum": 4,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    3538812599355279843
+  ],
   "retiredRelationUids": [],
   "version": 1
 }

@@ -68,7 +68,6 @@ interface Transaction {
     val time: UnixMilliSeconds
     val status: TransactionStatus
     val exchangeType: ExchangeType
-    val exchangeExtraJson: String
 }
 
 interface Transfer {

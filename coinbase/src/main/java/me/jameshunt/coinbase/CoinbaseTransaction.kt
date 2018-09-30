@@ -45,7 +45,6 @@ data class Data(
                 override val time: UnixMilliSeconds = getUnixMilliSeconds()
                 override val status: TransactionStatus = getTransactionStatus()
                 override val exchangeType: ExchangeType = ExchangeType.COINBASE
-                override val exchangeExtraJson: String = ""
             }
         } else null
     }

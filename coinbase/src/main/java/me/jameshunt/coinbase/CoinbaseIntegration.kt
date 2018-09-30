@@ -22,7 +22,8 @@ class CoinbaseIntegration(context: Any) {
     fun integrate(code: String): Completable {
         return service
                 .exchangeCodeForToken(code = code)
-                .flatMapCompletable { coinbaseBox.writeCredentials(tokenResponse = it) }
+                .doOnSuccess { coinbaseBox.writeCredentials(tokenResponse = it) }
+                .toCompletable()
     }
 
     fun getTransactions(): Single<List<Transaction>> {
@@ -31,8 +32,16 @@ class CoinbaseIntegration(context: Any) {
 
         coinbaseBox.getCredentials()?.let {
             service.setAccessToken(it.accessToken)
-        }?: throw IllegalStateException("coinbase credentials don't exist")
+        } ?: throw IllegalStateException("coinbase credentials don't exist")
 
-        return service.getTransactionsForCoin(CurrencyType.ETH)
+        return service
+                .getTransactionsForCoin(
+                        currencyType = CurrencyType.ETH,
+                        mostRecent = coinbaseBox.getMostRecentTransactionId())
+                .doOnSuccess { newTransactions ->
+                    newTransactions.lastOrNull()?.let {
+                        coinbaseBox.writeMostRecentTransactionId(it)
+                    }
+                }
     }
 }
