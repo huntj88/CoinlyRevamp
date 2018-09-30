@@ -3,12 +3,9 @@ package me.jameshunt.more
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import me.jameshunt.appbase.BaseAndroidActivityComponent
 import me.jameshunt.appbase.FragmentManagerModule
-import me.jameshunt.base.KeyValueTool
-import me.jameshunt.coinbase.CoinbaseIntegration
+import me.jameshunt.business.CoinbaseModule
 import javax.inject.Scope
 
 @MoreScope
@@ -29,13 +26,6 @@ interface MoreComponent {
                 .coinbaseModule(CoinbaseModule())
                 .build()
     }
-}
-
-@Module
-class CoinbaseModule {
-
-    @Provides
-    fun getCoinbaseIntegration(keyValueTool: KeyValueTool): CoinbaseIntegration = CoinbaseIntegration(keyValueTool)
 }
 
 @Scope

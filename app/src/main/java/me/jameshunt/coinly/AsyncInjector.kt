@@ -14,8 +14,6 @@ class AsyncInjector private constructor() {
             return Completable
                     .fromAction { mainActivity.activityComponent().inject(mainActivity) }
                     .subscribeOn(Schedulers.computation())
-                    .delay(1, TimeUnit.SECONDS) //to see splash screen. currently dependency graph initializes too fast
-                    .observeOn(AndroidSchedulers.mainThread())
         }
     }
 }

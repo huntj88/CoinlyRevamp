@@ -15,9 +15,6 @@ import javax.inject.Inject
 
 class TemplateApplication : BaseApplication() {
 
-    @Inject
-    lateinit var repo: Repository
-
     override fun onCreate() {
         super.onCreate()
 
@@ -28,29 +25,10 @@ class TemplateApplication : BaseApplication() {
         this.appComponent = AppComponent.create(this)
         (appComponent as AppComponent).inject(this)
 
-        //testRepo()
-
     }
 
     private fun setRxAsyncScheduler() {
         RxAndroidPlugins.setInitMainThreadSchedulerHandler { AndroidSchedulers.from(Looper.getMainLooper(), true) }
-    }
-
-    private fun testRepo() {
-        // todo: remove
-        repo
-                .updateTimeRanges(CurrencyType.ETH, CurrencyType.USD)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeBy(
-                        onError = { it.printStackTrace() },
-                        onComplete = { Timber.i("time ranges updated") }
-                )
-
-        repo.updateCurrentPrices(CurrencyType.USD, setOf(CurrencyType.BTC, CurrencyType.ETH))
-                .subscribeBy(
-                        onError = { it.printStackTrace() },
-                        onComplete = { Timber.i("current prices updated") }
-                )
     }
 }
 
