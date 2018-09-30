@@ -6,6 +6,7 @@ import dagger.Module
 import dagger.Provides
 import me.jameshunt.base.BaseActivityComponent
 import me.jameshunt.base.BaseAppComponent
+import me.jameshunt.base.KeyValueTool
 
 
 interface BaseAndroidAppComponent: BaseAppComponent, AndroidAppDependenciesEverywhere
@@ -14,6 +15,7 @@ interface BaseAndroidActivityComponent: BaseActivityComponent, AndroidAppDepende
 
 interface AndroidAppDependenciesEverywhere {
     //these appScopedDependencies that need to be available everywhere
+    fun getKeyValueTool(): KeyValueTool
 }
 
 interface AndroidActivityDependenciesEverywhere {

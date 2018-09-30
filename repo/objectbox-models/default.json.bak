@@ -78,16 +78,28 @@
         {
           "id": "9:856525012965042177",
           "name": "exchangeType"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:6315255359277141291",
+      "lastPropertyId": "2:7770632118845838435",
+      "name": "IntegrationsObjectBox",
+      "properties": [
+        {
+          "id": "1:1468691449590573363",
+          "name": "coinbase"
         },
         {
-          "id": "10:3538812599355279843",
-          "name": "exchangeExtraJson"
+          "id": "2:7770632118845838435",
+          "name": "id"
         }
       ],
       "relations": []
     }
   ],
-  "lastEntityId": "2:267834783915504106",
+  "lastEntityId": "3:6315255359277141291",
   "lastIndexId": "3:4014333331775368456",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
@@ -95,7 +107,9 @@
   "modelVersionParserMinimum": 4,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    3538812599355279843
+  ],
   "retiredRelationUids": [],
   "version": 1
 }

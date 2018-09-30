@@ -49,6 +49,10 @@ enum class ExchangeType(val id: Long) {
     //BINANCE(2);
 }
 
+enum class IntegrationStatus(val id: Long) {
+    NotIntegrated(0),
+    Integrated(1)
+}
 
 interface TimePrice {
     val time: UnixMilliSeconds
@@ -80,5 +84,4 @@ interface Transfer {
     val type: TransferType
 }
 
-
-data class ObjectBoxContext(val context: Any)
+data class ContextWrapper(val context: Any)

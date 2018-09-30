@@ -5,13 +5,15 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import me.jameshunt.appbase.BaseAndroidAppComponent
-import me.jameshunt.base.ObjectBoxContext
+import me.jameshunt.appbase.KeyValueToolImpl
+import me.jameshunt.base.KeyValueTool
+import me.jameshunt.base.ContextWrapper
 import me.jameshunt.base.Repository
 import me.jameshunt.repo.Repo
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [ObjectBoxContextModule::class, RepoModule::class])
+@Component(modules = [ObjectBoxContextModule::class, RepoModule::class, KeyValueToolModule::class])
 interface AppComponent : BaseAndroidAppComponent {
     //see BaseAppComponent too
 
@@ -20,6 +22,7 @@ interface AppComponent : BaseAndroidAppComponent {
                 .builder()
                 .objectBoxContextModule(ObjectBoxContextModule(context))
                 .repoModule(RepoModule())
+                .keyValueToolModule(KeyValueToolModule())
                 .build()
     }
 
@@ -30,7 +33,17 @@ interface AppComponent : BaseAndroidAppComponent {
 class ObjectBoxContextModule(private val context: Context) {
 
     @Provides
-    fun getObjectBoxContext(): ObjectBoxContext = ObjectBoxContext(context)
+    fun getContextWrapper(): ContextWrapper = ContextWrapper(context)
+}
+
+@Module
+class KeyValueToolModule {
+
+    @Provides
+    fun getKeyValueTool(contextWrapper: ContextWrapper): KeyValueTool {
+        val context = contextWrapper.context as Context
+        return KeyValueToolImpl(context.getSharedPreferences(context.packageName, Context.MODE_PRIVATE))
+    }
 }
 
 @Module
@@ -38,5 +51,5 @@ class RepoModule {
 
     @Singleton
     @Provides
-    fun getRepo(objectBoxContext: ObjectBoxContext): Repository = Repo(objectBoxContext.context)
+    fun getRepo(contextWrapper: ContextWrapper): Repository = Repo(contextWrapper.context)
 }

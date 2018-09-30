@@ -1,9 +1,7 @@
 package me.jameshunt.repo
 
 import io.reactivex.Completable
-import me.jameshunt.base.CurrencyType
-import me.jameshunt.base.Repository
-import me.jameshunt.base.Transaction
+import me.jameshunt.base.*
 import me.jameshunt.cryptocompare.CryptoCompare
 
 class Repo(context: Any): Repository {

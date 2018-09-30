@@ -1,22 +1,23 @@
 package me.jameshunt.business
 
-import dagger.Lazy
 import io.reactivex.Completable
-import io.reactivex.schedulers.Schedulers
+import me.jameshunt.base.IntegrationStatus
 import me.jameshunt.base.Repository
 import me.jameshunt.coinbase.CoinbaseIntegration
 import javax.inject.Inject
 
 class IntegrationUseCase @Inject constructor(
         private val repo: Repository,
-        private val coinbaseIntegration: Lazy<CoinbaseIntegration>
+        private val coinbaseIntegration: CoinbaseIntegration
 ) {
 
+    val coinbaseIntegrationStatus: IntegrationStatus
+        get() = coinbaseIntegration.getIntegrationStatus()
+
     fun integrateCoinbase(code: String): Completable {
-        return coinbaseIntegration.get()
+        return coinbaseIntegration
                 .integrate(code)
-                .observeOn(Schedulers.io())
-                .andThen(coinbaseIntegration.get().getTransactions())
+                .andThen(coinbaseIntegration.getTransactions())
                 .flatMapCompletable { repo.writeTransactions(it) }
     }
 

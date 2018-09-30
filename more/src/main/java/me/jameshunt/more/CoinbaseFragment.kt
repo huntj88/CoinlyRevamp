@@ -17,7 +17,7 @@ import me.jameshunt.business.IntegrationUseCase
 import timber.log.Timber
 import javax.inject.Inject
 
-class CoinbaseFragment: TemplateFragment<CoinbaseViewModel>() {
+class CoinbaseFragment : TemplateFragment<CoinbaseViewModel>() {
     override fun inject() {
         parentFragment!!.moreComponent().inject(this)
     }
@@ -55,8 +55,8 @@ class CoinbaseViewModel @Inject constructor(
                     .integrateCoinbase(code = this.code)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(
-                            onError = {it.printStackTrace()},
-                            onComplete = {Timber.i("saved credentials")}
+                            onError = { it.printStackTrace() },
+                            onComplete = { Timber.i("successfully integrated") }
                     )
         }
     }

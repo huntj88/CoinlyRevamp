@@ -12,6 +12,8 @@ import me.jameshunt.appbase.template.card.CardDividerData
 import me.jameshunt.appbase.template.card.CardHeaderData
 import me.jameshunt.appbase.template.card.CardTemplateData
 import me.jameshunt.appbase.template.card.CardTextIconData
+import me.jameshunt.base.IntegrationStatus
+import me.jameshunt.business.IntegrationUseCase
 import me.jameshunt.coinbase.CoinbaseIntegration
 import javax.inject.Inject
 
@@ -29,7 +31,8 @@ class IntegrationsFragment: TemplateFragment<IntegrationsViewModel>() {
 class IntegrationsViewModel @Inject constructor(
         private val moreFragmentVisibilityManager: MoreFragmentVisibilityManager,
         private val deepLinkHandler: IntegrationDeepLinkHandler,
-        private val urlLauncher: UrlLauncher
+        private val urlLauncher: UrlLauncher,
+        private val integrationUseCase: IntegrationUseCase
 ) : TemplateViewModel {
     override fun getAdapterData(): Observable<List<TemplateObservableWrapper>> {
         return Observable.just(listOf(
@@ -38,7 +41,11 @@ class IntegrationsViewModel @Inject constructor(
                                 CardHeaderData(text = L10n.integrations),
                                 CardDividerData(height = 1, margin = 0),
                                 CardTextIconData(text = "Coinbase", icon = R.drawable.leak_canary_icon, action = {
-                                    urlLauncher.launchUrl(CoinbaseIntegration.getAuthUrl())
+                                    when(integrationUseCase.coinbaseIntegrationStatus) {
+                                        IntegrationStatus.NotIntegrated -> urlLauncher.launchUrl(CoinbaseIntegration.getAuthUrl())
+                                        IntegrationStatus.Integrated -> moreFragmentVisibilityManager.showCoinbase()
+                                    }
+
                                 })
                         ))),
                         templateType = TemplateFactory.CARD

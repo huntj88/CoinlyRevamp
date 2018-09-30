@@ -2,11 +2,17 @@ package me.jameshunt.coinbase
 
 import io.reactivex.Completable
 import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import me.jameshunt.base.CurrencyType
+import me.jameshunt.base.IntegrationStatus
+import me.jameshunt.base.KeyValueTool
 import me.jameshunt.base.Transaction
-import java.lang.IllegalStateException
 
-class CoinbaseIntegration(context: Any) {
+const val coinbaseAccessToken = "coinbaseAccessToken"
+const val coinbaseRefreshToken = "coinbaseRefreshToken"
+const val coinbaseMostRecentTransactionId = "coinbaseMostRecentTransactionId"
+
+class CoinbaseIntegration(private val keyValueTool: KeyValueTool) {
     companion object {
         fun getAuthUrl() = "https://www.coinbase.com/oauth/authorize?" +
                 "response_type=code&" +
@@ -16,32 +22,44 @@ class CoinbaseIntegration(context: Any) {
                 "account=all"
     }
 
-    private val coinbaseBox = CoinbaseBox(context)
-    private val service = CoinbaseService()
+    private val service by lazy { CoinbaseService() }
+
+    fun getIntegrationStatus(): IntegrationStatus {
+        return keyValueTool.get(coinbaseAccessToken)?.run { IntegrationStatus.Integrated }
+                ?: IntegrationStatus.NotIntegrated
+    }
 
     fun integrate(code: String): Completable {
         return service
                 .exchangeCodeForToken(code = code)
-                .doOnSuccess { coinbaseBox.writeCredentials(tokenResponse = it) }
+                .doOnSuccess {
+                    keyValueTool.set(coinbaseAccessToken, it.accessToken)
+                    keyValueTool.set(coinbaseRefreshToken, it.refreshToken)
+                }
                 .toCompletable()
+                .observeOn(Schedulers.io())
     }
 
     fun getTransactions(): Single<List<Transaction>> {
 
         // todo: handle refreshing credentials
 
-        coinbaseBox.getCredentials()?.let {
-            service.setAccessToken(it.accessToken)
-        } ?: throw IllegalStateException("coinbase credentials don't exist")
-
-        return service
-                .getTransactionsForCoin(
+        return applyAccessToken()
+                .andThen(service.getTransactionsForCoin(
                         currencyType = CurrencyType.ETH,
-                        mostRecent = coinbaseBox.getMostRecentTransactionId())
-                .doOnSuccess { newTransactions ->
+                        mostRecent = keyValueTool.get(coinbaseMostRecentTransactionId)
+                ).doOnSuccess { newTransactions ->
                     newTransactions.lastOrNull()?.let {
-                        coinbaseBox.writeMostRecentTransactionId(it)
+                        keyValueTool.set(coinbaseMostRecentTransactionId, it.transactionId)
                     }
-                }
+                })
+    }
+
+    private fun applyAccessToken(): Completable {
+        return Completable.fromAction {
+            keyValueTool.get(coinbaseAccessToken)?.let {
+                service.setAccessToken(it)
+            } ?: throw IllegalStateException("coinbase credentials don't exist")
+        }
     }
 }

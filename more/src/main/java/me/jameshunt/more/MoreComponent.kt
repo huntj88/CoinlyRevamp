@@ -7,7 +7,7 @@ import dagger.Module
 import dagger.Provides
 import me.jameshunt.appbase.BaseAndroidActivityComponent
 import me.jameshunt.appbase.FragmentManagerModule
-import me.jameshunt.base.ObjectBoxContext
+import me.jameshunt.base.KeyValueTool
 import me.jameshunt.coinbase.CoinbaseIntegration
 import javax.inject.Scope
 
@@ -35,7 +35,7 @@ interface MoreComponent {
 class CoinbaseModule {
 
     @Provides
-    fun getCoinbaseIntegration(objectBoxContext: ObjectBoxContext): CoinbaseIntegration = CoinbaseIntegration(objectBoxContext.context)
+    fun getCoinbaseIntegration(keyValueTool: KeyValueTool): CoinbaseIntegration = CoinbaseIntegration(keyValueTool)
 }
 
 @Scope
