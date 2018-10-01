@@ -11,4 +11,5 @@ interface Repository {
 interface KeyValueTool {
     fun set(key: String, value: String)
     fun get(key: String): String?
+    fun remove(key: String)
 }

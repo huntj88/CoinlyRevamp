@@ -8,9 +8,9 @@ import me.jameshunt.base.IntegrationStatus
 import me.jameshunt.base.KeyValueTool
 import me.jameshunt.base.Transaction
 
-const val coinbaseAccessToken = "coinbaseAccessToken"
-const val coinbaseRefreshToken = "coinbaseRefreshToken"
-const val coinbaseMostRecentTransactionId = "coinbaseMostRecentTransactionId"
+internal const val coinbaseAccessToken = "coinbaseAccessToken"
+internal const val coinbaseRefreshToken = "coinbaseRefreshToken"
+internal const val coinbaseMostRecentTransactionId = "coinbaseMostRecentTransactionId"
 
 class CoinbaseIntegration(private val keyValueTool: KeyValueTool) {
     companion object {
@@ -22,7 +22,7 @@ class CoinbaseIntegration(private val keyValueTool: KeyValueTool) {
                 "account=all"
     }
 
-    private val service by lazy { CoinbaseService() }
+    private val service by lazy { CoinbaseService(keyValueTool) }
 
     fun getIntegrationStatus(): IntegrationStatus {
         return keyValueTool.get(coinbaseAccessToken)?.run { IntegrationStatus.Integrated }
@@ -41,25 +41,15 @@ class CoinbaseIntegration(private val keyValueTool: KeyValueTool) {
     }
 
     fun getTransactions(): Single<List<Transaction>> {
-
-        // todo: handle refreshing credentials
-
-        return applyAccessToken()
-                .andThen(service.getTransactionsForCoin(
+        return service
+                .getTransactionsForCoin(
                         currencyType = CurrencyType.ETH,
                         mostRecent = keyValueTool.get(coinbaseMostRecentTransactionId)
-                ).doOnSuccess { newTransactions ->
+                )
+                .doOnSuccess { newTransactions ->
                     newTransactions.lastOrNull()?.let {
                         keyValueTool.set(coinbaseMostRecentTransactionId, it.transactionId)
                     }
-                })
-    }
-
-    private fun applyAccessToken(): Completable {
-        return Completable.fromAction {
-            keyValueTool.get(coinbaseAccessToken)?.let {
-                service.setAccessToken(it)
-            } ?: throw IllegalStateException("coinbase credentials don't exist")
-        }
+                }
     }
 }

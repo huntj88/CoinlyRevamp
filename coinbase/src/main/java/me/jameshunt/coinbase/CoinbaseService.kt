@@ -2,19 +2,16 @@ package me.jameshunt.coinbase
 
 import io.reactivex.Single
 import me.jameshunt.base.CurrencyType
+import me.jameshunt.base.KeyValueTool
 import me.jameshunt.base.Transaction
 import me.jameshunt.base.TransactionId
 
-class CoinbaseService {
-    private val clientManager = ClientManager()
+class CoinbaseService(keyValueTool: KeyValueTool) {
+    private val clientManager = ClientManager(keyValueTool)
     private val client = clientManager.client
 
     fun exchangeCodeForToken(code: String): Single<TokenResponse> {
         return client.getTokensWithCode(code = code)
-    }
-
-    fun setAccessToken(token: String) {
-        clientManager.setAccessToken(token = token)
     }
 
     // todo: any errors in the stream will cause the whole thing to cancel and throw out already collected responses
