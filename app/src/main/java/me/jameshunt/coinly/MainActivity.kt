@@ -41,7 +41,10 @@ class MainActivity : BaseActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        deepLinkHandler.handleIntent(intentString = intent.dataString)
+
+        intent.dataString?.let {
+            deepLinkHandler.handleIntent(intentString = it)
+        }
     }
 
     override fun onBackPressed() {
