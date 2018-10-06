@@ -16,7 +16,17 @@ class CoinbaseService(keyValueTool: KeyValueTool) {
         return client.getTokensWithCode(code = code)
     }
 
+    fun exchangeCodeForToken2(code: String): Single<CoinbaseResponse<TokenResponse>> {
+        return client
+                .getTokensWithCode(code = code)
+                .map { tokenResponse ->
+                    CoinbaseResponse.Success(tokenResponse) as CoinbaseResponse<TokenResponse>
+                }
+                .handleError()
+    }
+
     // todo: any errors in the stream will cause the whole thing to cancel and throw out already collected responses
+
     fun getTransactionsForCoin(currencyType: CurrencyType, mostRecent: TransactionId? = null, previous: List<Transaction> = listOf()): Single<List<Transaction>> {
         return getOnePageOfTransactions(currencyType, mostRecent)
                 .flatMap {
@@ -54,7 +64,7 @@ class CoinbaseService(keyValueTool: KeyValueTool) {
                         is CoinbaseResponse.Success -> handleSuccess2(currencyType, previous, it)
                         is CoinbaseResponse.PartialResults -> throw IllegalStateException("not possible here")
                         is CoinbaseResponse.Error -> {
-                            when(previous.isEmpty()) {
+                            when (previous.isEmpty()) {
                                 true -> Single.just(it)
                                 false -> Single.just(CoinbaseResponse.PartialResults(previous, it))
                             }
@@ -95,12 +105,16 @@ class CoinbaseService(keyValueTool: KeyValueTool) {
                     val wrapper = TransactionWrapper(transactions, isLast)
                     CoinbaseResponse.Success(wrapper) as CoinbaseResponse<TransactionWrapper>
                 }
-                .onErrorReturn {
-                    when (it) {
-                        is HttpException -> it.response().code().toError()
-                        else -> CoinbaseResponse.Error.Unknown
-                    }
-                }
+                .handleError()
+    }
+
+    private fun <T> Single<CoinbaseResponse<T>>.handleError(): Single<CoinbaseResponse<T>> {
+        return this.onErrorReturn {
+            when (it) {
+                is HttpException -> it.response().code().toError()
+                else -> me.jameshunt.coinbase.CoinbaseService.CoinbaseResponse.Error.Unknown
+            }
+        }
     }
 
     private fun Int.toError(): CoinbaseResponse.Error {
@@ -121,16 +135,16 @@ class CoinbaseService(keyValueTool: KeyValueTool) {
         data class Success<Data>(val data: Data) : CoinbaseResponse<Data>()
         data class PartialResults<Data>(val data: Data, val error: Error) : CoinbaseResponse<Data>()
 
-        sealed class Error : CoinbaseResponse<Nothing>() {
-            object BadRequest : Error()
-            object Unauthorized : Error()
-            object TwoFactorAuthRequired : Error()
-            object InvalidScope : Error()
-            object NotFound : Error()
-            object TooManyRequests : Error()
-            object InternalServerError : Error()
-            object ServiceUnavailable : Error()
-            object Unknown : Error() // general case
+        sealed class Error(val message: String) : CoinbaseResponse<Nothing>() {
+            object BadRequest : Error("Something went wrong")
+            object Unauthorized : Error("Unauthorized")
+            object TwoFactorAuthRequired : Error("Two Factor Authentication is required")
+            object InvalidScope : Error("Something went wrong")
+            object NotFound : Error("Something went wrong")
+            object TooManyRequests : Error("Something went wrong")
+            object InternalServerError : Error("Something went wrong")
+            object ServiceUnavailable : Error("Something went wrong")
+            object Unknown : Error("Something went wrong") // general case
         }
     }
 

@@ -2,11 +2,13 @@ package me.jameshunt.coinly
 
 import android.content.Intent
 import android.os.Bundle
-import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import me.jameshunt.appbase.BaseActivity
 import me.jameshunt.appbase.IntegrationDeepLinkHandler
+import me.jameshunt.base.Message
+import me.jameshunt.base.passMessageThenNext
 import me.jameshunt.business.UpdateEverythingUseCase
 import timber.log.Timber
 import javax.inject.Inject
@@ -28,10 +30,13 @@ class MainActivity : BaseActivity() {
         visibilityManager.showCurrent()
 
         AsyncInjector.inject(this)
-                .andThen(Completable.defer { updateEverythingUseCase.updateEverything() })
+                .toSingle { Message.Success() as Message }
+                .toObservable()
+                .passMessageThenNext(Observable.defer { updateEverythingUseCase.updateEverything2() })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
-                        onError = { Timber.e(it) },
+                        onNext = { Timber.i(it.toString()) },
+                        onError = { it.printStackTrace() },
                         onComplete = {
                             //stop showing splash screen, dependencies ready to go
                             visibilityManager.showPager()

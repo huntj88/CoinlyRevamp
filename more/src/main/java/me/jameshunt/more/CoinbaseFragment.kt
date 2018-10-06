@@ -13,6 +13,7 @@ import me.jameshunt.appbase.template.card.CardDividerData
 import me.jameshunt.appbase.template.card.CardHeaderData
 import me.jameshunt.appbase.template.card.CardTemplateData
 import me.jameshunt.appbase.template.card.CardTextIconData
+import me.jameshunt.base.Message
 import me.jameshunt.business.IntegrationUseCase
 import timber.log.Timber
 import javax.inject.Inject
@@ -52,12 +53,22 @@ class CoinbaseViewModel @Inject constructor(
             Timber.i("do stuff with code: ${this.code}")
 
             integrationUseCase
-                    .integrateCoinbase(code = this.code)
+                    .integrateCoinbase2(code = this.code)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(
+                            onNext = {
+                                when(it) {
+                                    is Message.Success -> {
+                                        Timber.i(it.toString())
+                                        // todo: show messages as the come through
+                                    }
+                                    is Message.Error -> {
+                                        Timber.i(it.toString())
+                                    }
+                                }
+                            },
                             onError = { it.printStackTrace() },
-                            onComplete = { Timber.i("successfully integrated") }
-                    )
+                            onComplete = { Timber.i("successfully integrated") })
         }
     }
 
