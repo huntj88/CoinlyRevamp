@@ -8,9 +8,9 @@ import me.jameshunt.cryptocompare.CryptoCompare
 internal class WriteTimeRange(private val database: Database, private val cryptoCompare: CryptoCompare) {
 
     fun update(base: CurrencyType, other: CurrencyType): Observable<Message> {
-        return daily(base, other).toObservable()
-                .passMessageThenNext(hourly(base, other))
-                .passMessageThenNext(minute(base, other))
+        return daily(base, other)
+                .passMessageThenNextEvenIfError(hourly(base, other))
+                .passMessageThenNextEvenIfError(minute(base, other))
     }
 
     private fun daily(base: CurrencyType, other: CurrencyType): Single<Message> {
