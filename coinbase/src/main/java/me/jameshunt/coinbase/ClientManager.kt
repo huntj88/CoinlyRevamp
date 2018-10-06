@@ -124,7 +124,13 @@ class ReAuthNetworkInterceptor(private val keyValueTool: KeyValueTool) : Interce
     }
 
     private fun buildNewRequest(chain: Interceptor.Chain, accessToken: String): Response {
-        val newRequest = chain.request().newBuilder().addHeader("Authorization", accessToken).build()
+        val newRequest = chain
+                .request()
+                .newBuilder()
+                .removeHeader("Authorization")
+                .addHeader("Authorization", "Bearer $accessToken")
+                .build()
+
         return chain.proceed(newRequest)
     }
 
