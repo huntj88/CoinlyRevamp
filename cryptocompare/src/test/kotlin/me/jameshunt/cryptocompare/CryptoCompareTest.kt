@@ -1,6 +1,7 @@
 package me.jameshunt.cryptocompare
 
 import me.jameshunt.base.CurrencyType
+import me.jameshunt.base.DataSource
 import org.junit.Test
 
 class CryptoCompareTest : BaseTester() {
@@ -9,7 +10,12 @@ class CryptoCompareTest : BaseTester() {
     fun getCurrentPrices() {
         CryptoCompare()
                 .getCurrentPrices(CurrencyType.USD, setOf(CurrencyType.ETH, CurrencyType.BTC))
-                .doOnSuccess { it.printTimePrices() }
+                .doOnSuccess {
+                    when (it) {
+                        is DataSource.Success -> it.data.printTimePrices()
+                        is DataSource.Error -> it.printError()
+                    }
+                }
                 .testSingle()
     }
 
@@ -25,7 +31,7 @@ class CryptoCompareTest : BaseTester() {
     fun getDailyPrices() {
         CryptoCompare()
                 .getDailyPrices(CurrencyType.USD, CurrencyType.ETH, 20)
-                .doOnSuccess { it.printTimePrices() }
+                .doOnSuccess { printResults(it) }
                 .testSingle()
     }
 
@@ -33,7 +39,7 @@ class CryptoCompareTest : BaseTester() {
     fun getHourlyPrices() {
         CryptoCompare()
                 .getHourlyPrices(CurrencyType.USD, CurrencyType.ETH, 20)
-                .doOnSuccess { it.printTimePrices() }
+                .doOnSuccess { printResults(it) }
                 .testSingle()
     }
 
@@ -41,7 +47,14 @@ class CryptoCompareTest : BaseTester() {
     fun getMinutePrices() {
         CryptoCompare()
                 .getMinutePrices(CurrencyType.USD, CurrencyType.ETH, 20)
-                .doOnSuccess { it.printTimePrices() }
+                .doOnSuccess { printResults(it) }
                 .testSingle()
+    }
+
+    private fun <T> printResults(results: DataSource<T>) {
+        when (results) {
+            is DataSource.Success -> results.data.toString()
+            is DataSource.Error -> results.printError()
+        }
     }
 }

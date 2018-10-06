@@ -1,42 +1,46 @@
 package me.jameshunt.business
 
 import io.reactivex.Observable
-import me.jameshunt.base.IntegrationStatus
-import me.jameshunt.base.Message
-import me.jameshunt.base.Repository
-import me.jameshunt.base.passMessageThenNext
+import io.reactivex.Single
+import io.reactivex.rxkotlin.Observables
+import me.jameshunt.base.*
 import javax.inject.Inject
+
 
 class UpdateEverythingUseCase @Inject constructor(
         private val integrationUseCase: IntegrationUseCase,
-        private val repository: Repository
+        private val repository: Repository,
+        private val enabledCoinsUseCase: EnabledCoinsUseCase,
+        private val selectedCoinUseCase: SelectedCoinUseCase
 ) {
 
     fun updateEverything(): Observable<Message> {
-        // todo: also update data from cryptoCompare
+        return Observable.just(Message.Success("Updating data") as Message)
+                .passMessageThenNextEvenIfError(integrationUseCase.updateCoinbase())
+                .passMessageThenNextEvenIfError(updateCurrentPrices())
+                .passMessageThenNextEvenIfError(updateTimeRanges())
 
-        var observable: Observable<Message> = Observable.just(Message.Success("Updating data"))
-
-        if(integrationUseCase.coinbaseIntegrationStatus == IntegrationStatus.Integrated) {
-            observable = observable.passMessageThenNext(integrationUseCase.updateCoinbase())
-        }
-
-        return observable
     }
 
-//    private fun testRepo() {
-//        repo
-//                .updateTimeRanges(CurrencyType.ETH, CurrencyType.USD)
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribeBy(
-//                        onError = { it.printStackTrace() },
-//                        onComplete = { Timber.i("time ranges updated") }
-//                )
-//
-//        repo.updateCurrentPrices(CurrencyType.USD, setOf(CurrencyType.BTC, CurrencyType.ETH))
-//                .subscribeBy(
-//                        onError = { it.printStackTrace() },
-//                        onComplete = { Timber.i("current prices updated") }
-//                )
-//    }
+    private fun updateCurrentPrices(): Single<Message> {
+        return repository.updateCurrentPrices(
+                base = CurrencyType.USD,
+                others = setOf(CurrencyType.BTC, CurrencyType.ETH, CurrencyType.LTC, CurrencyType.BCH)
+        )
+    }
+
+    private fun updateTimeRanges(): Observable<Message> {
+        return Observables
+                .combineLatest(
+                        selectedCoinUseCase.getSelectedBase(),
+                        enabledCoinsUseCase.getEnabledCoins()) { base, enabled -> Pair(base, enabled) }
+                .flatMap { coinInfo ->
+                    coinInfo.second
+                            .asSequence()
+                            .map { repository.updateTimeRanges(coinInfo.first, it) }
+                            .fold(Observable.just(Message.Success() as Message)) { acc, observable ->
+                                acc.passMessageThenNextEvenIfError(observable)
+                            }
+                }
+    }
 }

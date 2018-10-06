@@ -20,27 +20,31 @@ class IntegrationUseCase @Inject constructor(
     fun integrateCoinbase(code: String): Observable<Message> {
         return coinbaseIntegration
                 .integrate(code)
-                .toObservable()
                 .passMessageThenNext(updateCoinbase())
     }
 
     fun updateCoinbase(): Single<Message> {
-        return coinbaseIntegration
-                .getTransactions()
-                .flatMap {
-                    when (it) {
-                        is CoinbaseService.CoinbaseResponse.Success -> repo
-                                .writeTransactions(it.data)
-                                .toSingle { Message.Success("Successfully updated Coinbase, ${it.data.size} new transactions") }
+        return when (coinbaseIntegrationStatus) {
+            IntegrationStatus.NotIntegrated -> Single.just(Message.Error("Coinbase not integrated"))
+            IntegrationStatus.Integrated -> {
+                coinbaseIntegration
+                        .getTransactions()
+                        .flatMap {
+                            when (it) {
+                                is CoinbaseService.CoinbaseResponse.Success -> repo
+                                        .writeTransactions(it.data)
+                                        .toSingle { Message.Success("Successfully updated Coinbase, ${it.data.size} new transactions") }
 
-                        is CoinbaseService.CoinbaseResponse.PartialResults -> repo
-                                .writeTransactions(it.data)
-                                .toSingle {
-                                    Message.Error("Partial results: Updated ${it.data.size} transactions, with error: ${it.error.message}")
-                                }
-                        is CoinbaseService.CoinbaseResponse.Error -> Single.just(Message.Error(it.message))
-                    }
-                }
+                                is CoinbaseService.CoinbaseResponse.PartialResults -> repo
+                                        .writeTransactions(it.data)
+                                        .toSingle {
+                                            Message.Error("Partial results: Updated ${it.data.size} transactions, with error: ${it.error.message}")
+                                        }
+                                is CoinbaseService.CoinbaseResponse.Error -> Single.just(Message.Error(it.message))
+                            }
+                        }
+            }
+        }
     }
 }
 

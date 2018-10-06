@@ -35,7 +35,6 @@ class MainActivity : BaseActivity() {
 
         AsyncInjector.inject(this)
                 .toSingle { Message.Success() as Message }
-                .toObservable()
                 .passMessageThenNext(Observable.defer { updateEverythingUseCase.updateEverything() })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(

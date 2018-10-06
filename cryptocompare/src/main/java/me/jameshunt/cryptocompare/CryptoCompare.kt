@@ -2,6 +2,7 @@ package me.jameshunt.cryptocompare
 
 import io.reactivex.Single
 import me.jameshunt.base.CurrencyType
+import me.jameshunt.base.DataSource
 import me.jameshunt.base.TimePrice
 import me.jameshunt.base.UnixMilliSeconds
 import me.jameshunt.cryptocompare.transformer.CurrentPriceRawTransformer
@@ -12,7 +13,7 @@ class CryptoCompare {
 
     private val client = ClientFactory().client
 
-    fun getCurrentPrices(base: CurrencyType, others: Set<CurrencyType>): Single<List<TimePrice>> {
+    fun getCurrentPrices(base: CurrencyType, others: Set<CurrencyType>): Single<DataSource<List<TimePrice>>> {
         return client
                 .getCurrentPrices(base = base, others = others.joinCurrencies())
                 .compose(CurrentPriceRawTransformer(base = base))
@@ -23,17 +24,17 @@ class CryptoCompare {
                 .compose(HistoricalPriceRawTransformer(time = time))
     }
 
-    fun getDailyPrices(base: CurrencyType, other: CurrencyType, numDaysAgo: Int): Single<List<TimePrice>> {
+    fun getDailyPrices(base: CurrencyType, other: CurrencyType, numDaysAgo: Int): Single<DataSource<List<TimePrice>>> {
         return client.getDailyPrices(base = base, other = other, numDaysAgo = numDaysAgo)
                 .compose(TimeRangeRawTransformer(base = base, other = other))
     }
 
-    fun getHourlyPrices(base: CurrencyType, other: CurrencyType, numHoursAgo: Int): Single<List<TimePrice>> {
+    fun getHourlyPrices(base: CurrencyType, other: CurrencyType, numHoursAgo: Int): Single<DataSource<List<TimePrice>>> {
         return client.getHourlyPrices(base = base, other = other, numHoursAgo = numHoursAgo)
                 .compose(TimeRangeRawTransformer(base = base, other = other))
     }
 
-    fun getMinutePrices(base: CurrencyType, other: CurrencyType, numMinAgo: Int): Single<List<TimePrice>> {
+    fun getMinutePrices(base: CurrencyType, other: CurrencyType, numMinAgo: Int): Single<DataSource<List<TimePrice>>> {
         return client.getMinutePrices(base = base, other = other, numMinAgo = numMinAgo)
                 .compose(TimeRangeRawTransformer(base = base, other = other))
     }
