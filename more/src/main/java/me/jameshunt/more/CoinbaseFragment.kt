@@ -53,7 +53,7 @@ class CoinbaseViewModel @Inject constructor(
             Timber.i("do stuff with code: ${this.code}")
 
             integrationUseCase
-                    .integrateCoinbase2(code = this.code)
+                    .integrateCoinbase(code = this.code)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(
                             onNext = {

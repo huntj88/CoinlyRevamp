@@ -12,11 +12,7 @@ class CoinbaseService(keyValueTool: KeyValueTool) {
     private val clientManager = ClientManager(keyValueTool)
     private val client = clientManager.client
 
-    fun exchangeCodeForToken(code: String): Single<TokenResponse> {
-        return client.getTokensWithCode(code = code)
-    }
-
-    fun exchangeCodeForToken2(code: String): Single<CoinbaseResponse<TokenResponse>> {
+    fun exchangeCodeForToken(code: String): Single<CoinbaseResponse<TokenResponse>> {
         return client
                 .getTokensWithCode(code = code)
                 .map { tokenResponse ->
@@ -25,43 +21,11 @@ class CoinbaseService(keyValueTool: KeyValueTool) {
                 .handleError()
     }
 
-    // todo: any errors in the stream will cause the whole thing to cancel and throw out already collected responses
-
-    fun getTransactionsForCoin(currencyType: CurrencyType, mostRecent: TransactionId? = null, previous: List<Transaction> = listOf()): Single<List<Transaction>> {
+    fun getTransactionsForCoin(currencyType: CurrencyType, mostRecent: TransactionId? = null, previous: List<Transaction> = listOf()): Single<CoinbaseResponse<List<Transaction>>> {
         return getOnePageOfTransactions(currencyType, mostRecent)
                 .flatMap {
-                    val retrievedTransactions = previous + it.transactions
-                    when (it.isLast) {
-                        true -> Single.just(retrievedTransactions)
-                        false -> getTransactionsForCoin(
-                                currencyType = currencyType,
-                                mostRecent = it.transactions.last().transactionId,
-                                previous = retrievedTransactions)
-                    }
-                }
-    }
-
-    private fun getOnePageOfTransactions(currencyType: CurrencyType, mostRecent: TransactionId?): Single<TransactionWrapper> {
-        return client.getTransactionsForCoin(currencyType = currencyType, recentTransactionID = mostRecent)
-                .map { coinbaseResponse ->
-                    val transactions = coinbaseResponse.data
-                            .asSequence()
-                            .filter { !it.isTransfer() }
-                            .map { it.getTransaction()!! }
-                            .toList()
-
-                    val isLast = coinbaseResponse.pagination.nextUri == null
-
-                    TransactionWrapper(transactions, isLast)
-                }
-    }
-
-
-    fun getTransactionsForCoin2(currencyType: CurrencyType, mostRecent: TransactionId? = null, previous: List<Transaction> = listOf()): Single<CoinbaseResponse<List<Transaction>>> {
-        return getOnePageOfTransactions2(currencyType, mostRecent)
-                .flatMap {
                     when (it) {
-                        is CoinbaseResponse.Success -> handleSuccess2(currencyType, previous, it)
+                        is CoinbaseResponse.Success -> handleSuccess(currencyType, previous, it)
                         is CoinbaseResponse.PartialResults -> throw IllegalStateException("not possible here")
                         is CoinbaseResponse.Error -> {
                             when (previous.isEmpty()) {
@@ -73,24 +37,7 @@ class CoinbaseService(keyValueTool: KeyValueTool) {
                 }
     }
 
-    private fun handleSuccess2(
-            currencyType: CurrencyType,
-            previous: List<Transaction>,
-            response: CoinbaseResponse.Success<TransactionWrapper>): Single<CoinbaseResponse<List<Transaction>>> {
-
-        val data = response.data
-        val retrievedTransactions = previous + data.transactions
-
-        return when (data.isLast) {
-            true -> Single.just(CoinbaseResponse.Success(retrievedTransactions))
-            false -> getTransactionsForCoin2(
-                    currencyType = currencyType,
-                    mostRecent = data.transactions.last().transactionId,
-                    previous = retrievedTransactions)
-        }
-    }
-
-    private fun getOnePageOfTransactions2(currencyType: CurrencyType, mostRecent: TransactionId?): Single<CoinbaseResponse<TransactionWrapper>> {
+    private fun getOnePageOfTransactions(currencyType: CurrencyType, mostRecent: TransactionId?): Single<CoinbaseResponse<TransactionWrapper>> {
         return client
                 .getTransactionsForCoin(currencyType, mostRecent)
                 .map { coinbaseResponse ->
@@ -106,6 +53,23 @@ class CoinbaseService(keyValueTool: KeyValueTool) {
                     CoinbaseResponse.Success(wrapper) as CoinbaseResponse<TransactionWrapper>
                 }
                 .handleError()
+    }
+
+    private fun handleSuccess(
+            currencyType: CurrencyType,
+            previous: List<Transaction>,
+            response: CoinbaseResponse.Success<TransactionWrapper>): Single<CoinbaseResponse<List<Transaction>>> {
+
+        val data = response.data
+        val retrievedTransactions = previous + data.transactions
+
+        return when (data.isLast) {
+            true -> Single.just(CoinbaseResponse.Success(retrievedTransactions))
+            false -> getTransactionsForCoin(
+                    currencyType = currencyType,
+                    mostRecent = data.transactions.last().transactionId,
+                    previous = retrievedTransactions)
+        }
     }
 
     private fun <T> Single<CoinbaseResponse<T>>.handleError(): Single<CoinbaseResponse<T>> {

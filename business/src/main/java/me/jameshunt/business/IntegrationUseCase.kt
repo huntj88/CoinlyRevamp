@@ -2,7 +2,6 @@ package me.jameshunt.business
 
 import dagger.Module
 import dagger.Provides
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import me.jameshunt.base.*
@@ -18,27 +17,16 @@ class IntegrationUseCase @Inject constructor(
     val coinbaseIntegrationStatus: IntegrationStatus
         get() = coinbaseIntegration.getIntegrationStatus()
 
-    fun integrateCoinbase(code: String): Completable {
+    fun integrateCoinbase(code: String): Observable<Message> {
         return coinbaseIntegration
                 .integrate(code)
-                .andThen(coinbaseIntegration.getTransactions())
-                .flatMapCompletable { repo.writeTransactions(it) }
-    }
-
-    fun integrateCoinbase2(code: String): Observable<Message> {
-        return coinbaseIntegration
-                .integrate2(code)
                 .toObservable()
-                .passMessageThenNext(updateCoinbase2())
+                .passMessageThenNext(updateCoinbase())
     }
 
-    fun updateCoinbase(): Completable {
-        return coinbaseIntegration.getTransactions().flatMapCompletable { repo.writeTransactions(it) }
-    }
-
-    fun updateCoinbase2(): Single<Message> {
+    fun updateCoinbase(): Single<Message> {
         return coinbaseIntegration
-                .getTransactions2()
+                .getTransactions()
                 .flatMap {
                     when (it) {
                         is CoinbaseService.CoinbaseResponse.Success -> repo

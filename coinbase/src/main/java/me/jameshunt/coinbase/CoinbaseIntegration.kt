@@ -1,8 +1,6 @@
 package me.jameshunt.coinbase
 
-import io.reactivex.Completable
 import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
 import me.jameshunt.base.*
 
 internal const val coinbaseAccessToken = "coinbaseAccessToken"
@@ -26,20 +24,9 @@ class CoinbaseIntegration(private val keyValueTool: KeyValueTool) {
                 ?: IntegrationStatus.NotIntegrated
     }
 
-    fun integrate(code: String): Completable {
+    fun integrate(code: String): Single<Message> {
         return service
                 .exchangeCodeForToken(code = code)
-                .doOnSuccess {
-                    keyValueTool.set(coinbaseAccessToken, it.accessToken)
-                    keyValueTool.set(coinbaseRefreshToken, it.refreshToken)
-                }
-                .toCompletable()
-                .observeOn(Schedulers.io())
-    }
-
-    fun integrate2(code: String): Single<Message> {
-        return service
-                .exchangeCodeForToken2(code = code)
                 .doOnSuccess {
                     if (it is CoinbaseService.CoinbaseResponse.Success) {
                         keyValueTool.set(coinbaseAccessToken, it.data.accessToken)
@@ -55,22 +42,9 @@ class CoinbaseIntegration(private val keyValueTool: KeyValueTool) {
                 }
     }
 
-    fun getTransactions(): Single<List<Transaction>> {
+    fun getTransactions(): Single<CoinbaseService.CoinbaseResponse<List<Transaction>>> {
         return service
                 .getTransactionsForCoin(
-                        currencyType = CurrencyType.ETH,
-                        mostRecent = keyValueTool.get(coinbaseMostRecentTransactionId)
-                )
-                .doOnSuccess { newTransactions ->
-                    newTransactions.lastOrNull()?.let {
-                        keyValueTool.set(coinbaseMostRecentTransactionId, it.transactionId)
-                    }
-                }
-    }
-
-    fun getTransactions2(): Single<CoinbaseService.CoinbaseResponse<List<Transaction>>> {
-        return service
-                .getTransactionsForCoin2(
                         currencyType = CurrencyType.ETH,
                         mostRecent = keyValueTool.get(coinbaseMostRecentTransactionId)
                 )
