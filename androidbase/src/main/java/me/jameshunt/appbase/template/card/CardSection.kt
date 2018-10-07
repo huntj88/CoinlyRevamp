@@ -15,7 +15,9 @@ interface CardSectionData
 
 data class CardHeaderData(val text: String) : CardSectionData
 
-data class CardDividerData(val height: Int, val margin: Int) : CardSectionData
+data class CardHeaderActionData(val text: String, val actionText: String, val action: () -> Unit): CardSectionData
+
+data class CardDividerData(val height: Int, val margin: Int, val color: Int? = null) : CardSectionData
 
 data class CardTextIconData(val text: String, val icon: Int, val action: () -> Unit) : CardSectionData
 
@@ -43,9 +45,18 @@ class CardSectionFactory {
                 view.findViewById<TextView>(R.id.cardHeaderTitle).text = cardSectionData.text
                 view
             }
+            is CardHeaderActionData -> {
+                val view = LayoutInflater.from(parentView.context).inflate(R.layout.card_header_action, parentView, false)
+                view.findViewById<TextView>(R.id.cardHeaderTitle).text = cardSectionData.text
+                val actionTextView = view.findViewById<TextView>(R.id.actionText)
+                actionTextView.text = cardSectionData.actionText
+                actionTextView.setOnClickListener { cardSectionData.action() }
+                view
+            }
             is CardDividerData -> {
                 val view = View(parentView.context)
-                view.setBackgroundColor(parentView.context.getColor(R.color.divider))
+                val color = cardSectionData.color?: R.color.divider
+                view.setBackgroundColor(parentView.context.getColor(color))
 
                 val height = SystemUtils.dpToPx(cardSectionData.height, parentView.context)
                 val margin = SystemUtils.dpToPx(cardSectionData.margin, parentView.context)

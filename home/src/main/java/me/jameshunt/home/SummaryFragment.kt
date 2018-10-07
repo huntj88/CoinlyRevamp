@@ -17,6 +17,7 @@ class SummaryFragment : TemplateFragment<SummaryViewModel>() {
 }
 
 class SummaryViewModel @Inject constructor(
+        private val visibilityManager: HomeFragmentVisibilityManager,
         private val enabledCurrencyUseCase: EnabledCurrencyUseCase,
         private val selectedCurrencyUseCase: SelectedCurrencyUseCase,
         private val exchangeRateUseCase: CurrencyTypeExchangeRateUseCase
@@ -62,7 +63,7 @@ class SummaryViewModel @Inject constructor(
 
     private fun currencyCardUI(targetName: String, price: String): CardTemplateData {
         return CardTemplateData(sections = listOf(
-                CardHeaderData(text = targetName),
+                CardHeaderActionData(text = targetName, actionText = "view more", action = { visibilityManager.showPortfolio() }),
                 CardDividerData(height = 1, margin = 0),
                 CardTitleTwoValueData(
                         title = L10n.gain_on_currency(targetName),
@@ -75,7 +76,8 @@ class SummaryViewModel @Inject constructor(
                         CardSlidingData.CardSlideItemData(title = L10n.paid, value = "0100"),
                         CardSlidingData.CardSlideItemData(title = L10n.net_profit, value = "0020"),
                         CardSlidingData.CardSlideItemData(title = L10n.sold, value = "0003")
-                ))
+                )),
+                CardDividerData(height = 20, margin = 0, color = R.color.colorAccent)
         ))
     }
 
