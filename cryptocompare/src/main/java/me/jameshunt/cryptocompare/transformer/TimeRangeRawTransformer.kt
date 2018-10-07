@@ -9,23 +9,23 @@ import me.jameshunt.cryptocompare.raw.TimeRangeRaw
 
 internal class TimeRangeRawTransformer(
         private val base: CurrencyType,
-        private val other: CurrencyType
+        private val target: CurrencyType
 ) : SingleTransformer<TimeRangeRaw, DataSource<List<TimePrice>>> {
     override fun apply(upstream: Single<TimeRangeRaw>): SingleSource<DataSource<List<TimePrice>>> {
         val baseLocal = base
-        val otherLocal = other
+        val targetLocal = target
 
         return upstream
-                .map { it.Data.map { raw -> raw.mapTimeRange(baseLocal, otherLocal) } }
+                .map { it.Data.map { raw -> raw.mapTimeRange(baseLocal, targetLocal) } }
                 .map { DataSource.Success(it) as DataSource<List<TimePrice>> }
                 .onErrorReturn { DataSource.Error("Could not update Time Range Prices") }
     }
 
-    private fun TimePriceRaw.mapTimeRange(baseLocal: CurrencyType, otherLocal: CurrencyType): TimePrice {
+    private fun TimePriceRaw.mapTimeRange(baseLocal: CurrencyType, targetLocal: CurrencyType): TimePrice {
         val data: TimePriceRaw = this
         return object : TimePrice {
             override val base: CurrencyType = baseLocal
-            override val other: CurrencyType = otherLocal
+            override val target: CurrencyType = targetLocal
 
             override val price: CurrencyAmount = data.close
             override val time: UnixMilliSeconds = data.time * 1000L

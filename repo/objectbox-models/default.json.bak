@@ -50,7 +50,7 @@
     },
     {
       "id": "2:5740527641386458278",
-      "lastPropertyId": "7:3138152704062123783",
+      "lastPropertyId": "6:3214291123319475683",
       "name": "TimePriceObjectBox",
       "properties": [
         {
@@ -67,6 +67,10 @@
           "name": "base"
         },
         {
+          "id": "4:6231772327632603800",
+          "name": "other"
+        },
+        {
           "id": "5:7454034952567251654",
           "name": "price"
         },
@@ -74,10 +78,6 @@
           "id": "6:3214291123319475683",
           "indexId": "3:2304651651825317055",
           "name": "updateCategory"
-        },
-        {
-          "id": "7:3138152704062123783",
-          "name": "target"
         }
       ],
       "relations": []
@@ -91,9 +91,7 @@
   "modelVersionParserMinimum": 4,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [
-    6231772327632603800
-  ],
+  "retiredPropertyUids": [],
   "retiredRelationUids": [],
   "version": 1
 }

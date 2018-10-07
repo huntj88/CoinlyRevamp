@@ -24,7 +24,7 @@ class UpdateEverythingUseCase @Inject constructor(
     private fun updateCurrentPrices(): Single<Message> {
         return repository.updateCurrentPrices(
                 base = CurrencyType.USD,
-                others = setOf(CurrencyType.BTC, CurrencyType.ETH, CurrencyType.LTC, CurrencyType.BCH)
+                targets = setOf(CurrencyType.BTC, CurrencyType.ETH, CurrencyType.LTC, CurrencyType.BCH)
         )
     }
 

@@ -23,6 +23,6 @@ abstract class BaseTester {
     }
 
     fun TimePrice.print() {
-        println("time: $time - base: $base - other: $other - price: $price")
+        println("time: $time - base: $base - target: $target - price: $price")
     }
 }

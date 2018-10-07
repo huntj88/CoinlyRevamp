@@ -17,12 +17,12 @@ sealed class DataSource<out Type> {
  *
  * This allows you to get status updates of each task as it happens
  *
- * These streams can be composed of other Message streams if you have sub-tasks for each task
+ * These streams can be composed of target Message streams if you have sub-tasks for each task
  *
  * To add a new task it should be added as a Single<Message> using the helper functions
  *
  * It is also acceptable to add two Streams together Via an Observable<Message>,
- * but only if the other Observable was created with a set of Single<Message>
+ * but only if the target Observable was created with a set of Single<Message>
  *
  * You can have the "tree" of streams go as deep as needed
  */
@@ -60,7 +60,7 @@ fun Single<Message>.passMessageThenNextEvenIfError(next: Single<Message>): Obser
 private fun Observable<Message>.checkSource(): Observable<Message> {
     // non exhaustive, probably more edge cases to guard against
     // only something someone who hasn't read the docs at the top would worry about
-    val message = "message stream should be build from singles or other message streams"
+    val message = "message stream should be build from singles or target message streams"
     if(this is ObservableFromArray) throw IllegalStateException(message)
     if(this is ObservableFromIterable) throw IllegalStateException(message)
     return this

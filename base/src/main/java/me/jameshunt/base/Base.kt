@@ -57,10 +57,10 @@ enum class IntegrationStatus(val id: Long) {
 interface TimePrice {
     val time: UnixMilliSeconds
     val base: CurrencyType
-    val other: CurrencyType
+    val target: CurrencyType
     val price: CurrencyAmount
 
-    fun string(): String = "time: $time - base: $base - other: $other - price: $price"
+    fun string(): String = "time: $time - base: $base - target: $target - price: $price"
 }
 
 interface Transaction {

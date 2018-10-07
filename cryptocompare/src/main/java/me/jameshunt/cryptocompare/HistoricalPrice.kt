@@ -4,7 +4,7 @@ import com.squareup.moshi.FromJson
 import me.jameshunt.base.CurrencyAmount
 import me.jameshunt.base.CurrencyType
 
-data class HistoricalPrice(val base: CurrencyType, val other: CurrencyType, val price: CurrencyAmount)
+data class HistoricalPrice(val base: CurrencyType, val target: CurrencyType, val price: CurrencyAmount)
 
 class HistoricalPriceAdapter {
     @FromJson
@@ -13,9 +13,9 @@ class HistoricalPriceAdapter {
             val currencyType = CurrencyType.valueOf(it.key)
 
             it.value.map {
-                val other = CurrencyType.valueOf(it.key)
+                val target = CurrencyType.valueOf(it.key)
                 val price = it.value
-                HistoricalPrice(currencyType, other, price)
+                HistoricalPrice(currencyType, target, price)
             }
         }[0]
     }

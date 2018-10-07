@@ -19,7 +19,7 @@ internal class HistoricalPriceRawTransformer(private val time: UnixMilliSeconds)
                     private val data: HistoricalPrice = raw
 
                     override val base: CurrencyType = data.base
-                    override val other: CurrencyType = data.other
+                    override val target: CurrencyType = data.target
 
                     override val price: CurrencyAmount = data.price
                     override val time: UnixMilliSeconds = timeLocal

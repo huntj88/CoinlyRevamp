@@ -22,7 +22,7 @@ data class TimePriceObjectBox(
         override val base: CurrencyType,
 
         @Convert(converter = CurrencyTypeConverter::class, dbType = Long::class)
-        override val other: CurrencyType,
+        override val target: CurrencyType,
 
         override val price: CurrencyAmount,
 

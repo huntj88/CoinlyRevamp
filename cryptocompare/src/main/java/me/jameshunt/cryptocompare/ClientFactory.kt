@@ -66,13 +66,13 @@ interface CryptoCompareApi {
     @GET("price")
     fun getCurrentPrices(
             @Query("fsym") base: CurrencyType,
-            @Query("tsyms") others: String
+            @Query("tsyms") targets: String
     ): Single<CurrentPrices>
 
     @GET("pricehistorical?markets=coinbase")
     fun getHistoricalPrice(
             @Query("fsym") base: CurrencyType,
-            @Query("tsyms") others: String,
+            @Query("tsyms") targets: String,
             @Query("ts") time: UnixMilliSeconds
     ): Single<List<HistoricalPrice>>
 
@@ -80,21 +80,21 @@ interface CryptoCompareApi {
     @GET("histoday")
     fun getDailyPrices(
             @Query("fsym") base: CurrencyType,
-            @Query("tsym") other: CurrencyType,
+            @Query("tsym") target: CurrencyType,
             @Query("limit") numDaysAgo: Int
     ): Single<TimeRangeRaw>
 
     @GET("histohour")
     fun getHourlyPrices(
             @Query("fsym") base: CurrencyType,
-            @Query("tsym") other: CurrencyType,
+            @Query("tsym") target: CurrencyType,
             @Query("limit") numHoursAgo: Int
     ): Single<TimeRangeRaw>
 
     @GET("histominute")
     fun getMinutePrices(
             @Query("fsym") base: CurrencyType,
-            @Query("tsym") other: CurrencyType,
+            @Query("tsym") target: CurrencyType,
             @Query("limit") numMinAgo: Int
     ): Single<TimeRangeRaw>
 }

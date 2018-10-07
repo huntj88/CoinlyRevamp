@@ -20,7 +20,7 @@ internal class Database(context: Any) {
                                 .query()
                                 .between(TimePriceObjectBox_.time, timePrices.first().time, timePrices.last().time)
                                 .equal(TimePriceObjectBox_.base, timePrices.first().base.id)
-                                .equal(TimePriceObjectBox_.other, timePrices.first().other.id)
+                                .equal(TimePriceObjectBox_.target, timePrices.first().target.id)
                                 .build()
                                 .find()
                                 .map { Pair(it.time, it) }
@@ -64,7 +64,7 @@ internal class Database(context: Any) {
         return TimePriceObjectBox(
                 time = this.time,
                 base = this.base,
-                other = this.other,
+                target = this.target,
                 price = this.price,
                 updateCategory = timePriceUpdateCategory.updateCategory
         )
