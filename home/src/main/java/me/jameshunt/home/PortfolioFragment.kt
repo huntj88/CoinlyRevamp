@@ -1,39 +1,44 @@
 package me.jameshunt.home
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
-import me.jameshunt.appbase.BaseFragment
+import io.reactivex.Observable
+import me.jameshunt.appbase.template.*
+import me.jameshunt.base.CurrencyType
+import me.jameshunt.business.SelectedCurrencyUseCase
+import timber.log.Timber
 import javax.inject.Inject
 
-class PortfolioFragment : BaseFragment() {
-
-    @Inject
-    lateinit var visibilityManager: HomeFragmentVisibilityManager
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
+class PortfolioFragment : TemplateFragment<PortfolioViewModel>() {
+    override fun inject() {
         parentFragment!!.homeComponent().inject(this)
     }
+}
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val layout = LinearLayout(context)
+class PortfolioViewModel @Inject constructor(
+        private val visibilityManager: HomeFragmentVisibilityManager,
+        private val selectedCurrencyUseCase: SelectedCurrencyUseCase
+) : TemplateViewModel {
 
-        val textView = TextView(context)
-        textView.text = "portfolio"
-        layout.addView(textView)
+    override fun getAdapterData(): Observable<List<TemplateObservableWrapper>> {
+        return selectedCurrencyUseCase.getSelectedTarget().map { getAdapterObservables(it) }
+    }
 
-        val button = Button(context)
-        button.setOnClickListener {
-            visibilityManager.showSummary()
-        }
-        layout.addView(button)
+    private fun getAdapterObservables(target: CurrencyType): List<TemplateObservableWrapper> {
+        return mutableListOf(
+                TemplateObservableWrapper(getToolbar(target), TemplateFactory.TOOLBAR)
+//                TemplateObservableWrapper(getHeader(), TemplateFactory.HEADER)
+        )
+    }
 
-        return layout
+    private fun getToolbar(target: CurrencyType): Observable<ToolbarTemplateData> {
+        return Observable.just(ToolbarTemplateData(
+                back = { visibilityManager.onBackPressed() },
+                title = target.fullName,
+                dropDownAction = { Timber.i("drop down clicked") },
+                addTransaction = { Timber.i("add transaction clicked") }
+        ))
+    }
+
+    override fun cleanUp() {
+
     }
 }

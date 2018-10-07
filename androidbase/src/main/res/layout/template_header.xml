@@ -6,7 +6,7 @@
     android:layout_height="220dp"
     android:layout_marginBottom="24dp"
     android:elevation="8dp"
-    tools:background="#3a6073">
+    tools:background="@color/colorPrimary">
 
     <TextView
         android:id="@+id/titleText"

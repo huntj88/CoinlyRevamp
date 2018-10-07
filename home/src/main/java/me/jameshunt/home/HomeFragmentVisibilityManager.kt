@@ -53,13 +53,13 @@ class HomeFragmentVisibilityManagerImpl @Inject constructor(private val fragment
         when(currentPage) {
             HomeFragmentID.NONE -> showFragmentRemoveOld(HomeFragmentID.SUMMARY, currentPage, fragmentManager)
             HomeFragmentID.SUMMARY -> { /*don't do anything, already on page*/ }
-            HomeFragmentID.PORTFOLIO -> showFragmentRemoveOld(HomeFragmentID.SUMMARY, currentPage, fragmentManager)
+            HomeFragmentID.PORTFOLIO -> showFragmentHideFragment(HomeFragmentID.SUMMARY, currentPage, fragmentManager)
         }
     }
 
     override fun showPortfolio() {
         when (currentPage) {
-            HomeFragmentID.SUMMARY -> hideOldFragmentShowNewInstance(currentPage, HomeFragmentID.PORTFOLIO, fragmentManager)
+            HomeFragmentID.SUMMARY -> showFragmentHideFragment(HomeFragmentID.PORTFOLIO, currentPage, fragmentManager)
             HomeFragmentID.PORTFOLIO -> { /*don't do anything, already on page*/ }
             else -> throw IllegalStateException("invalid navigation")
         }

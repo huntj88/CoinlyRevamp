@@ -14,17 +14,6 @@ interface VisibilityManager {
         }
     }
 
-    fun hideOldFragmentShowNewInstance(oldFragmentID: FragmentID, fragmentID: FragmentID, fragmentManager: FragmentManager) {
-        val oldFragment: BaseFragment? = fragmentManager.findFragmentByTag(oldFragmentID.name) as BaseFragment?
-
-        val ft = fragmentManager.beginTransaction()
-
-        oldFragment?.let { ft.hide(it) }
-        ft.add(R.id.fragmentFrameLayout, fragmentID.newInstance(), fragmentID.name)
-
-        ft.commit()
-    }
-
     fun showFragmentRemoveOld(fragmentID: FragmentID, oldFragmentID: FragmentID, fragmentManager: FragmentManager) {
         val fragment: BaseFragment? = fragmentManager.findFragmentByTag(fragmentID.name) as BaseFragment?
 
@@ -37,6 +26,22 @@ interface VisibilityManager {
 
         val oldFragment: BaseFragment? = fragmentManager.findFragmentByTag(oldFragmentID.name) as BaseFragment?
         oldFragment?.let { ft.remove(oldFragment) }
+
+        ft.commit()
+    }
+
+    fun showFragmentHideFragment(fragmentID: FragmentID, oldFragmentID: FragmentID, fragmentManager: FragmentManager) {
+        val fragment: BaseFragment? = fragmentManager.findFragmentByTag(fragmentID.name) as BaseFragment?
+
+        val ft = fragmentManager.beginTransaction()
+
+        when (fragment != null) {
+            true -> ft.show(fragment)
+            false -> ft.add(R.id.fragmentFrameLayout, fragmentID.newInstance(), fragmentID.name)
+        }
+
+        val oldFragment: BaseFragment? = fragmentManager.findFragmentByTag(oldFragmentID.name) as BaseFragment?
+        oldFragment?.let { ft.hide(oldFragment) }
 
         ft.commit()
     }

@@ -66,7 +66,7 @@ class MoreFragmentVisibilityManagerImpl @Inject constructor(private val fragment
 
     override fun showIntegrations() {
         when (currentPage) {
-            MoreFragmentID.MENU -> hideOldFragmentShowNewInstance(currentPage, MoreFragmentID.INTEGRATIONS, fragmentManager)
+            MoreFragmentID.MENU -> showFragmentHideFragment(MoreFragmentID.INTEGRATIONS, currentPage, fragmentManager)
             MoreFragmentID.INTEGRATIONS -> { /*don't do anything, already on page*/ }
             MoreFragmentID.COINBASE -> showFragmentRemoveOld(MoreFragmentID.INTEGRATIONS, currentPage, fragmentManager)
             else -> throw IllegalStateException("invalid navigation")
@@ -75,7 +75,7 @@ class MoreFragmentVisibilityManagerImpl @Inject constructor(private val fragment
 
     override fun showCoinbase() {
         when (currentPage) {
-            MoreFragmentID.INTEGRATIONS -> hideOldFragmentShowNewInstance(currentPage, MoreFragmentID.COINBASE, fragmentManager)
+            MoreFragmentID.INTEGRATIONS -> showFragmentHideFragment(MoreFragmentID.COINBASE, currentPage, fragmentManager)
             MoreFragmentID.COINBASE ->  {/*don't do anything, already on page*/ }
             else -> throw IllegalStateException("invalid navigation")
         }
@@ -83,7 +83,7 @@ class MoreFragmentVisibilityManagerImpl @Inject constructor(private val fragment
 
     override fun showExampleTemplate() {
         when (currentPage) {
-            MoreFragmentID.MENU -> hideOldFragmentShowNewInstance(currentPage, MoreFragmentID.EXAMPLE, fragmentManager)
+            MoreFragmentID.MENU -> showFragmentHideFragment(MoreFragmentID.EXAMPLE, currentPage, fragmentManager)
             MoreFragmentID.EXAMPLE -> { /*don't do anything, already on page*/ }
             else -> throw IllegalStateException("invalid navigation")
         }
