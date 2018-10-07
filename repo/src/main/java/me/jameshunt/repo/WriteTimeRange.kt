@@ -21,7 +21,7 @@ internal class WriteTimeRange(private val database: Database, private val crypto
         return when (numDaysAgo > 0) {
             true -> cryptoCompare
                     .getDailyPrices(base = base, other = other, numDaysAgo = numDaysAgo.toInt())
-                    .flatMap { it.writeTimePrices("Daily prices updated", Database.TimePriceUpdateCategory.Day) }
+                    .flatMap { it.writeTimePrices("$other: Daily prices updated", Database.TimePriceUpdateCategory.Day) }
             false -> Single.just(Message.Success("$other: Daily prices already up to date"))
         }
     }
@@ -33,7 +33,7 @@ internal class WriteTimeRange(private val database: Database, private val crypto
         return when (numHoursAgo > 0) {
             true -> cryptoCompare
                     .getHourlyPrices(base = base, other = other, numHoursAgo = numHoursAgo.toInt())
-                    .flatMap { it.writeTimePrices("Hourly prices updated", Database.TimePriceUpdateCategory.Hour) }
+                    .flatMap { it.writeTimePrices("$other: Hourly prices updated", Database.TimePriceUpdateCategory.Hour) }
             false -> Single.just(Message.Success("$other: Hourly prices already up to date"))
         }
     }
@@ -45,7 +45,7 @@ internal class WriteTimeRange(private val database: Database, private val crypto
         return when (numMinAgo > 0) {
             true -> cryptoCompare
                     .getMinutePrices(base = base, other = other, numMinAgo = numMinAgo.toInt())
-                    .flatMap { it.writeTimePrices("Minute prices Updated", Database.TimePriceUpdateCategory.Min) }
+                    .flatMap { it.writeTimePrices("$other: Minute prices Updated", Database.TimePriceUpdateCategory.Min) }
             false -> Single.just(Message.Success("$other: Minute prices already up to date"))
         }
     }

@@ -20,7 +20,7 @@ class IntegrationUseCase @Inject constructor(
     fun integrateCoinbase(code: String): Observable<Message> {
         return coinbaseIntegration
                 .integrate(code)
-                .passMessageThenNext(updateCoinbase())
+                .passMessageThenNext(Single.defer { updateCoinbase() })
     }
 
     fun updateCoinbase(): Single<Message> {
