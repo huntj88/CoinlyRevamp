@@ -1,7 +1,9 @@
 package me.jameshunt.repo
 
 import io.objectbox.kotlin.boxFor
+import io.objectbox.rx.RxQuery
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import me.jameshunt.base.*
 import me.jameshunt.repo.db.domain.*
@@ -60,16 +62,6 @@ internal class Database(context: Any) {
         )
     }
 
-    private fun TimePrice.toObjectBox(timePriceUpdateCategory: TimePriceUpdateCategory): TimePriceObjectBox {
-        return TimePriceObjectBox(
-                time = this.time,
-                base = this.base,
-                target = this.target,
-                price = this.price,
-                updateCategory = timePriceUpdateCategory.updateCategory
-        )
-    }
-
     enum class TimePriceUpdateCategory(val updateCategory: Long) {
         ExchangeRate(0),
         Day(1),
@@ -110,7 +102,39 @@ internal class Database(context: Any) {
         return latestTimePrice?.time ?: earliestPossible
     }
 
-//    fun getCurrentExchangeRate(base:) {
-//
-//    }
+    fun getCurrentExchangeRate(base: CurrencyType, target: CurrencyType): Observable<DataSource<TimePrice>> {
+        val timePriceBox = box.boxFor<TimePriceObjectBox>()
+
+        val query =  timePriceBox
+                .query()
+                .equal(TimePriceObjectBox_.base, base.id)
+                .equal(TimePriceObjectBox_.target, target.id)
+                .orderDesc(TimePriceObjectBox_.time)
+                .build()
+
+        return RxQuery.observable(query)
+                .map { it.first() }
+                .map { it.fromObjectBox() }
+                .map { DataSource.Success(it) as DataSource<TimePrice> }
+//                .onErrorReturn { DataSource.Error("") } todo: handle error
+    }
+
+    private fun TimePrice.toObjectBox(timePriceUpdateCategory: TimePriceUpdateCategory): TimePriceObjectBox {
+        return TimePriceObjectBox(
+                time = this.time,
+                base = this.base,
+                target = this.target,
+                price = this.price,
+                updateCategory = timePriceUpdateCategory.updateCategory
+        )
+    }
+
+    private fun TimePriceObjectBox.fromObjectBox(): TimePrice {
+        return object : TimePrice {
+            override val time: UnixMilliSeconds = this@fromObjectBox.time
+            override val base: CurrencyType = this@fromObjectBox.base
+            override val target: CurrencyType = this@fromObjectBox.target
+            override val price: CurrencyAmount = this@fromObjectBox.price
+        }
+    }
 }

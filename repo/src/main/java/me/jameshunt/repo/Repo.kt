@@ -31,7 +31,7 @@ class Repo(context: Any) : Repository {
         return database.writeTransactions(transactions)
     }
 
-    override fun getCurrentExchangeRate(base: CurrencyType, target: CurrencyType): Observable<DataSource<Double>> {
-        throw NotImplementedError()
+    override fun getCurrentExchangeRate(base: CurrencyType, target: CurrencyType): Observable<DataSource<TimePrice>> {
+        return database.getCurrentExchangeRate(base, target)
     }
 }

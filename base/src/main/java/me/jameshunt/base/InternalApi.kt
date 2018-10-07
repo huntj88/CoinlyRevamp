@@ -11,6 +11,13 @@ sealed class DataSource<out Type> {
     data class Error(val message: String) : DataSource<Nothing>()
 }
 
+inline fun <T, R> DataSource<T>.mapSuccess(transform: (T) -> R): DataSource<R> {
+    return when (this) {
+        is DataSource.Success -> DataSource.Success(transform(this.data))
+        is DataSource.Error -> this
+    }
+}
+
 /**
  * These Messages are more like a completable of individual an task.
  * This allows you to chain them together into a stream of multiple completed tasks.

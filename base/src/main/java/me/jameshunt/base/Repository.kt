@@ -8,7 +8,7 @@ interface Repository {
     fun updateTimeRanges(base: CurrencyType, target: CurrencyType): Observable<Message>
     fun updateExchangeRates(base: CurrencyType, targets: Set<CurrencyType>): Single<Message>
     fun writeTransactions(transactions: List<Transaction>): Completable
-    fun getCurrentExchangeRate(base: CurrencyType, target: CurrencyType): Observable<DataSource<Double>>
+    fun getCurrentExchangeRate(base: CurrencyType, target: CurrencyType): Observable<DataSource<TimePrice>>
 }
 
 interface KeyValueTool {
