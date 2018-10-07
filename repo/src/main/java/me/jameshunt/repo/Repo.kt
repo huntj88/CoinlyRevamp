@@ -15,11 +15,11 @@ class Repo(context: Any) : Repository {
         return WriteTimeRange(cryptoCompare = cryptoCompare, database = database).update(base, target)
     }
 
-    override fun updateCurrentPrices(base: CurrencyType, targets: Set<CurrencyType>): Single<Message> {
+    override fun updateExchangeRates(base: CurrencyType, targets: Set<CurrencyType>): Single<Message> {
         return cryptoCompare.getCurrentPrices(base = base, targets = targets).flatMap {
             when (it) {
                 is DataSource.Success -> database
-                        .writeTimePrice(it.data, Database.TimePriceUpdateCategory.CurrentPrice)
+                        .writeTimePrice(it.data, Database.TimePriceUpdateCategory.ExchangeRate)
                         .toSingle { Message.Success("Current Prices Updated") }
 
                 is DataSource.Error -> Single.just(Message.Error(it.message))

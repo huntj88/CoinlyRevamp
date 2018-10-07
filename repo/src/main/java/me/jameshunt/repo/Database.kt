@@ -71,27 +71,27 @@ internal class Database(context: Any) {
     }
 
     enum class TimePriceUpdateCategory(val updateCategory: Long) {
-        CurrentPrice(0),
+        ExchangeRate(0),
         Day(1),
         Hour(2),
         Min(3)
     }
 
-    fun readLastDay(): UnixMilliSeconds {
+    fun readLastDay(base: CurrencyType, target: CurrencyType): UnixMilliSeconds {
         val milliInYear = milliInDay * 365
-        return getLatestTime(TimePriceUpdateCategory.Day, milliInYear)
+        return getLatestTime(base, target, TimePriceUpdateCategory.Day, milliInYear)
     }
 
-    fun readLastHour(): UnixMilliSeconds {
+    fun readLastHour(base: CurrencyType, target: CurrencyType): UnixMilliSeconds {
         val milliInWeek = milliInDay * 7
-        return getLatestTime(TimePriceUpdateCategory.Hour, milliInWeek)
+        return getLatestTime(base, target, TimePriceUpdateCategory.Hour, milliInWeek)
     }
 
-    fun readLastMinute(): UnixMilliSeconds {
-        return getLatestTime(TimePriceUpdateCategory.Min, milliInDay)
+    fun readLastMinute(base: CurrencyType, target: CurrencyType): UnixMilliSeconds {
+        return getLatestTime(base, target, TimePriceUpdateCategory.Min, milliInDay)
     }
 
-    private fun getLatestTime(updateCategory: TimePriceUpdateCategory, timeFromEarliest: UnixMilliSeconds): UnixMilliSeconds {
+    private fun getLatestTime(base: CurrencyType, target: CurrencyType, updateCategory: TimePriceUpdateCategory, timeFromEarliest: UnixMilliSeconds): UnixMilliSeconds {
         val timePriceBox = box.boxFor<TimePriceObjectBox>()
 
         val earliestPossible = System.currentTimeMillis() - timeFromEarliest
@@ -101,10 +101,16 @@ internal class Database(context: Any) {
                         .query()
                         .equal(TimePriceObjectBox_.updateCategory, updateCategory.updateCategory)
                         .greater(TimePriceObjectBox_.time, earliestPossible)
+                        .equal(TimePriceObjectBox_.base, base.id)
+                        .equal(TimePriceObjectBox_.target, target.id)
                         .orderDesc(TimePriceObjectBox_.time)
                         .build()
                         .findFirst()
 
         return latestTimePrice?.time ?: earliestPossible
     }
+
+//    fun getCurrentExchangeRate(base:) {
+//
+//    }
 }

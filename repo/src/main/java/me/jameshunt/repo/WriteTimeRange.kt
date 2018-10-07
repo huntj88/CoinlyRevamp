@@ -16,7 +16,7 @@ internal class WriteTimeRange(private val database: Database, private val crypto
 
     private fun daily(base: CurrencyType, target: CurrencyType): Single<Message> {
         val current = System.currentTimeMillis()
-        val numDaysAgo = (current - database.readLastDay()) / milliInDay
+        val numDaysAgo = (current - database.readLastDay(base = base, target = target)) / milliInDay
 
         return when (numDaysAgo > 0) {
             true -> cryptoCompare
@@ -28,7 +28,7 @@ internal class WriteTimeRange(private val database: Database, private val crypto
 
     private fun hourly(base: CurrencyType, target: CurrencyType): Single<Message> {
         val current = System.currentTimeMillis()
-        val numHoursAgo = (current - database.readLastHour()) / milliInHour
+        val numHoursAgo = (current - database.readLastHour(base = base, target = target)) / milliInHour
 
         return when (numHoursAgo > 0) {
             true -> cryptoCompare
@@ -40,7 +40,7 @@ internal class WriteTimeRange(private val database: Database, private val crypto
 
     private fun minute(base: CurrencyType, target: CurrencyType): Single<Message> {
         val current = System.currentTimeMillis()
-        val numMinAgo = (current - database.readLastMinute()) / milliInMinute
+        val numMinAgo = (current - database.readLastMinute(base = base, target = target)) / milliInMinute
 
         return when (numMinAgo > 0) {
             true -> cryptoCompare
