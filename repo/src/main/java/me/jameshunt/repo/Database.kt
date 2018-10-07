@@ -91,8 +91,10 @@ internal class Database(context: Any) {
         return getLatestTime(TimePriceUpdateCategory.Min, milliInDay)
     }
 
-    private fun getLatestTime(updateCategory: TimePriceUpdateCategory, earliestPossible: UnixMilliSeconds): UnixMilliSeconds {
+    private fun getLatestTime(updateCategory: TimePriceUpdateCategory, timeFromEarliest: UnixMilliSeconds): UnixMilliSeconds {
         val timePriceBox = box.boxFor<TimePriceObjectBox>()
+
+        val earliestPossible = System.currentTimeMillis() - timeFromEarliest
 
         val latestTimePrice: TimePriceObjectBox? =
                 timePriceBox
@@ -103,6 +105,6 @@ internal class Database(context: Any) {
                         .build()
                         .findFirst()
 
-        return latestTimePrice?.time ?: System.currentTimeMillis()-earliestPossible
+        return latestTimePrice?.time ?: earliestPossible
     }
 }

@@ -34,7 +34,7 @@ class MainActivity : BaseActivity() {
         visibilityManager.showCurrent()
 
         AsyncInjector.inject(this)
-                .toSingle { Message.Success() as Message }
+                .toSingle { Message.Success("Beginning data update") as Message }
                 .passMessageThenNext(Observable.defer { updateEverythingUseCase.updateEverything() })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(

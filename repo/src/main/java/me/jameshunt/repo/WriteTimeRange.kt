@@ -2,6 +2,7 @@ package me.jameshunt.repo
 
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import me.jameshunt.base.*
 import me.jameshunt.cryptocompare.CryptoCompare
 
@@ -20,8 +21,8 @@ internal class WriteTimeRange(private val database: Database, private val crypto
         return when (numDaysAgo > 0) {
             true -> cryptoCompare
                     .getDailyPrices(base = base, other = other, numDaysAgo = numDaysAgo.toInt())
-                    .flatMap { it.writeTimePrices("Daily prices updated") }
-            false -> Single.just(Message.Success())
+                    .flatMap { it.writeTimePrices("Daily prices updated", Database.TimePriceUpdateCategory.Day) }
+            false -> Single.just(Message.Success("$other: Daily prices already up to date"))
         }
     }
 
@@ -32,8 +33,8 @@ internal class WriteTimeRange(private val database: Database, private val crypto
         return when (numHoursAgo > 0) {
             true -> cryptoCompare
                     .getHourlyPrices(base = base, other = other, numHoursAgo = numHoursAgo.toInt())
-                    .flatMap { it.writeTimePrices("Hourly prices updated") }
-            false -> Single.just(Message.Success())
+                    .flatMap { it.writeTimePrices("Hourly prices updated", Database.TimePriceUpdateCategory.Hour) }
+            false -> Single.just(Message.Success("$other: Hourly prices already up to date"))
         }
     }
 
@@ -44,15 +45,16 @@ internal class WriteTimeRange(private val database: Database, private val crypto
         return when (numMinAgo > 0) {
             true -> cryptoCompare
                     .getMinutePrices(base = base, other = other, numMinAgo = numMinAgo.toInt())
-                    .flatMap { it.writeTimePrices("Minute prices Updated") }
-            false -> Single.just(Message.Success())
+                    .flatMap { it.writeTimePrices("Minute prices Updated", Database.TimePriceUpdateCategory.Min) }
+            false -> Single.just(Message.Success("$other: Minute prices already up to date"))
         }
     }
 
-    private fun DataSource<List<TimePrice>>.writeTimePrices(successMessage: String): Single<Message> {
+    private fun DataSource<List<TimePrice>>.writeTimePrices(successMessage: String, updateCategory: Database.TimePriceUpdateCategory): Single<Message> {
         return when (this) {
             is DataSource.Success -> database
-                    .writeTimePrice(this.data, Database.TimePriceUpdateCategory.Day)
+                    .writeTimePrice(this.data, updateCategory)
+                    .observeOn(Schedulers.io())
                     .toSingle { Message.Success(successMessage) }
 
             is DataSource.Error -> Single.just(Message.Error(this.message))

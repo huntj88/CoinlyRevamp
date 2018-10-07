@@ -4,100 +4,94 @@
   "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
   "entities": [
     {
-      "id": "1:5026290877162870235",
-      "lastPropertyId": "6:3631605769761615409",
-      "name": "TimePriceObjectBox",
+      "id": "1:652350446324163994",
+      "lastPropertyId": "9:114408132712337658",
+      "name": "TransactionObjectBox",
       "properties": [
         {
-          "id": "1:7814244260349448046",
-          "indexId": "1:8135126397680690062",
-          "name": "time"
-        },
-        {
-          "id": "2:3179745034468532021",
-          "name": "base"
-        },
-        {
-          "id": "3:5174160239068802348",
-          "name": "other"
-        },
-        {
-          "id": "4:7657682035243289038",
-          "name": "price"
-        },
-        {
-          "id": "5:3902025655316724683",
+          "id": "1:8834768496090897224",
           "name": "id"
         },
         {
-          "id": "6:3631605769761615409",
-          "indexId": "2:8415678239215778340",
-          "name": "updateCategory"
+          "id": "2:8901098143903995302",
+          "indexId": "1:5379090800302287464",
+          "name": "transactionId"
+        },
+        {
+          "id": "3:2610912230718318624",
+          "name": "fromCurrencyType"
+        },
+        {
+          "id": "4:1270748333673863610",
+          "name": "fromAmount"
+        },
+        {
+          "id": "5:734111088278247537",
+          "name": "toCurrencyType"
+        },
+        {
+          "id": "6:8711811612310341380",
+          "name": "toAmount"
+        },
+        {
+          "id": "7:1473724753641256516",
+          "name": "time"
+        },
+        {
+          "id": "8:1337676664399320241",
+          "name": "status"
+        },
+        {
+          "id": "9:114408132712337658",
+          "name": "exchangeType"
         }
       ],
       "relations": []
     },
     {
-      "id": "2:267834783915504106",
-      "lastPropertyId": "10:3538812599355279843",
-      "name": "TransactionObjectBox",
+      "id": "2:5740527641386458278",
+      "lastPropertyId": "6:3214291123319475683",
+      "name": "TimePriceObjectBox",
       "properties": [
         {
-          "id": "1:6593490825221939195",
+          "id": "1:2371149218013510054",
           "name": "id"
         },
         {
-          "id": "2:5317203525000327226",
-          "indexId": "3:4014333331775368456",
-          "name": "transactionId"
-        },
-        {
-          "id": "3:620290120092880786",
-          "name": "fromCurrencyType"
-        },
-        {
-          "id": "4:1752435801098956551",
-          "name": "fromAmount"
-        },
-        {
-          "id": "5:6749601148795306538",
-          "name": "toCurrencyType"
-        },
-        {
-          "id": "6:1285985552400388064",
-          "name": "toAmount"
-        },
-        {
-          "id": "7:6827085189824984265",
+          "id": "2:1278132490567921888",
+          "indexId": "2:8954195142217943572",
           "name": "time"
         },
         {
-          "id": "8:3053224983500450902",
-          "name": "status"
+          "id": "3:6977980896544326045",
+          "name": "base"
         },
         {
-          "id": "9:856525012965042177",
-          "name": "exchangeType"
+          "id": "4:6231772327632603800",
+          "name": "other"
+        },
+        {
+          "id": "5:7454034952567251654",
+          "name": "price"
+        },
+        {
+          "id": "6:3214291123319475683",
+          "indexId": "3:2304651651825317055",
+          "name": "updateCategory"
         }
       ],
       "relations": []
     }
   ],
-  "lastEntityId": "3:6315255359277141291",
-  "lastIndexId": "3:4014333331775368456",
+  "lastEntityId": "2:5740527641386458278",
+  "lastIndexId": "3:2304651651825317055",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 4,
   "modelVersionParserMinimum": 4,
-  "retiredEntityUids": [
-    6315255359277141291
-  ],
+  "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [
-    3538812599355279843,
-    1468691449590573363,
-    7770632118845838435
-  ],
+  "retiredPropertyUids": [],
   "retiredRelationUids": [],
   "version": 1
 }

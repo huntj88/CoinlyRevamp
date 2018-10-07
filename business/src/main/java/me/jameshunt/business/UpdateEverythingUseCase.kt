@@ -15,8 +15,7 @@ class UpdateEverythingUseCase @Inject constructor(
 ) {
 
     fun updateEverything(): Observable<Message> {
-        return Observable.just(Message.Success("Updating data") as Message)
-                .passMessageThenNextEvenIfError(integrationUseCase.updateCoinbase())
+        return integrationUseCase.updateCoinbase()
                 .passMessageThenNextEvenIfError(updateCurrentPrices())
                 .passMessageThenNextEvenIfError(updateTimeRanges())
 
@@ -38,7 +37,7 @@ class UpdateEverythingUseCase @Inject constructor(
                     coinInfo.second
                             .asSequence()
                             .map { repository.updateTimeRanges(coinInfo.first, it) }
-                            .fold(Observable.just(Message.Success() as Message)) { acc, observable ->
+                            .fold(Observable.just(Message.Success("Updating Time Ranges") as Message)) { acc, observable ->
                                 acc.passMessageThenNextEvenIfError(observable)
                             }
                 }
