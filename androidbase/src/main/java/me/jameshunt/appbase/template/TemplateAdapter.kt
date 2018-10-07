@@ -3,7 +3,9 @@ package me.jameshunt.appbase.template
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import me.jameshunt.base.addToComposite
 
 class TemplateAdapter(
         private val dataObservables: List<TemplateObservableWrapper>,
@@ -30,11 +32,11 @@ class TemplateAdapter(
 
     private fun bind(holder: BaseTemplate<BaseTemplateData>, position: Int) {
         @Suppress("UNCHECKED_CAST")
-        holder.observeData(dataObservables[position].observable as Observable<BaseTemplateData>)
+        val dataObservable = dataObservables[position].observable as Observable<BaseTemplateData>
 
-        holder.disposable?.let {
-            compositeDisposable.add(it)
-        }
+        holder.observeData(dataObservable.observeOn(AndroidSchedulers.mainThread()))
+
+        holder.disposable?.addToComposite(compositeDisposable)
     }
 
     override fun getItemCount(): Int {

@@ -10,8 +10,8 @@ import javax.inject.Inject
 class UpdateEverythingUseCase @Inject constructor(
         private val integrationUseCase: IntegrationUseCase,
         private val repository: Repository,
-        private val enabledCoinsUseCase: EnabledCoinsUseCase,
-        private val selectedCoinUseCase: SelectedCoinUseCase
+        private val enabledCurrencyUseCase: EnabledCurrencyUseCase,
+        private val selectedCurrencyUseCase: SelectedCurrencyUseCase
 ) {
 
     fun updateEverything(): Observable<Message> {
@@ -31,8 +31,8 @@ class UpdateEverythingUseCase @Inject constructor(
     private fun updateTimeRanges(): Observable<Message> {
         return Observables
                 .combineLatest(
-                        selectedCoinUseCase.getSelectedBase(),
-                        enabledCoinsUseCase.getEnabledCoins()) { base, enabled -> Pair(base, enabled) }
+                        selectedCurrencyUseCase.getSelectedBase(),
+                        enabledCurrencyUseCase.getEnabledCurrencies()) { base, enabled -> Pair(base, enabled) }
                 .flatMap { coinInfo ->
                     coinInfo.second
                             .asSequence()
