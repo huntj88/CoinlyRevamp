@@ -16,6 +16,7 @@ class SelectedCurrencyUseCaseImpl @Inject constructor(): SelectedCurrencyUseCase
                 emitterBase = it
                 emitterBase.onNext(CurrencyType.USD)
             }
+            .distinctUntilChanged()
             .replay(1)
             .autoConnect()
 
@@ -33,6 +34,7 @@ class SelectedCurrencyUseCaseImpl @Inject constructor(): SelectedCurrencyUseCase
                 emitterTarget = it
                 emitterTarget.onNext(CurrencyType.ETH)
             }
+            .distinctUntilChanged()
             .replay(1)
             .autoConnect()
 

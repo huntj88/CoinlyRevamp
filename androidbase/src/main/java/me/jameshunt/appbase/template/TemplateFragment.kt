@@ -18,8 +18,7 @@ abstract class TemplateFragment<ViewModel : TemplateViewModel> : BaseFragment() 
     @Inject
     lateinit var viewModel: ViewModel
 
-    //@Inject
-    var templateFactory: TemplateFactory = TemplateFactory()
+    private var templateFactory: TemplateFactory = TemplateFactory()
 
     private var adapter: TemplateAdapter? = null
 
