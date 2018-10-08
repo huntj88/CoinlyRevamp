@@ -49,7 +49,7 @@ class MainVisibilityManager(private val fragmentManager: FragmentManager) : Visi
 
     fun showPager() {
         when (currentPage) {
-            MainFragmentID.SPLASH -> removeOldFragmentReplaceWith(MainFragmentID.PAGER, fragmentManager)
+            MainFragmentID.SPLASH -> showFragmentRemoveOld(MainFragmentID.PAGER, currentPage, fragmentManager)
             MainFragmentID.PAGER -> { /*don't do anything, already on page*/
             }
             else -> throw IllegalStateException("invalid navigation")

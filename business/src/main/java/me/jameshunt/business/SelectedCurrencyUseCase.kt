@@ -2,12 +2,12 @@ package me.jameshunt.business
 
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
+import me.jameshunt.base.ActivityScope
 import me.jameshunt.base.CurrencyType
 import me.jameshunt.base.SelectedCurrencyUseCase
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
+@ActivityScope
 class SelectedCurrencyUseCaseImpl @Inject constructor(): SelectedCurrencyUseCase {
 
     private lateinit var emitterBase: ObservableEmitter<CurrencyType>

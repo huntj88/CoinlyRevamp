@@ -11,11 +11,11 @@ interface AppDependenciesEverywhere {
     //these appScopedDependencies that need to be available everywhere
     fun getContextWrapper(): ContextWrapper
     fun getRepo(): Repository
-    fun getSelectedCurrencyUseCase(): SelectedCurrencyUseCase
 }
 
 interface ActivityDependenciesEverywhere {
     //these ActivityScopedDependencies that need to be available everywhere except as dependencies for @Singleton's
+    fun getSelectedCurrencyUseCase(): SelectedCurrencyUseCase
 }
 
 @Scope

@@ -4,16 +4,6 @@ import android.support.v4.app.FragmentManager
 
 interface VisibilityManager {
 
-    fun removeOldFragmentReplaceWith(fragmentID: FragmentID, fragmentManager: FragmentManager) {
-        val fragment: BaseFragment? = fragmentManager.findFragmentByTag(fragmentID.name) as BaseFragment?
-
-        if (fragment == null) {
-            val ft = fragmentManager.beginTransaction()
-            ft.replace(R.id.fragmentFrameLayout, fragmentID.newInstance(), fragmentID.name)
-            ft.commit()
-        }
-    }
-
     fun showFragmentRemoveOld(fragmentID: FragmentID, oldFragmentID: FragmentID, fragmentManager: FragmentManager) {
         val fragment: BaseFragment? = fragmentManager.findFragmentByTag(fragmentID.name) as BaseFragment?
 
