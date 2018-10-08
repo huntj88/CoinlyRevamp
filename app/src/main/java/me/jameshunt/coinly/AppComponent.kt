@@ -1,6 +1,7 @@
 package me.jameshunt.coinly
 
 import android.content.Context
+import dagger.Binds
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -9,11 +10,13 @@ import me.jameshunt.appbase.KeyValueToolImpl
 import me.jameshunt.base.KeyValueTool
 import me.jameshunt.base.ContextWrapper
 import me.jameshunt.base.Repository
+import me.jameshunt.base.SelectedCurrencyUseCase
+import me.jameshunt.business.SelectedCurrencyUseCaseImpl
 import me.jameshunt.repo.Repo
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [ObjectBoxContextModule::class, RepoModule::class, KeyValueToolModule::class])
+@Component(modules = [ObjectBoxContextModule::class, RepoModule::class, KeyValueToolModule::class, BusinessModule::class])
 interface AppComponent : BaseAndroidAppComponent {
     //see BaseAppComponent too
 
@@ -52,4 +55,10 @@ class RepoModule {
     @Singleton
     @Provides
     fun getRepo(contextWrapper: ContextWrapper): Repository = Repo(contextWrapper.context)
+}
+
+@Module
+abstract class BusinessModule {
+    @Binds
+    abstract fun getSelectedCurrencyUseCase(impl: SelectedCurrencyUseCaseImpl): SelectedCurrencyUseCase
 }

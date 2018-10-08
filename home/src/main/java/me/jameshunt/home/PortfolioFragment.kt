@@ -3,7 +3,7 @@ package me.jameshunt.home
 import io.reactivex.Observable
 import me.jameshunt.appbase.template.*
 import me.jameshunt.base.CurrencyType
-import me.jameshunt.business.SelectedCurrencyUseCase
+import me.jameshunt.base.SelectedCurrencyUseCase
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -25,7 +25,6 @@ class PortfolioViewModel @Inject constructor(
     private fun getAdapterObservables(target: CurrencyType): List<TemplateObservableWrapper> {
         return mutableListOf(
                 TemplateObservableWrapper(getToolbar(target), TemplateFactory.TOOLBAR)
-//                TemplateObservableWrapper(getHeader(), TemplateFactory.HEADER)
         )
     }
 

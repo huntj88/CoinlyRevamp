@@ -7,7 +7,7 @@ import me.jameshunt.base.CurrencyType
 import me.jameshunt.base.DataSource
 import me.jameshunt.business.CurrencyTypeExchangeRateUseCase
 import me.jameshunt.business.EnabledCurrencyUseCase
-import me.jameshunt.business.SelectedCurrencyUseCase
+import me.jameshunt.base.SelectedCurrencyUseCase
 import javax.inject.Inject
 
 class SummaryFragment : TemplateFragment<SummaryViewModel>() {
@@ -55,18 +55,21 @@ class SummaryViewModel @Inject constructor(
                 .flatMap { exchangeRateUseCase.getCurrentExchangeRate(it, target) }
                 .map {
                     when (it) {
-                        is DataSource.Success -> currencyCardUI(targetName = target.fullName, price = (1.0 / it.data).toString())
-                        is DataSource.Error -> currencyCardUI(targetName = target.fullName, price = "price not available")
+                        is DataSource.Success -> currencyCardUI(target = target, price = (1.0 / it.data).toString())
+                        is DataSource.Error -> currencyCardUI(target = target, price = "price not available")
                     }
                 }
     }
 
-    private fun currencyCardUI(targetName: String, price: String): CardTemplateData {
+    private fun currencyCardUI(target: CurrencyType, price: String): CardTemplateData {
         return CardTemplateData(sections = listOf(
-                CardHeaderActionData(text = targetName, actionText = "view more", action = { visibilityManager.showPortfolio() }),
+                CardHeaderActionData(text = target.fullName, actionText = "view more", action = {
+                    selectedCurrencyUseCase.setSelectedTarget(target)
+                    visibilityManager.showPortfolio()
+                }),
                 CardDividerData(height = 1, margin = 0),
                 CardTitleTwoValueData(
-                        title = L10n.gain_on_currency(targetName),
+                        title = L10n.gain_on_currency(target.fullName),
                         value = "$2,512.42",
                         subValue = "+121.21%"
                 ),

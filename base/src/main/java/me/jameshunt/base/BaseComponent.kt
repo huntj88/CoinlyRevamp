@@ -11,6 +11,7 @@ interface AppDependenciesEverywhere {
     //these appScopedDependencies that need to be available everywhere
     fun getContextWrapper(): ContextWrapper
     fun getRepo(): Repository
+    fun getSelectedCurrencyUseCase(): SelectedCurrencyUseCase
 }
 
 interface ActivityDependenciesEverywhere {

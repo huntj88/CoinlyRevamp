@@ -2,8 +2,8 @@ package me.jameshunt.business
 
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.rxkotlin.Observables
 import me.jameshunt.base.*
+import me.jameshunt.base.SelectedCurrencyUseCase
 import javax.inject.Inject
 
 
@@ -29,14 +29,12 @@ class UpdateEverythingUseCase @Inject constructor(
     }
 
     private fun updateTimeRanges(): Observable<Message> {
-        return Observables
-                .combineLatest(
-                        selectedCurrencyUseCase.getSelectedBase(),
-                        enabledCurrencyUseCase.getEnabledCurrencies()) { base, enabled -> Pair(base, enabled) }
-                .flatMap { coinInfo ->
-                    coinInfo.second
-                            .asSequence()
-                            .map { repository.updateTimeRanges(coinInfo.first, it) }
+        val base = selectedCurrencyUseCase.getSelectedBase().blockingFirst()
+
+        return enabledCurrencyUseCase.getEnabledCurrencies()
+                .flatMap {
+                    it.asSequence()
+                            .map { target -> repository.updateTimeRanges(base, target) }
                             .fold(Observable.just(Message.Success("Updating Time Ranges") as Message)) { acc, observable ->
                                 acc.passMessageThenNextEvenIfError(observable)
                             }
