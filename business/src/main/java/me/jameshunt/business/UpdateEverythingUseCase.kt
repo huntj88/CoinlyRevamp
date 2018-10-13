@@ -15,10 +15,9 @@ class UpdateEverythingUseCase @Inject constructor(
 ) {
 
     fun updateEverything(): Observable<Message> {
-        return integrationUseCase.updateCoinbase()
-                .passMessageThenNextEvenIfError(updateExchangeRates())
-                .passMessageThenNextEvenIfError(updateTimeRanges())
-
+        return integrationUseCase.updateCoinbase().toObservable()
+                .mergeWith(updateExchangeRates().toObservable())
+                .mergeWith(updateTimeRanges())
     }
 
     private fun updateExchangeRates(): Single<Message> {
