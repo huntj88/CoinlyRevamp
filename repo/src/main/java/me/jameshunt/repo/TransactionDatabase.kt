@@ -1,10 +1,16 @@
 package me.jameshunt.repo
 
 import io.objectbox.BoxStore
+import io.objectbox.rx.RxQuery
 import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
+import me.jameshunt.base.CurrencyType
+import me.jameshunt.base.DataSource
 import me.jameshunt.base.Transaction
+import me.jameshunt.repo.db.CurrencyTypeConverter
 import me.jameshunt.repo.db.domain.TransactionObjectBox
+import me.jameshunt.repo.db.domain.TransactionObjectBox_
 
 class TransactionDatabase(private val box: BoxStore) {
 
@@ -18,6 +24,24 @@ class TransactionDatabase(private val box: BoxStore) {
                         .forEach { transactionBox.put(it) }
             }
         }.subscribeOn(Schedulers.io())
+    }
+
+    fun readTransactions(currencyType: CurrencyType): Observable<DataSource<List<Transaction>>> {
+        val transactionBox = box.boxFor(TransactionObjectBox::class.java)
+        val currencyTypeConverter = CurrencyTypeConverter()
+
+        val query = transactionBox.query()
+                .equal(
+                        TransactionObjectBox_.toCurrencyType,
+                        currencyTypeConverter.convertToDatabaseValue(currencyType)
+                ).equal(
+                        TransactionObjectBox_.fromCurrencyType,
+                        currencyTypeConverter.convertToDatabaseValue(currencyType)
+                ).build()
+
+        return RxQuery.observable(query)
+                .map { transactions -> transactions.map { it.fromObjectBox() } }
+                .map { DataSource.Success(it) }
     }
 
     private fun Transaction.toObjectBox(): TransactionObjectBox {

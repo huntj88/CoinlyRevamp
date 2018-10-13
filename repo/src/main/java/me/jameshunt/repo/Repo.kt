@@ -31,11 +31,15 @@ class Repo(context: Any) : Repository {
         }
     }
 
+    override fun getCurrentExchangeRate(base: CurrencyType, target: CurrencyType): Observable<DataSource<TimePrice>> {
+        return timePriceDatabase.getCurrentExchangeRate(base, target)
+    }
+
     override fun writeTransactions(transactions: List<Transaction>): Completable {
         return transactionDatabase.writeTransactions(transactions)
     }
 
-    override fun getCurrentExchangeRate(base: CurrencyType, target: CurrencyType): Observable<DataSource<TimePrice>> {
-        return timePriceDatabase.getCurrentExchangeRate(base, target)
+    override fun readTransactions(currencyType: CurrencyType): Observable<DataSource<List<Transaction>>> {
+        return transactionDatabase.readTransactions(currencyType)
     }
 }

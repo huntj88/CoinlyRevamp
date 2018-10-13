@@ -7,6 +7,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import me.jameshunt.base.*
+import me.jameshunt.repo.db.CurrencyTypeConverter
 import me.jameshunt.repo.db.domain.*
 
 internal class TimePriceDatabase(private val box: BoxStore) {
@@ -15,13 +16,17 @@ internal class TimePriceDatabase(private val box: BoxStore) {
         return Completable.fromAction {
             val timePriceBox = box.boxFor<TimePriceObjectBox>()
 
+            val currencyTypeConverter = CurrencyTypeConverter()
+            val base = currencyTypeConverter.convertToDatabaseValue(timePrices.first().base)
+            val target = currencyTypeConverter.convertToDatabaseValue(timePrices.first().target)
+
             box.runInTx {
                 val existingPrices =
                         timePriceBox
                                 .query()
                                 .between(TimePriceObjectBox_.time, timePrices.first().time, timePrices.last().time)
-                                .equal(TimePriceObjectBox_.base, timePrices.first().base.id)
-                                .equal(TimePriceObjectBox_.target, timePrices.first().target.id)
+                                .equal(TimePriceObjectBox_.base, base)
+                                .equal(TimePriceObjectBox_.target, target)
                                 .build()
                                 .find()
                                 .map { Pair(it.time, it) }
@@ -60,6 +65,8 @@ internal class TimePriceDatabase(private val box: BoxStore) {
     private fun getLatestTime(base: CurrencyType, target: CurrencyType, updateCategory: TimePriceUpdateCategory, timeFromEarliest: UnixMilliSeconds): UnixMilliSeconds {
         val timePriceBox = box.boxFor<TimePriceObjectBox>()
 
+        val currencyTypeConverter = CurrencyTypeConverter()
+
         val earliestPossible = System.currentTimeMillis() - timeFromEarliest
 
         val latestTimePrice: TimePriceObjectBox? =
@@ -67,8 +74,8 @@ internal class TimePriceDatabase(private val box: BoxStore) {
                         .query()
                         .equal(TimePriceObjectBox_.updateCategory, updateCategory.updateCategory)
                         .greater(TimePriceObjectBox_.time, earliestPossible)
-                        .equal(TimePriceObjectBox_.base, base.id)
-                        .equal(TimePriceObjectBox_.target, target.id)
+                        .equal(TimePriceObjectBox_.base, currencyTypeConverter.convertToDatabaseValue(base))
+                        .equal(TimePriceObjectBox_.target, currencyTypeConverter.convertToDatabaseValue(target))
                         .orderDesc(TimePriceObjectBox_.time)
                         .build()
                         .findFirst()
@@ -79,10 +86,12 @@ internal class TimePriceDatabase(private val box: BoxStore) {
     fun getCurrentExchangeRate(base: CurrencyType, target: CurrencyType): Observable<DataSource<TimePrice>> {
         val timePriceBox = box.boxFor<TimePriceObjectBox>()
 
+        val currencyTypeConverter = CurrencyTypeConverter()
+
         val query =  timePriceBox
                 .query()
-                .equal(TimePriceObjectBox_.base, base.id)
-                .equal(TimePriceObjectBox_.target, target.id)
+                .equal(TimePriceObjectBox_.base, currencyTypeConverter.convertToDatabaseValue(base))
+                .equal(TimePriceObjectBox_.target, currencyTypeConverter.convertToDatabaseValue(target))
                 .orderDesc(TimePriceObjectBox_.time)
                 .build()
 
