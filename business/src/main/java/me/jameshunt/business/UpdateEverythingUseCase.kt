@@ -15,16 +15,15 @@ class UpdateEverythingUseCase @Inject constructor(
 ) {
 
     fun updateEverything(): Observable<Message> {
-        return integrationUseCase.updateCoinbase()
-                .passMessageThenNextEvenIfError(updateExchangeRates())
-                .passMessageThenNextEvenIfError(updateTimeRanges())
-
+        return integrationUseCase.updateCoinbase().toObservable()
+                .mergeWith(updateExchangeRates().toObservable())
+                .mergeWith(updateTimeRanges())
     }
 
     private fun updateExchangeRates(): Single<Message> {
         return repository.updateExchangeRates(
-                base = CurrencyType.USD,
-                targets = setOf(CurrencyType.BTC, CurrencyType.ETH, CurrencyType.LTC, CurrencyType.BCH)
+                base = selectedCurrencyUseCase.getSelectedBase().blockingFirst(),
+                targets = enabledCurrencyUseCase.getEnabledCurrencies().blockingFirst()
         )
     }
 
