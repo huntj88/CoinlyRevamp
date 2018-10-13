@@ -72,6 +72,16 @@ interface Transaction {
     val time: UnixMilliSeconds
     val status: TransactionStatus
     val exchangeType: ExchangeType
+
+    fun string(): String =
+            "transactionId: $transactionId - " +
+            "fromCurrencyType: $fromCurrencyType - " +
+            "fromAmount: $fromAmount - " +
+            "toCurrencyType: $toCurrencyType - " +
+            "toAmount: $toAmount - " +
+            "time: $time - " +
+            "status: $status - " +
+            "exchangeType: $exchangeType"
 }
 
 interface Transfer {

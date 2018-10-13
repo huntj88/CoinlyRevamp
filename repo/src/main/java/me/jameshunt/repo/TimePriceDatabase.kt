@@ -1,5 +1,6 @@
 package me.jameshunt.repo
 
+import io.objectbox.BoxStore
 import io.objectbox.kotlin.boxFor
 import io.objectbox.rx.RxQuery
 import io.reactivex.Completable
@@ -8,9 +9,7 @@ import io.reactivex.schedulers.Schedulers
 import me.jameshunt.base.*
 import me.jameshunt.repo.db.domain.*
 
-internal class Database(context: Any) {
-
-    private val box = MyObjectBox.builder().androidContext(context).build()
+internal class TimePriceDatabase(private val box: BoxStore) {
 
     fun writeTimePrice(timePrices: List<TimePrice>, updateCategory: TimePriceUpdateCategory): Completable {
         return Completable.fromAction {
@@ -35,31 +34,6 @@ internal class Database(context: Any) {
                 }
             }
         }.subscribeOn(Schedulers.io())
-    }
-
-    fun writeTransactions(transactions: List<Transaction>): Completable {
-        return Completable.fromAction {
-            val transactionBox = box.boxFor(TransactionObjectBox::class.java)
-
-            box.runInTx {
-                transactions
-                        .map { it.toObjectBox() }
-                        .forEach { transactionBox.put(it) }
-            }
-        }.subscribeOn(Schedulers.io())
-    }
-
-    private fun Transaction.toObjectBox(): TransactionObjectBox {
-        return TransactionObjectBox(
-                transactionId = this.transactionId,
-                fromCurrencyType = this.fromCurrencyType,
-                fromAmount = this.fromAmount,
-                toCurrencyType = this.toCurrencyType,
-                toAmount = this.toAmount,
-                time = this.time,
-                status = this.status,
-                exchangeType = this.exchangeType
-        )
     }
 
     enum class TimePriceUpdateCategory(val updateCategory: Long) {
