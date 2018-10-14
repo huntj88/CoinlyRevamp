@@ -101,15 +101,15 @@ data class Data(
 
     private fun getFromAmount(): Double {
         return when (getFromCurrencyType()) {
-            CurrencyType.USD -> nativeAmount.amount.toDouble().absoluteValue
-            else -> amount.amount.toDouble().absoluteValue
+            CurrencyType.USD -> nativeAmount.amount.toDouble()
+            else -> amount.amount.toDouble()
         }
     }
 
     private fun getToAmount(): Double {
         return when (getToCurrencyType()) {
-            CurrencyType.USD -> nativeAmount.amount.toDouble().absoluteValue
-            else -> amount.amount.toDouble().absoluteValue
+            CurrencyType.USD -> nativeAmount.amount.toDouble()
+            else -> amount.amount.toDouble()
         }
     }
 

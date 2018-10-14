@@ -30,14 +30,13 @@ class TransactionDatabase(private val box: BoxStore) {
         val transactionBox = box.boxFor(TransactionObjectBox::class.java)
         val currencyTypeConverter = CurrencyTypeConverter()
 
+        val currencyTypeId = currencyTypeConverter.convertToDatabaseValue(currencyType)
+
         val query = transactionBox.query()
-                .equal(
-                        TransactionObjectBox_.toCurrencyType,
-                        currencyTypeConverter.convertToDatabaseValue(currencyType)
-                ).equal(
-                        TransactionObjectBox_.fromCurrencyType,
-                        currencyTypeConverter.convertToDatabaseValue(currencyType)
-                ).build()
+                .equal(TransactionObjectBox_.toCurrencyType, currencyTypeId)
+                .or()
+                .equal(TransactionObjectBox_.fromCurrencyType, currencyTypeId)
+                .build()
 
         return RxQuery.observable(query)
                 .map { transactions -> transactions.map { it.fromObjectBox() } }

@@ -1,13 +1,14 @@
 package me.jameshunt.home
 
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.Observables
 import me.jameshunt.appbase.template.*
 import me.jameshunt.appbase.template.card.*
-import me.jameshunt.base.CurrencyType
-import me.jameshunt.base.DataSource
+import me.jameshunt.base.*
 import me.jameshunt.business.CurrencyTypeExchangeRateUseCase
 import me.jameshunt.business.EnabledCurrencyUseCase
-import me.jameshunt.base.SelectedCurrencyUseCase
+import me.jameshunt.business.CurrencyAmountUseCase
+import me.jameshunt.business.SortTransactionUseCase
 import javax.inject.Inject
 
 class SummaryFragment : TemplateFragment<SummaryViewModel>() {
@@ -20,7 +21,8 @@ class SummaryViewModel @Inject constructor(
         private val visibilityManager: HomeFragmentVisibilityManager,
         private val enabledCurrencyUseCase: EnabledCurrencyUseCase,
         private val selectedCurrencyUseCase: SelectedCurrencyUseCase,
-        private val exchangeRateUseCase: CurrencyTypeExchangeRateUseCase
+        private val exchangeRateUseCase: CurrencyTypeExchangeRateUseCase,
+        private val currencyAmountUseCase: CurrencyAmountUseCase
 ) : TemplateViewModel {
 
     override fun getAdapterData(): Observable<List<TemplateObservableWrapper>> {
@@ -50,18 +52,21 @@ class SummaryViewModel @Inject constructor(
     }
 
     private fun getTargetCurrencyCard(target: CurrencyType): Observable<CardTemplateData> {
-        return selectedCurrencyUseCase
-                .getSelectedBase()
+
+        val currencyAmountObservable = currencyAmountUseCase.getCurrencyAmount(currencyType = target)
+        val priceObservable = selectedCurrencyUseCase.getSelectedBase()
                 .flatMap { exchangeRateUseCase.getCurrentExchangeRate(it, target) }
-                .map {
-                    when (it) {
-                        is DataSource.Success -> currencyCardUI(target = target, price = (1.0 / it.data).toString())
-                        is DataSource.Error -> currencyCardUI(target = target, price = "price not available")
-                    }
-                }
+
+        return Observables.combineLatest(priceObservable, currencyAmountObservable) { price, currencyAmount ->
+            currencyCardUI(
+                    target = target,
+                    price = price.mapSuccess { (1.0 / it).toString() }.output(),
+                    currencyAmount = currencyAmount.mapSuccess { it.toString() }.output()
+            )
+        }
     }
 
-    private fun currencyCardUI(target: CurrencyType, price: String): CardTemplateData {
+    private fun currencyCardUI(target: CurrencyType, price: String, currencyAmount: String): CardTemplateData {
         return CardTemplateData(sections = listOf(
                 CardHeaderActionData(text = target.fullName, actionText = "view more", action = {
                     selectedCurrencyUseCase.setSelectedTarget(target)
@@ -71,7 +76,8 @@ class SummaryViewModel @Inject constructor(
                 CardTitleTwoValueData(
                         title = L10n.gain_on_currency(target.fullName),
                         value = "$2,512.42",
-                        subValue = "+121.21%"
+                        subValue = currencyAmount
+                        //subValue = "+121.21%"
                 ),
                 CardSlidingData(data = listOf(
                         CardSlidingData.CardSlideItemData(title = L10n.price, value = price),

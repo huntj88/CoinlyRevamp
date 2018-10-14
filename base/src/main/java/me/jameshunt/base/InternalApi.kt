@@ -18,6 +18,13 @@ inline fun <T, R> DataSource<T>.mapSuccess(transform: (T) -> R): DataSource<R> {
     }
 }
 
+fun DataSource<String>.output(): String {
+    return when(this) {
+        is DataSource.Success -> this.data
+        is DataSource.Error -> this.message
+    }
+}
+
 /**
  * These Messages are more like a completable of individual an task.
  * This allows you to chain them together into a stream of multiple completed tasks.

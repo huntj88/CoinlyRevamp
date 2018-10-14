@@ -42,7 +42,7 @@ dependencies {
     implementation "com.jakewharton.timber:timber:$timber_version"
     implementation "com.jakewharton.threetenabp:threetenabp:$three_ten_abp_version"
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "com.android.support:appcompat-v7:$android_support_version"
     implementation "com.android.support:design:$android_support_version"
     implementation "com.android.support.constraint:constraint-layout:$constraint_version"
