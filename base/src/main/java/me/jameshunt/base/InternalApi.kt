@@ -11,6 +11,15 @@ sealed class DataSource<out Type> {
     data class Error(val message: String) : DataSource<Nothing>()
 }
 
+inline fun <A, B, C> DataSource<A>.join(other: DataSource<B>, joinOperation: (a: A, b: B) -> C): DataSource<C> {
+    return when {
+        this is DataSource.Error -> this
+        other is DataSource.Error -> other
+        this is DataSource.Success && other is DataSource.Success -> DataSource.Success(joinOperation(this.data, other.data))
+        else -> throw IllegalStateException()
+    }
+}
+
 inline fun <T, R> DataSource<T>.mapSuccess(transform: (T) -> R): DataSource<R> {
     return when (this) {
         is DataSource.Success -> DataSource.Success(transform(this.data))
@@ -19,7 +28,7 @@ inline fun <T, R> DataSource<T>.mapSuccess(transform: (T) -> R): DataSource<R> {
 }
 
 fun DataSource<String>.output(): String {
-    return when(this) {
+    return when (this) {
         is DataSource.Success -> this.data
         is DataSource.Error -> this.message
     }
@@ -75,8 +84,8 @@ private fun Observable<Message>.checkSource(): Observable<Message> {
     // non exhaustive, probably more edge cases to guard against
     // only something someone who hasn't read the docs at the top would worry about
     val message = "message stream should be build from singles or target message streams"
-    if(this is ObservableFromArray) throw IllegalStateException(message)
-    if(this is ObservableFromIterable) throw IllegalStateException(message)
+    if (this is ObservableFromArray) throw IllegalStateException(message)
+    if (this is ObservableFromIterable) throw IllegalStateException(message)
     return this
 }
 
