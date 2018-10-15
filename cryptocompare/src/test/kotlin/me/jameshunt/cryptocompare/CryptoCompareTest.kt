@@ -2,6 +2,7 @@ package me.jameshunt.cryptocompare
 
 import me.jameshunt.base.CurrencyType
 import me.jameshunt.base.DataSource
+import me.jameshunt.base.ExchangeType
 import org.junit.Test
 
 class CryptoCompareTest : BaseTester() {
@@ -22,7 +23,7 @@ class CryptoCompareTest : BaseTester() {
     @Test
     fun getHistoricalPrice() {
         CryptoCompare()
-                .getHistoricalPrices(CurrencyType.USD, setOf(CurrencyType.ETH, CurrencyType.BTC), time = 1537206634471)
+                .getHistoricalPrices(CurrencyType.USD, setOf(CurrencyType.ETH, CurrencyType.BTC), time = 1537206634471, exchange = ExchangeType.NONE)
                 .doOnSuccess { printResults(it) }
                 .testSingle()
     }

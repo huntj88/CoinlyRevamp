@@ -36,20 +36,31 @@ class PaidUseCase @Inject constructor(
                     it.mapSuccess { sortedTransactions ->
                         val purchasedAmount = sortedTransactions.purchased
                                 .asSequence()
-                                .map { purchase -> exchangeRateUseCase.getExchangeRateAtTime(purchase.toCurrencyType, purchase.time).blockingGet() }
+                                .map { purchase ->
+                                    exchangeRateUseCase.getExchangeRateAtTime(
+                                            target = purchase.toCurrencyType,
+                                            unixMilliSeconds =  purchase.time,
+                                            exchangeType = purchase.exchangeType
+                                    ).blockingGet()
+                                }
                                 .fold(DataSource.Success(0.0) as DataSource<Double>) { acc, dataSource ->
                                     acc.join(dataSource) { a, b -> a + b }
                                 }
 
                         val soldAmount = sortedTransactions.sold
                                 .asSequence()
-                                .map { sold -> exchangeRateUseCase.getExchangeRateAtTime(sold.fromCurrencyType, sold.time).blockingGet() }
+                                .map { sold ->
+                                    exchangeRateUseCase.getExchangeRateAtTime(
+                                            target = sold.fromCurrencyType,
+                                            unixMilliSeconds = sold.time,
+                                            exchangeType = sold.exchangeType
+                                    ).blockingGet()
+                                }
                                 .fold(DataSource.Success(0.0) as DataSource<Double>) { acc, dataSource ->
                                     acc.join(dataSource) { a, b -> a + b }
                                 }
 
-                        purchasedAmount.join(soldAmount) { purchased, sold ->
-                            purchased - sold }
+                        purchasedAmount.join(soldAmount) { purchased, sold -> purchased - sold }
                     }.flatten()
                 }
     }

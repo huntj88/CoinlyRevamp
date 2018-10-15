@@ -16,16 +16,13 @@ internal class CurrentPriceRawTransformer(
             .onErrorReturn { DataSource.Error("Could not Update current prices") }
 
     private fun mapJson(data: Map.Entry<CurrencyType, Double>): TimePrice {
-        val targetLocal = data.key
-        val baseLocal = base
-        val price = data.value
-
         return object : TimePrice {
-            override val base: CurrencyType = baseLocal
-            override val target: CurrencyType = targetLocal
+            override val base: CurrencyType = this@CurrentPriceRawTransformer.base
+            override val target: CurrencyType = data.key
 
-            override val price: CurrencyAmount = price
+            override val price: CurrencyAmount = data.value
             override val time: UnixMilliSeconds = System.currentTimeMillis()
+            override val exchange: ExchangeType = ExchangeType.NONE
         }
     }
 }

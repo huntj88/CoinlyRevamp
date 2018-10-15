@@ -6,10 +6,11 @@ import io.reactivex.SingleTransformer
 import me.jameshunt.base.*
 import me.jameshunt.cryptocompare.HistoricalPrice
 
-internal class HistoricalPriceRawTransformer(private val time: UnixMilliSeconds) : SingleTransformer<List<HistoricalPrice>, DataSource<List<TimePrice>>> {
+internal class HistoricalPriceRawTransformer(
+        private val time: UnixMilliSeconds,
+        private val exchange: ExchangeType
+) : SingleTransformer<List<HistoricalPrice>, DataSource<List<TimePrice>>> {
     override fun apply(upstream: Single<List<HistoricalPrice>>): SingleSource<DataSource<List<TimePrice>>> {
-        val timeLocal = time
-
         return upstream
                 .map {
                     it.map { raw ->
@@ -18,9 +19,9 @@ internal class HistoricalPriceRawTransformer(private val time: UnixMilliSeconds)
 
                             override val base: CurrencyType = data.base
                             override val target: CurrencyType = data.target
-
                             override val price: CurrencyAmount = data.price
-                            override val time: UnixMilliSeconds = timeLocal
+                            override val time: UnixMilliSeconds = this@HistoricalPriceRawTransformer.time
+                            override val exchange: ExchangeType = this@HistoricalPriceRawTransformer.exchange
                         }
                     }
                 }

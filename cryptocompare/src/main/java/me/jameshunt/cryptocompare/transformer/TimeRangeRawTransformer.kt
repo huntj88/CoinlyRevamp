@@ -12,23 +12,20 @@ internal class TimeRangeRawTransformer(
         private val target: CurrencyType
 ) : SingleTransformer<TimeRangeRaw, DataSource<List<TimePrice>>> {
     override fun apply(upstream: Single<TimeRangeRaw>): SingleSource<DataSource<List<TimePrice>>> {
-        val baseLocal = base
-        val targetLocal = target
-
         return upstream
-                .map { it.Data.map { raw -> raw.mapTimeRange(baseLocal, targetLocal) } }
+                .map { it.Data.map { raw -> raw.mapTimeRange(this@TimeRangeRawTransformer.base, this@TimeRangeRawTransformer.target) } }
                 .map { DataSource.Success(it) as DataSource<List<TimePrice>> }
                 .onErrorReturn { DataSource.Error("Could not update Time Range Prices") }
     }
 
-    private fun TimePriceRaw.mapTimeRange(baseLocal: CurrencyType, targetLocal: CurrencyType): TimePrice {
-        val data: TimePriceRaw = this
+    private fun TimePriceRaw.mapTimeRange(base: CurrencyType, target: CurrencyType): TimePrice {
         return object : TimePrice {
-            override val base: CurrencyType = baseLocal
-            override val target: CurrencyType = targetLocal
+            override val base: CurrencyType = base
+            override val target: CurrencyType = target
 
-            override val price: CurrencyAmount = data.close
-            override val time: UnixMilliSeconds = data.time * 1000L
+            override val price: CurrencyAmount = this@mapTimeRange.close
+            override val time: UnixMilliSeconds = this@mapTimeRange.time * 1000L
+            override val exchange: ExchangeType = ExchangeType.NONE
         }
     }
 }

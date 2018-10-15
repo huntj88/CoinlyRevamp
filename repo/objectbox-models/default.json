@@ -50,7 +50,7 @@
     },
     {
       "id": "2:5740527641386458278",
-      "lastPropertyId": "7:3138152704062123783",
+      "lastPropertyId": "8:8709484444589590536",
       "name": "TimePriceObjectBox",
       "properties": [
         {
@@ -78,6 +78,10 @@
         {
           "id": "7:3138152704062123783",
           "name": "target"
+        },
+        {
+          "id": "8:8709484444589590536",
+          "name": "exchange"
         }
       ],
       "relations": []

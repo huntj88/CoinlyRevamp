@@ -9,6 +9,7 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import me.jameshunt.base.*
 import me.jameshunt.repo.db.CurrencyTypeConverter
+import me.jameshunt.repo.db.ExchangeTypeConverter
 import me.jameshunt.repo.db.domain.*
 
 internal class TimePriceDatabase(private val box: BoxStore) {
@@ -34,7 +35,9 @@ internal class TimePriceDatabase(private val box: BoxStore) {
                                 .toMap()
 
                 timePrices.forEach { timePrice ->
-                    if (existingPrices[timePrice.time] == null) {
+                    val existing = existingPrices[timePrice.time]
+
+                    if (existingPrices[timePrice.time] == null || existing?.exchange != timePrice.exchange) {
                         timePriceBox.put(timePrice.toObjectBox(updateCategory))
                     }
                 }
@@ -104,16 +107,23 @@ internal class TimePriceDatabase(private val box: BoxStore) {
                 }
     }
 
-    fun getExchangeRateAtTime(base: CurrencyType, target: CurrencyType, milliSeconds: UnixMilliSeconds): Single<DataSource<TimePrice>> {
+    fun getExchangeRateAtTime(
+            base: CurrencyType,
+            target: CurrencyType,
+            milliSeconds: UnixMilliSeconds,
+            exchangeType: ExchangeType
+    ): Single<DataSource<TimePrice>> {
         val timePriceBox = box.boxFor<TimePriceObjectBox>()
 
         val currencyTypeConverter = CurrencyTypeConverter()
+        val exchangeTypeConverter = ExchangeTypeConverter()
 
         val query = timePriceBox
                 .query()
                 .equal(TimePriceObjectBox_.time, milliSeconds)
                 .equal(TimePriceObjectBox_.base, currencyTypeConverter.convertToDatabaseValue(base))
                 .equal(TimePriceObjectBox_.target, currencyTypeConverter.convertToDatabaseValue(target))
+                .equal(TimePriceObjectBox_.exchange, exchangeTypeConverter.convertToDatabaseValue(exchangeType))
                 .build()
 
         return RxQuery.single(query)
@@ -130,6 +140,7 @@ internal class TimePriceDatabase(private val box: BoxStore) {
                 base = this.base,
                 target = this.target,
                 price = this.price,
+                exchange = this.exchange,
                 updateCategory = timePriceUpdateCategory.updateCategory
         )
     }
@@ -140,6 +151,7 @@ internal class TimePriceDatabase(private val box: BoxStore) {
             override val base: CurrencyType = this@fromObjectBox.base
             override val target: CurrencyType = this@fromObjectBox.target
             override val price: CurrencyAmount = this@fromObjectBox.price
+            override val exchange: ExchangeType = this@fromObjectBox.exchange
         }
     }
 }

@@ -44,7 +44,7 @@ enum class TransferType(val id: Long) {
 }
 
 enum class ExchangeType(val id: Long) {
-    NONE(0),
+    NONE(0), // averaged price information uses this in db
     COINBASE(1),
     //BINANCE(2);
 }
@@ -59,6 +59,7 @@ interface TimePrice {
     val base: CurrencyType
     val target: CurrencyType
     val price: CurrencyAmount
+    val exchange: ExchangeType
 
     fun string(): String = "time: $time - base: $base - target: $target - price: $price"
 }

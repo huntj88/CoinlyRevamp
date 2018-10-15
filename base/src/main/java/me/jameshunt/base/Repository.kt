@@ -8,7 +8,12 @@ interface Repository {
     fun updateTimeRanges(base: CurrencyType, target: CurrencyType): Observable<Message>
     fun updateExchangeRates(base: CurrencyType, targets: Set<CurrencyType>): Single<Message>
     fun getCurrentExchangeRate(base: CurrencyType, target: CurrencyType): Observable<DataSource<TimePrice>>
-    fun getExchangeRateAtTime(base: CurrencyType, target: CurrencyType, milliSeconds: UnixMilliSeconds): Single<DataSource<TimePrice>>
+    fun getExchangeRateAtTime(
+            base: CurrencyType,
+            target: CurrencyType,
+            milliSeconds: UnixMilliSeconds,
+            exchangeType: ExchangeType
+    ): Single<DataSource<TimePrice>>
 
     fun writeTransactions(transactions: List<Transaction>): Completable
     fun readTransactions(currencyType: CurrencyType): Observable<DataSource<List<Transaction>>>

@@ -1,10 +1,7 @@
 package me.jameshunt.cryptocompare
 
 import io.reactivex.Single
-import me.jameshunt.base.CurrencyType
-import me.jameshunt.base.DataSource
-import me.jameshunt.base.TimePrice
-import me.jameshunt.base.UnixMilliSeconds
+import me.jameshunt.base.*
 import me.jameshunt.cryptocompare.transformer.CurrentPriceRawTransformer
 import me.jameshunt.cryptocompare.transformer.HistoricalPriceRawTransformer
 import me.jameshunt.cryptocompare.transformer.TimeRangeRawTransformer
@@ -19,9 +16,9 @@ class CryptoCompare {
                 .compose(CurrentPriceRawTransformer(base = base))
     }
 
-    fun getHistoricalPrices(base: CurrencyType, targets: Set<CurrencyType>, time: UnixMilliSeconds): Single<DataSource<List<TimePrice>>> {
+    fun getHistoricalPrices(base: CurrencyType, targets: Set<CurrencyType>, time: UnixMilliSeconds, exchange: ExchangeType): Single<DataSource<List<TimePrice>>> {
         return client.getHistoricalPrice(base = base, targets = targets.joinCurrencies(), time = time)
-                .compose(HistoricalPriceRawTransformer(time = time))
+                .compose(HistoricalPriceRawTransformer(time = time, exchange = exchange))
     }
 
     fun getDailyPrices(base: CurrencyType, target: CurrencyType, numDaysAgo: Int): Single<DataSource<List<TimePrice>>> {

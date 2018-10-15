@@ -16,11 +16,25 @@ class ExchangeRateUseCase @Inject constructor(
         }
     }
 
-    fun getExchangeRateAtTime(target: CurrencyType, unixMilliSeconds: UnixMilliSeconds): Single<DataSource<Double>> {
-        val base = selectedCurrencyUseCase.selectedBase
+    fun getExchangeRateAtTime(target: CurrencyType, unixMilliSeconds: UnixMilliSeconds, exchangeType: ExchangeType): Single<DataSource<Double>> {
+        //fixed for certain exchanges
+        val baseFixed = when(exchangeType) {
+            ExchangeType.COINBASE -> target
+            else -> selectedCurrencyUseCase.selectedBase
+        }
 
-        return repository.getExchangeRateAtTime(base, target, unixMilliSeconds).map { exchangeRate ->
-            exchangeRate.mapSuccess { 1.0 / it.price }
+        val targetFixed = when(exchangeType) {
+            ExchangeType.COINBASE -> selectedCurrencyUseCase.selectedBase
+            else -> target
+        }
+
+        return repository.getExchangeRateAtTime(baseFixed, targetFixed, unixMilliSeconds, exchangeType).map { exchangeRate ->
+            exchangeRate.mapSuccess {
+                when(exchangeType) {
+                    ExchangeType.COINBASE -> it.price
+                    else -> 1.0 / it.price
+                }
+            }
         }
     }
 }
