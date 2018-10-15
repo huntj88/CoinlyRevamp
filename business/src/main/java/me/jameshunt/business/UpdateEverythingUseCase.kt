@@ -22,13 +22,13 @@ class UpdateEverythingUseCase @Inject constructor(
 
     private fun updateExchangeRates(): Single<Message> {
         return repository.updateExchangeRates(
-                base = selectedCurrencyUseCase.getSelectedBase().blockingFirst(),
+                base = selectedCurrencyUseCase.selectedBase,
                 targets = enabledCurrencyUseCase.getEnabledCurrencies().blockingFirst()
         )
     }
 
     private fun updateTimeRanges(): Observable<Message> {
-        val base = selectedCurrencyUseCase.getSelectedBase().blockingFirst()
+        val base = selectedCurrencyUseCase.selectedBase
 
         return enabledCurrencyUseCase.getEnabledCurrencies()
                 .flatMap {

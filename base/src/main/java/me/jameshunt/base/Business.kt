@@ -4,8 +4,7 @@ import io.reactivex.Observable
 
 interface SelectedCurrencyUseCase {
 
-    fun getSelectedBase(): Observable<CurrencyType>
-    fun setSelectedBase(coinType: CurrencyType)
+    var selectedBase: CurrencyType
 
     fun getSelectedTarget(): Observable<CurrencyType>
     fun setSelectedTarget(currencyType: CurrencyType)

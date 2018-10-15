@@ -35,6 +35,27 @@ class Repo(context: Any) : Repository {
         return timePriceDatabase.getCurrentExchangeRate(base, target)
     }
 
+    // we need to specify the exchange
+    override fun getExchangeRateAtTime(base: CurrencyType, target: CurrencyType, milliSeconds: UnixMilliSeconds): Single<DataSource<TimePrice>> {
+        return timePriceDatabase.getExchangeRateAtTime(base, target, milliSeconds).flatMap { dataSource ->
+            when (dataSource) {
+                is DataSource.Success -> Single.just(dataSource)
+                is DataSource.Error -> {
+                    cryptoCompare
+                            .getHistoricalPrices(base = base, targets = setOf(target), time = milliSeconds)
+                            .flatMapCompletable {
+                                when (it) {
+                                    is DataSource.Error -> Completable.complete()
+                                    is DataSource.Success -> timePriceDatabase
+                                            .writeTimePrice(it.data, TimePriceDatabase.TimePriceUpdateCategory.ExchangeRate)
+                                }
+                            }
+                            .andThen(timePriceDatabase.getExchangeRateAtTime(base, target, milliSeconds))
+                }
+            }
+        }
+    }
+
     override fun writeTransactions(transactions: List<Transaction>): Completable {
         return transactionDatabase.writeTransactions(transactions)
     }

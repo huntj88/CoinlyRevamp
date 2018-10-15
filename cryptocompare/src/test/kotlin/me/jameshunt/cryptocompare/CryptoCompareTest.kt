@@ -23,7 +23,7 @@ class CryptoCompareTest : BaseTester() {
     fun getHistoricalPrice() {
         CryptoCompare()
                 .getHistoricalPrices(CurrencyType.USD, setOf(CurrencyType.ETH, CurrencyType.BTC), time = 1537206634471)
-                .doOnSuccess { it.printTimePrices() }
+                .doOnSuccess { printResults(it) }
                 .testSingle()
     }
 

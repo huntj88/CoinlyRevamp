@@ -3,7 +3,6 @@ package me.jameshunt.coinbase
 import com.squareup.moshi.Json
 import me.jameshunt.base.*
 import org.threeten.bp.Instant
-import kotlin.math.absoluteValue
 
 data class CoinbaseTransaction(
         val pagination: Pagination,
@@ -75,9 +74,7 @@ data class Data(
         return when (status) {
             "completed" -> TransactionStatus.COMPLETE
             "pending" -> TransactionStatus.PENDING
-            else -> {
-                TransactionStatus.UNSUPPORTED
-            }
+            else -> TransactionStatus.UNSUPPORTED
         }
     }
 

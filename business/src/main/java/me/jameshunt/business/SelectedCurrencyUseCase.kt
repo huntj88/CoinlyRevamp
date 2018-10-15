@@ -10,22 +10,7 @@ import javax.inject.Inject
 @ActivityScope
 class SelectedCurrencyUseCaseImpl @Inject constructor(): SelectedCurrencyUseCase {
 
-    private lateinit var emitterBase: ObservableEmitter<CurrencyType>
-    private val observableBase = Observable
-            .create<CurrencyType> {
-                emitterBase = it
-                emitterBase.onNext(CurrencyType.USD)
-            }
-            .distinctUntilChanged()
-            .replay(1)
-            .autoConnect()
-
-    override fun getSelectedBase(): Observable<CurrencyType> = observableBase
-
-    override fun setSelectedBase(coinType: CurrencyType) {
-        emitterBase.onNext(coinType)
-    }
-
+    override var selectedBase = CurrencyType.USD
 
 
     private lateinit var emitterTarget: ObservableEmitter<CurrencyType>
@@ -45,7 +30,6 @@ class SelectedCurrencyUseCaseImpl @Inject constructor(): SelectedCurrencyUseCase
     }
 
     init {
-        println(getSelectedBase().blockingFirst())
         println(getSelectedTarget().blockingFirst())
     }
 }

@@ -5,6 +5,7 @@ import io.objectbox.kotlin.boxFor
 import io.objectbox.rx.RxQuery
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import me.jameshunt.base.*
 import me.jameshunt.repo.db.CurrencyTypeConverter
@@ -88,7 +89,7 @@ internal class TimePriceDatabase(private val box: BoxStore) {
 
         val currencyTypeConverter = CurrencyTypeConverter()
 
-        val query =  timePriceBox
+        val query = timePriceBox
                 .query()
                 .equal(TimePriceObjectBox_.base, currencyTypeConverter.convertToDatabaseValue(base))
                 .equal(TimePriceObjectBox_.target, currencyTypeConverter.convertToDatabaseValue(target))
@@ -96,10 +97,31 @@ internal class TimePriceDatabase(private val box: BoxStore) {
                 .build()
 
         return RxQuery.observable(query)
-                .map { it.first() }
-                .map { it.fromObjectBox() }
-                .map { DataSource.Success(it) as DataSource<TimePrice> }
-//                .onErrorReturn { DataSource.Error("") } todo: handle error
+                .map {
+                    it.firstOrNull()?.fromObjectBox()?.run {
+                        DataSource.Success(this)
+                    } ?: DataSource.Error("Could not get price in past")
+                }
+    }
+
+    fun getExchangeRateAtTime(base: CurrencyType, target: CurrencyType, milliSeconds: UnixMilliSeconds): Single<DataSource<TimePrice>> {
+        val timePriceBox = box.boxFor<TimePriceObjectBox>()
+
+        val currencyTypeConverter = CurrencyTypeConverter()
+
+        val query = timePriceBox
+                .query()
+                .equal(TimePriceObjectBox_.time, milliSeconds)
+                .equal(TimePriceObjectBox_.base, currencyTypeConverter.convertToDatabaseValue(base))
+                .equal(TimePriceObjectBox_.target, currencyTypeConverter.convertToDatabaseValue(target))
+                .build()
+
+        return RxQuery.single(query)
+                .map {
+                    it.firstOrNull()?.fromObjectBox()?.run {
+                        DataSource.Success(this)
+                    } ?: DataSource.Error("Could not get price in past")
+                }
     }
 
     private fun TimePrice.toObjectBox(timePriceUpdateCategory: TimePriceUpdateCategory): TimePriceObjectBox {

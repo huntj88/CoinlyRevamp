@@ -19,7 +19,7 @@ class CryptoCompare {
                 .compose(CurrentPriceRawTransformer(base = base))
     }
 
-    fun getHistoricalPrices(base: CurrencyType, targets: Set<CurrencyType>, time: UnixMilliSeconds): Single<List<TimePrice>> {
+    fun getHistoricalPrices(base: CurrencyType, targets: Set<CurrencyType>, time: UnixMilliSeconds): Single<DataSource<List<TimePrice>>> {
         return client.getHistoricalPrice(base = base, targets = targets.joinCurrencies(), time = time)
                 .compose(HistoricalPriceRawTransformer(time = time))
     }

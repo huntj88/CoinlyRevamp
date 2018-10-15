@@ -14,11 +14,11 @@ class ValueUseCase @Inject constructor(
     fun getValue(currencyType: CurrencyType): Observable<DataSource<Double>> {
         val currencyAmountObservable = currencyAmountUseCase.getCurrencyAmount(currencyType = currencyType)
 
-        val exchangeRateObservable = selectedCurrencyUseCase
-                .getSelectedBase()
-                .flatMap {
-                    exchangeRateUseCase.getCurrentExchangeRate(base = it, target = currencyType)
-                }
+        val exchangeRateObservable = exchangeRateUseCase.getCurrentExchangeRate(
+                base =  selectedCurrencyUseCase.selectedBase,
+                target = currencyType
+        )
+
 
         return Observables.combineLatest(currencyAmountObservable, exchangeRateObservable) { currencyAmount, exchangeRate ->
             currencyAmount.join(exchangeRate) { amount, exchange ->

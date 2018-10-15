@@ -5,10 +5,7 @@ import io.reactivex.rxkotlin.Observables
 import me.jameshunt.appbase.template.*
 import me.jameshunt.appbase.template.card.*
 import me.jameshunt.base.*
-import me.jameshunt.business.ExchangeRateUseCase
-import me.jameshunt.business.EnabledCurrencyUseCase
-import me.jameshunt.business.CurrencyAmountUseCase
-import me.jameshunt.business.ValueUseCase
+import me.jameshunt.business.*
 import javax.inject.Inject
 
 class SummaryFragment : TemplateFragment<SummaryViewModel>() {
@@ -23,7 +20,9 @@ class SummaryViewModel @Inject constructor(
         private val selectedCurrencyUseCase: SelectedCurrencyUseCase,
         private val exchangeRateUseCase: ExchangeRateUseCase,
         private val currencyAmountUseCase: CurrencyAmountUseCase,
-        private val valueUseCase: ValueUseCase
+        private val valueUseCase: ValueUseCase,
+        private val paidUseCase: PaidUseCase,
+        private val gainUseCase: GainUseCase
 ) : TemplateViewModel {
 
     override fun getAdapterData(): Observable<List<TemplateObservableWrapper>> {
@@ -55,22 +54,32 @@ class SummaryViewModel @Inject constructor(
     private fun getTargetCurrencyCard(target: CurrencyType): Observable<CardTemplateData> {
 
         val currencyAmountObservable = currencyAmountUseCase.getCurrencyAmount(currencyType = target)
-        val priceObservable = selectedCurrencyUseCase.getSelectedBase()
-                .flatMap { exchangeRateUseCase.getCurrentExchangeRate(it, target) }
+        val priceObservable = exchangeRateUseCase.getCurrentExchangeRate(selectedCurrencyUseCase.selectedBase, target)
 
         val valueObservable = valueUseCase.getValue(target)
 
-        return Observables.combineLatest(priceObservable, currencyAmountObservable, valueObservable) { price, currencyAmount, value ->
+        val paidObservable = paidUseCase.getPaidForCurrentlyHeld(target)
+        val gainObservable = gainUseCase.getUnrealizedGain(target)
+
+        return Observables.combineLatest(
+                priceObservable,
+                currencyAmountObservable,
+                valueObservable,
+                paidObservable,
+                gainObservable
+        ) { price, currencyAmount, value, paid, gain ->
             currencyCardUI(
                     target = target,
                     price = price.mapSuccess { it.toString() }.output(),
                     currencyAmount = currencyAmount.mapSuccess { it.toString() }.output(),
-                    value = value.mapSuccess { it.toString() }.output()
+                    value = value.mapSuccess { it.toString() }.output(),
+                    paid = paid.mapSuccess { it.toString() }.output(),
+                    gain = gain.mapSuccess { it.toString() }.output()
             )
         }
     }
 
-    private fun currencyCardUI(target: CurrencyType, price: String, currencyAmount: String, value: String): CardTemplateData {
+    private fun currencyCardUI(target: CurrencyType, price: String, currencyAmount: String, value: String, paid: String, gain: String): CardTemplateData {
         return CardTemplateData(sections = listOf(
                 CardHeaderActionData(text = target.fullName, actionText = "view more", action = {
                     selectedCurrencyUseCase.setSelectedTarget(target)
@@ -86,8 +95,8 @@ class SummaryViewModel @Inject constructor(
                 CardSlidingData(data = listOf(
                         CardSlidingData.CardSlideItemData(title = L10n.price, value = price),
                         CardSlidingData.CardSlideItemData(title = L10n.balance, value = value),
-                        CardSlidingData.CardSlideItemData(title = L10n.paid, value = "0100"),
-                        CardSlidingData.CardSlideItemData(title = L10n.net_profit, value = "0020"),
+                        CardSlidingData.CardSlideItemData(title = L10n.paid, value = paid),
+                        CardSlidingData.CardSlideItemData(title = L10n.net_profit, value = gain),
                         CardSlidingData.CardSlideItemData(title = L10n.sold, value = "0003")
                 )),
                 CardDividerData(height = 20, margin = 0, color = R.color.colorAccent)
