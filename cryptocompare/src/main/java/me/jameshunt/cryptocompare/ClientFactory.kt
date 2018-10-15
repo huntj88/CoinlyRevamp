@@ -5,7 +5,6 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import me.jameshunt.base.CurrencyType
-import me.jameshunt.base.UnixMilliSeconds
 import me.jameshunt.cryptocompare.raw.TimeRangeRaw
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -33,6 +32,7 @@ internal class ClientFactory {
             .baseUrl("https://min-api.cryptocompare.com/data/")
             .client(okhttp)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
+//            .addConverterFactory(ExchangeTypeConverter())
             .addCallAdapterFactory(getRxAdapter())
             .build()
 
@@ -61,6 +61,18 @@ internal class ClientFactory {
 //    }
 //}
 
+//internal class ExchangeTypeConverter : Converter.Factory() {
+//    override fun stringConverter(type: Type, annotations: Array<out Annotation>, retrofit: Retrofit): Converter<ExchangeType, String>? {
+//
+//        val isSameType = (type is Class<*> && type.isEnum)
+//
+//        return when (isSameType) {
+//            true -> Converter { it.name.toLowerCase().capitalize() }
+//            false -> null
+//        }
+//    }
+//}
+
 interface CryptoCompareApi {
 
     @GET("price")
@@ -73,7 +85,9 @@ interface CryptoCompareApi {
     fun getHistoricalPrice(
             @Query("fsym") base: CurrencyType,
             @Query("tsyms") targets: String,
-            @Query("ts") time: UnixMilliSeconds
+            @Query("ts") time: Long, //seconds, not milli
+            //todo made enum
+            @Query("e") exchange: String
     ): Single<List<HistoricalPrice>>
 
 
