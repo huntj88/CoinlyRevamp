@@ -4,100 +4,98 @@
   "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
   "entities": [
     {
-      "id": "1:652350446324163994",
-      "lastPropertyId": "9:114408132712337658",
+      "id": "1:8899873023645047922",
+      "lastPropertyId": "9:739975100378563130",
       "name": "TransactionObjectBox",
       "properties": [
         {
-          "id": "1:8834768496090897224",
+          "id": "1:3362251583142217687",
           "name": "id"
         },
         {
-          "id": "2:8901098143903995302",
-          "indexId": "1:5379090800302287464",
+          "id": "2:2807249539221541501",
+          "indexId": "1:3820285090453427636",
           "name": "transactionId"
         },
         {
-          "id": "3:2610912230718318624",
+          "id": "3:5177729847175128656",
           "name": "fromCurrencyType"
         },
         {
-          "id": "4:1270748333673863610",
+          "id": "4:7694400834844569109",
           "name": "fromAmount"
         },
         {
-          "id": "5:734111088278247537",
+          "id": "5:3823479974990916863",
           "name": "toCurrencyType"
         },
         {
-          "id": "6:8711811612310341380",
+          "id": "6:7951936738257678006",
           "name": "toAmount"
         },
         {
-          "id": "7:1473724753641256516",
+          "id": "7:6857638936159594613",
           "name": "time"
         },
         {
-          "id": "8:1337676664399320241",
+          "id": "8:6823209136987394135",
           "name": "status"
         },
         {
-          "id": "9:114408132712337658",
+          "id": "9:739975100378563130",
           "name": "exchangeType"
         }
       ],
       "relations": []
     },
     {
-      "id": "2:5740527641386458278",
-      "lastPropertyId": "8:8709484444589590536",
+      "id": "2:2277406826975916564",
+      "lastPropertyId": "7:3812652098505678224",
       "name": "TimePriceObjectBox",
       "properties": [
         {
-          "id": "1:2371149218013510054",
+          "id": "1:5834807122078491199",
           "name": "id"
         },
         {
-          "id": "2:1278132490567921888",
-          "indexId": "2:8954195142217943572",
+          "id": "2:7069780561808079213",
+          "indexId": "2:205780670908207244",
           "name": "time"
         },
         {
-          "id": "3:6977980896544326045",
+          "id": "3:4877289353694561596",
           "name": "base"
         },
         {
-          "id": "5:7454034952567251654",
-          "name": "price"
-        },
-        {
-          "id": "6:3214291123319475683",
-          "indexId": "3:2304651651825317055",
-          "name": "updateCategory"
-        },
-        {
-          "id": "7:3138152704062123783",
+          "id": "4:1512478542289368614",
           "name": "target"
         },
         {
-          "id": "8:8709484444589590536",
+          "id": "5:5545497952947899352",
+          "name": "price"
+        },
+        {
+          "id": "6:457601650928986137",
           "name": "exchange"
+        },
+        {
+          "id": "7:3812652098505678224",
+          "indexId": "3:4602231866668014436",
+          "name": "updateCategory"
         }
       ],
       "relations": []
     }
   ],
-  "lastEntityId": "2:5740527641386458278",
-  "lastIndexId": "3:2304651651825317055",
+  "lastEntityId": "2:2277406826975916564",
+  "lastIndexId": "3:4602231866668014436",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 4,
   "modelVersionParserMinimum": 4,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [
-    6231772327632603800
-  ],
+  "retiredPropertyUids": [],
   "retiredRelationUids": [],
   "version": 1
 }

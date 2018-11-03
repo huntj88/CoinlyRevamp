@@ -1,6 +1,7 @@
 package me.jameshunt.appbase.template
 
 import android.os.Bundle
+import android.support.annotation.CallSuper
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -24,12 +25,15 @@ abstract class TemplateFragment<ViewModel : TemplateViewModel> : BaseFragment() 
 
     private var disposable: Disposable? = null
 
+    open val layoutId = R.layout.fragment_template
+
     abstract fun inject()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_template, container, false)
+        return inflater.inflate(layoutId, container, false)
     }
 
+    @CallSuper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         inject()
 

@@ -9,10 +9,8 @@ interface VisibilityManager {
 
         val ft = fragmentManager.beginTransaction()
 
-        when (fragment != null) {
-            true -> ft.show(fragment)
-            false -> ft.add(R.id.fragmentFrameLayout, fragmentID.newInstance(), fragmentID.name)
-        }
+        fragment?.apply { ft.show(fragment) }
+                ?: ft.add(R.id.fragmentFrameLayout, fragmentID.newInstance(), fragmentID.name)
 
         val oldFragment: BaseFragment? = fragmentManager.findFragmentByTag(oldFragmentID.name) as BaseFragment?
         oldFragment?.let { ft.remove(oldFragment) }
@@ -25,10 +23,8 @@ interface VisibilityManager {
 
         val ft = fragmentManager.beginTransaction()
 
-        when (fragment != null) {
-            true -> ft.show(fragment)
-            false -> ft.add(R.id.fragmentFrameLayout, fragmentID.newInstance(), fragmentID.name)
-        }
+        fragment?.apply { ft.show(fragment) }
+                ?: ft.add(R.id.fragmentFrameLayout, fragmentID.newInstance(), fragmentID.name)
 
         val oldFragment: BaseFragment? = fragmentManager.findFragmentByTag(oldFragmentID.name) as BaseFragment?
         oldFragment?.let { ft.hide(oldFragment) }
