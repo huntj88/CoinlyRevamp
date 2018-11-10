@@ -27,6 +27,16 @@ inline fun <T, R> DataSource<T>.mapSuccess(transform: (T) -> R): DataSource<R> {
     }
 }
 
+inline fun <T> DataSource<T>.doOnError(doOnError: () -> Unit): DataSource<T> {
+    return when (this) {
+        is DataSource.Success -> this
+        is DataSource.Error -> {
+            doOnError()
+            this
+        }
+    }
+}
+
 fun <T: DataSource<R>, R> DataSource<T>.flatten(): DataSource<R> {
     return when (this) {
         is DataSource.Success -> this.data

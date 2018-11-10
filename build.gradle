@@ -38,6 +38,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url "https://jitpack.io" }
     }
 
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
@@ -46,6 +47,13 @@ allprojects {
 
         kotlinOptions {
             jvmTarget = '1.8'
+        }
+    }
+
+    afterEvaluate {
+        extensions.findByName('kapt')?.arguments {
+            arg('dagger.formatGeneratedSource', 'disabled')
+            arg('dagger.gradle.incremental', 'enabled')
         }
     }
 }

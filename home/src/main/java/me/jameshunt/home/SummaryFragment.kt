@@ -6,6 +6,7 @@ import me.jameshunt.appbase.template.*
 import me.jameshunt.appbase.template.card.*
 import me.jameshunt.base.*
 import me.jameshunt.business.*
+import me.jameshunt.business.gain.GainUseCase
 import javax.inject.Inject
 
 class SummaryFragment : TemplateFragment<SummaryViewModel>() {
@@ -60,26 +61,37 @@ class SummaryViewModel @Inject constructor(
 
         val paidObservable = paidUseCase.getPaidForCurrentlyHeld(target)
         val gainObservable = gainUseCase.getUnrealizedGain(target)
+        val realizedGainObservable = gainUseCase.getRealizedGain(target)
 
         return Observables.combineLatest(
                 priceObservable,
                 currencyAmountObservable,
                 valueObservable,
                 paidObservable,
-                gainObservable
-        ) { price, currencyAmount, value, paid, gain ->
+                gainObservable,
+                realizedGainObservable
+        ) { price, currencyAmount, value, paid, gain, realizedGain ->
             currencyCardUI(
                     target = target,
                     price = price.mapSuccess { it.toString() }.output(),
                     currencyAmount = currencyAmount.mapSuccess { it.toString() }.output(),
                     value = value.mapSuccess { it.toString() }.output(),
                     paid = paid.mapSuccess { it.toString() }.output(),
-                    gain = gain.mapSuccess { it.toString() }.output()
+                    gain = gain.mapSuccess { it.toString() }.output(),
+                    realizedGain = realizedGain.mapSuccess { it.toString() }.output()
             )
         }
     }
 
-    private fun currencyCardUI(target: CurrencyType, price: String, currencyAmount: String, value: String, paid: String, gain: String): CardTemplateData {
+    private fun currencyCardUI(
+            target: CurrencyType,
+            price: String,
+            currencyAmount: String,
+            value: String,
+            paid: String,
+            gain: String,
+            realizedGain: String
+    ): CardTemplateData {
         return CardTemplateData(sections = listOf(
                 CardHeaderActionData(text = target.fullName, actionText = "view more", action = {
                     selectedCurrencyUseCase.setSelectedTarget(target)
@@ -97,6 +109,7 @@ class SummaryViewModel @Inject constructor(
                         CardSlidingData.CardSlideItemData(title = L10n.balance, value = value),
                         CardSlidingData.CardSlideItemData(title = L10n.paid, value = paid),
                         CardSlidingData.CardSlideItemData(title = L10n.net_profit, value = gain),
+                        CardSlidingData.CardSlideItemData(title = "realized gain", value = realizedGain),
                         CardSlidingData.CardSlideItemData(title = L10n.sold, value = "0003")
                 )),
                 CardDividerData(height = 20, margin = 0, color = R.color.colorAccent)
