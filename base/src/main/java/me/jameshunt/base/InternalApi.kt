@@ -51,6 +51,13 @@ fun DataSource<String>.output(): String {
     }
 }
 
+fun DataSource<Double>.outputDouble(): String {
+    return when (this) {
+        is DataSource.Success -> this.data.toString()
+        is DataSource.Error -> this.message
+    }
+}
+
 /**
  * These Messages are more like a completable of individual an task.
  * This allows you to chain them together into a stream of multiple completed tasks.

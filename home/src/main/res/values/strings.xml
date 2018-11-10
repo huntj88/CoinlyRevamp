@@ -1,10 +1,11 @@
 <resources>
-    <string name="gain_on_portfolio">Gain on Portfolio</string>
-    <string name="gain_on_currency">Gain on %1$s</string>
+    <string name="gain_on_portfolio">Gain on Portfolio</string> <!-- unrealized + realized -->
+    <string name="gain_on_currency">Gain on %1$s</string> <!-- unrealized + realized -->
     <string name="price">Price</string>
     <string name="balance">Balance</string>
     <string name="value">Value</string>
     <string name="paid">Paid</string>
-    <string name="net_profit">Net Profit</string>
+    <string name="realized_gain">Realized Gain</string>
     <string name="sold">Sold</string>
+    <string name="view_more">View More</string>
 </resources>

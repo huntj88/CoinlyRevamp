@@ -25,7 +25,7 @@ class GainUseCase @Inject constructor(
 
     fun getNetProfit(currencyType: CurrencyType): Observable<DataSource<Double>> {
         val combinedObservable = Observables.combineLatest(
-                this.getRealizedGain(currencyType),
+                this.getUnrealizedGain(currencyType),
                 realizedGainUseCase.getRealizedGain(currencyType))
 
         return combinedObservable.map  { (realized, unrealized) ->
