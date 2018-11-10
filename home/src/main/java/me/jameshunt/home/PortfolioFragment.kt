@@ -10,6 +10,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import me.jameshunt.appbase.template.*
 import me.jameshunt.base.CurrencyType
 import me.jameshunt.base.SelectedCurrencyUseCase
+import me.jameshunt.currencyselect.CurrencySelectDialogManager
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -29,7 +30,10 @@ class PortfolioFragment : TemplateFragment<PortfolioViewModel>() {
         this.toolbarDisposable = this.viewModel.getToolbarData().subscribeBy(
                 onNext = { toolbarData ->
                     view.findViewById<ImageView>(R.id.backButton).setOnClickListener { toolbarData.back() }
-                    view.findViewById<TextView>(R.id.dropDownTitle).text = toolbarData.title
+                    view.findViewById<TextView>(R.id.dropDownTitle).apply {
+                        text = toolbarData.title
+                        setOnClickListener { viewModel.showCurrencySelectDialog() }
+                    }
                 },
                 onError = { Timber.e(it) },
                 onComplete = { Timber.i("toolbar data complete") }
@@ -44,7 +48,8 @@ class PortfolioFragment : TemplateFragment<PortfolioViewModel>() {
 
 class PortfolioViewModel @Inject constructor(
         private val visibilityManager: HomeFragmentVisibilityManager,
-        private val selectedCurrencyUseCase: SelectedCurrencyUseCase
+        private val selectedCurrencyUseCase: SelectedCurrencyUseCase,
+        private val currencySelect: CurrencySelectDialogManager
 ) : TemplateViewModel {
 
     override fun getAdapterData(): Observable<List<TemplateObservableWrapper>> {
@@ -76,6 +81,10 @@ class PortfolioViewModel @Inject constructor(
                     addTransaction = { Timber.i("add transaction clicked") }
             )
         }
+    }
+
+    fun showCurrencySelectDialog() {
+        currencySelect.showDialog()
     }
 
     override fun cleanUp() {

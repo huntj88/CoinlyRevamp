@@ -5,10 +5,11 @@ import android.support.v4.app.FragmentManager
 import dagger.Component
 import me.jameshunt.appbase.BaseAndroidActivityComponent
 import me.jameshunt.appbase.FragmentManagerModule
+import me.jameshunt.currencyselect.CurrencySelectModule
 import javax.inject.Scope
 
 @HomeScope
-@Component(modules = [FragmentManagerModule::class, HomeFragmentVisibilityModule::class], dependencies = [BaseAndroidActivityComponent::class])
+@Component(modules = [FragmentManagerModule::class, HomeFragmentVisibilityModule::class, CurrencySelectModule::class], dependencies = [BaseAndroidActivityComponent::class])
 interface HomeComponent {
 
     companion object {

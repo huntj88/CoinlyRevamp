@@ -1,1 +1,1 @@
-include ':app', ':base', ':androidbase', ':home', ':more', ':cryptocompare', ':repo', ':coinbase', ':business'
+include ':app', ':base', ':androidbase', ':home', ':more', ':cryptocompare', ':repo', ':coinbase', ':business', ':currencyselect'
