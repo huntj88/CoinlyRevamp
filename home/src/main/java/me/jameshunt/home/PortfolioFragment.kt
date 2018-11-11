@@ -12,6 +12,10 @@ import me.jameshunt.appbase.template.card.*
 import me.jameshunt.base.*
 import me.jameshunt.business.TimeTypePricesUseCase
 import me.jameshunt.currencyselect.CurrencySelectDialogManager
+import org.threeten.bp.Instant
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
+import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -94,6 +98,17 @@ class PortfolioViewModel @Inject constructor(
         )
     }
 
+    private fun LocalDateTime.timeTypeLabel(timeType: TimeType): String {
+        return when (timeType) {
+            TimeType.HOUR,
+            TimeType.DAY -> DateTimeFormatter.ofPattern("h:mm a")
+
+            TimeType.WEEK,
+            TimeType.MONTH,
+            TimeType.YEAR -> DateTimeFormatter.ofPattern("MMM d")
+        }.format(this)
+    }
+
     private fun getLineChart(currencyType: CurrencyType): Observable<CardTemplateData> {
         return selectedTimeTypeUseCase.getSelectedTimeType().flatMap { timeType ->
 
@@ -102,7 +117,7 @@ class PortfolioViewModel @Inject constructor(
                 val points = timePrices
                         .map {
                             CardLineChartData.Point(
-                                    x = it.time / 1000000.0f,
+                                    x = it.time / 1000.0f,
                                     y = 1 / it.price.toFloat()
                             )
                         }
@@ -112,7 +127,14 @@ class PortfolioViewModel @Inject constructor(
                         CardDividerData(heightDp = 1, margin = 24),
                         CardLineChartData(
                                 points = points,
-                                timeType = timeType
+                                timeType = timeType,
+                                labelFormatter = { unixSeconds ->
+                                    Instant
+                                            .ofEpochSecond(unixSeconds.toLong())
+                                            .atZone(ZoneId.systemDefault())
+                                            .toLocalDateTime()
+                                            .timeTypeLabel(timeType)
+                                }
                         ),
                         CardTimeSelectData(
                                 selected = timeType,

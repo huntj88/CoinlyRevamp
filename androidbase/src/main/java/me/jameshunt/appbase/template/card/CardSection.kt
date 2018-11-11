@@ -38,7 +38,7 @@ data class CardSlidingData(val data: List<CardSlideItemData>) : CardSectionData 
     data class CardSlideItemData(val title: String, val value: String)
 }
 
-data class CardLineChartData(val points: List<Point>, val timeType: TimeType) : CardSectionData {
+data class CardLineChartData(val points: List<Point>, val timeType: TimeType, val labelFormatter: (Float) -> String) : CardSectionData {
     data class Point(val x: Float, val y: Float)
 }
 

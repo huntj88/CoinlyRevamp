@@ -7,9 +7,11 @@ import android.widget.LinearLayout
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import me.jameshunt.appbase.R
 import me.jameshunt.appbase.template.card.CardLineChartData
 
@@ -24,8 +26,21 @@ class CardLineChart {
             val lineChart = inflater.inflate(R.layout.card_line_chart, parent, false) as LineChart
 
             return lineChart.apply {
-                this.setViewPortOffsets(0f, 0f, 0f, 0f)
-                listOf(this.xAxis, this.axisLeft, this.axisRight).handleAllAxis()
+
+                listOf(this.axisLeft, this.axisRight).handleAllAxis()
+
+                this.xAxis.apply {
+                    this.setDrawAxisLine(false)
+                    this.setDrawGridLines(false)
+
+                    this.position = XAxis.XAxisPosition.BOTTOM
+                    this.yOffset = 10f
+
+                    this.setLabelCount(5, true)
+                    this.valueFormatter = IAxisValueFormatter { value, _ ->
+                        data.labelFormatter(value)
+                    }
+                }
 
                 val lineColor = ContextCompat.getColor(this.context, R.color.colorPrimary)
                 this.data = getGraphData(data, lineColor)
@@ -38,7 +53,11 @@ class CardLineChart {
 
                 this.description = Description().apply { text = "" }
 
-                this.invalidate()
+                this.setViewPortOffsets(0f, 0f, 0f, 80f)
+
+                this.postDelayed({
+                    this.invalidate()
+                },1)
             }
         }
 

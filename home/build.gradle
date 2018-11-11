@@ -43,6 +43,7 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxandroid:$rxjava_android_version"
 
     implementation "com.jakewharton.timber:timber:$timber_version"
+    implementation "com.jakewharton.threetenabp:threetenabp:$three_ten_abp_version"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "com.android.support:appcompat-v7:$android_support_version"
