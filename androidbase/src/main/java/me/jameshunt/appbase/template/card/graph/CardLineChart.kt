@@ -20,27 +20,26 @@ import me.jameshunt.appbase.template.card.CardLineChartData
 class CardLineChart {
     companion object {
         fun create(data: CardLineChartData, parent: LinearLayout): View {
-            val layoutInflater = LayoutInflater.from(parent.context)
-            val lineChart = layoutInflater.inflate(R.layout.card_line_chart, parent, false) as LineChart
+            val inflater = LayoutInflater.from(parent.context)
+            val lineChart = inflater.inflate(R.layout.card_line_chart, parent, false) as LineChart
 
-            lineChart.setViewPortOffsets(0f, 0f, 0f, 0f)
+            return lineChart.apply {
+                this.setViewPortOffsets(0f, 0f, 0f, 0f)
+                listOf(this.xAxis, this.axisLeft, this.axisRight).handleAllAxis()
 
-            val lineColor = ContextCompat.getColor(lineChart.context, R.color.colorPrimary)
-            lineChart.data = getGraphData(data, lineColor)
+                val lineColor = ContextCompat.getColor(this.context, R.color.colorPrimary)
+                this.data = getGraphData(data, lineColor)
 
-            handleAllAxis(listOf(lineChart.xAxis, lineChart.axisLeft, lineChart.axisRight))
+                this.setDrawGridBackground(false)
+                this.setPinchZoom(false)
+                this.isHighlightPerTapEnabled = false
+                this.isDoubleTapToZoomEnabled = false
+                this.legend.isEnabled = false
 
-            lineChart.setDrawGridBackground(false)
-            lineChart.setPinchZoom(false)
-            lineChart.isHighlightPerTapEnabled = false
-            lineChart.isDoubleTapToZoomEnabled = false
-            lineChart.legend.isEnabled = false
+                this.description = Description().apply { text = "" }
 
-            lineChart.description = Description().apply { text = "" }
-
-            lineChart.invalidate()
-
-            return lineChart
+                this.invalidate()
+            }
         }
 
         private fun getGraphData(data: CardLineChartData, color: Int): LineData {
@@ -49,22 +48,20 @@ class CardLineChart {
                     .let { it.smoothData() }
                     .map { Entry(it.x, it.y) }
 
-
-            val lineDataSet = LineDataSet(points, "prices")
-
-            lineDataSet.setDrawCircles(false)
-            lineDataSet.setDrawValues(false)
-            lineDataSet.setDrawHighlightIndicators(false)
-            lineDataSet.setDrawFilled(true)
-
-            lineDataSet.fillColor = color
-            lineDataSet.color = color
+            val lineDataSet = LineDataSet(points, "prices").apply {
+                this.setDrawCircles(false)
+                this.setDrawValues(false)
+                this.setDrawHighlightIndicators(false)
+                this.setDrawFilled(true)
+                this.fillColor = color
+                this.color = color
+            }
 
             return LineData(lineDataSet)
         }
 
-        private fun handleAllAxis(axisList: List<AxisBase>) {
-            axisList.forEach {
+        private fun List<AxisBase>.handleAllAxis() {
+            this.forEach {
                 it.setDrawAxisLine(false)
                 it.setDrawLabels(false)
                 it.setDrawGridLines(false)
