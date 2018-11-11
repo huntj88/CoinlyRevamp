@@ -16,13 +16,13 @@ internal class TimePriceDatabase(private val box: BoxStore) {
 
     fun readTimeTypePrices(base: CurrencyType, target: CurrencyType, timeType: TimeType): Observable<List<TimePrice>> {
 
-        fun TimeType.getMilliForTimeType(): Int = when (this) {
+        fun TimeType.getMilliForTimeType(): Long = when (this) {
             TimeType.HOUR -> 60 * 60
             TimeType.DAY -> 60 * 60 * 24
             TimeType.WEEK -> (60 * 60 * 24 * 7)
             TimeType.MONTH -> (60 * 60 * 24 * 30)
             TimeType.YEAR -> (60 * 60 * 24 * 365)
-        } * 1000
+        } * 1000L
 
         val timePriceBox = box.boxFor<TimePriceObjectBox>()
 

@@ -52,9 +52,9 @@ class CardLineChart {
 
             val points = data
                     .points
-                    .filterIndexed { index, _ ->
-                        keepOneOutOf == 0 || index % keepOneOutOf == 0
-                    }
+//                    .filterIndexed { index, _ ->
+//                        keepOneOutOf == 0 || index % keepOneOutOf == 0
+//                    }
                     .map { Entry(it.x, it.y) }
 
 

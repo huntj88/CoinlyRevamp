@@ -8,7 +8,7 @@ dependencies {
     implementation project(':base')
     implementation project(':coinbase')
 
-    implementation 'com.github.huntj88:Fifo:0.1.0-beta'
+    implementation 'com.github.huntj88:Fifo:7e5a802'
 
     implementation "io.reactivex.rxjava2:rxkotlin:$rxjava_kotlin_version"
 

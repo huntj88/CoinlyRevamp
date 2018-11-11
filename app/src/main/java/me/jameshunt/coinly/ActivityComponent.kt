@@ -7,8 +7,10 @@ import me.jameshunt.appbase.BaseAndroidActivityComponent
 import me.jameshunt.appbase.UrlLauncherModule
 import me.jameshunt.base.ActivityScope
 import me.jameshunt.base.SelectedCurrencyUseCase
+import me.jameshunt.base.SelectedTimeTypeUseCase
 import me.jameshunt.business.CoinbaseModule
 import me.jameshunt.business.SelectedCurrencyUseCaseImpl
+import me.jameshunt.business.SelectedTimeTypeUseCaseImpl
 
 @ActivityScope
 @Component(modules = [UrlLauncherModule::class, CoinbaseModule::class, BusinessModule::class], dependencies = [(AppComponent::class)])
@@ -30,4 +32,7 @@ interface ActivityComponent: BaseAndroidActivityComponent {
 abstract class BusinessModule {
     @Binds
     abstract fun getSelectedCurrencyUseCase(impl: SelectedCurrencyUseCaseImpl): SelectedCurrencyUseCase
+
+    @Binds
+    abstract fun getSelectedTimeTypeUseCase(impl: SelectedTimeTypeUseCaseImpl): SelectedTimeTypeUseCase
 }

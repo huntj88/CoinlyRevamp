@@ -31,7 +31,7 @@ class RealizedGainUseCase @Inject constructor(
                             purchases.printTotal()
                             sales.printTotal()
 
-                            Fifo.findRealizedGain(purchases, sales)
+                            Fifo.findRealizedGain(purchases, sales).gainSoFar
                         }
                     }.flatten()
                 }

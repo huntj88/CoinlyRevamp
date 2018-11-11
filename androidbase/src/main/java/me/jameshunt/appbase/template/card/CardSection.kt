@@ -1,5 +1,6 @@
 package me.jameshunt.appbase.template.card
 
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +10,6 @@ import android.widget.TextView
 import me.jameshunt.appbase.R
 import me.jameshunt.appbase.SystemUtils
 import me.jameshunt.appbase.template.card.graph.CardLineChart
-import me.jameshunt.base.TimePrice
 import me.jameshunt.base.TimeType
 
 
@@ -17,7 +17,7 @@ interface CardSectionData
 
 data class CardHeaderData(val text: String) : CardSectionData
 
-data class CardHeaderActionData(val text: String, val actionText: String, val action: () -> Unit): CardSectionData
+data class CardHeaderActionData(val text: String, val actionText: String, val action: () -> Unit) : CardSectionData
 
 data class CardDividerData(val height: Int, val margin: Int, val color: Int? = null) : CardSectionData
 
@@ -61,7 +61,7 @@ class CardSectionFactory {
             }
             is CardDividerData -> {
                 val view = View(parentView.context)
-                val color = cardSectionData.color?: R.color.divider
+                val color = cardSectionData.color ?: R.color.divider
                 view.setBackgroundColor(parentView.context.getColor(color))
 
                 val height = SystemUtils.dpToPx(cardSectionData.height, parentView.context)
@@ -89,31 +89,49 @@ class CardSectionFactory {
             is CardTimeSelectData -> {
                 val view = LayoutInflater.from(parentView.context).inflate(R.layout.card_time_select, parentView, false)
 
+                fun TextView.boldIfSelected(timeType: TimeType): TextView {
+                    if (cardSectionData.selected == timeType) {
+                        this.setTypeface(null, Typeface.BOLD)
+                    }
+
+                    return this
+                }
+
                 val hourButton = view.findViewById<TextView>(R.id.hourTextView)
                 val dayButton = view.findViewById<TextView>(R.id.dayTextView)
                 val weekButton = view.findViewById<TextView>(R.id.weekTextView)
                 val monthButton = view.findViewById<TextView>(R.id.monthTextView)
                 val yearButton = view.findViewById<TextView>(R.id.yearTextView)
 
-                hourButton.setOnClickListener {
-                    cardSectionData.hour()
-                }
+                hourButton
+                        .boldIfSelected(TimeType.HOUR)
+                        .setOnClickListener {
+                            cardSectionData.hour()
+                        }
 
-                dayButton.setOnClickListener {
-                    cardSectionData.day()
-                }
+                dayButton
+                        .boldIfSelected(TimeType.DAY)
+                        .setOnClickListener {
+                            cardSectionData.day()
+                        }
 
-                weekButton.setOnClickListener {
-                    cardSectionData.week()
-                }
+                weekButton
+                        .boldIfSelected(TimeType.WEEK)
+                        .setOnClickListener {
+                            cardSectionData.week()
+                        }
 
-                monthButton.setOnClickListener {
-                    cardSectionData.month()
-                }
+                monthButton
+                        .boldIfSelected(TimeType.MONTH)
+                        .setOnClickListener {
+                            cardSectionData.month()
+                        }
 
-                yearButton.setOnClickListener {
-                    cardSectionData.year()
-                }
+                yearButton
+                        .boldIfSelected(TimeType.YEAR)
+                        .setOnClickListener {
+                            cardSectionData.year()
+                        }
 
                 view
             }

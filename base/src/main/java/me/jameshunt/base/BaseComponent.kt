@@ -16,6 +16,7 @@ interface AppDependenciesEverywhere {
 interface ActivityDependenciesEverywhere {
     //these ActivityScopedDependencies that need to be available everywhere except as dependencies for @Singleton's
     fun getSelectedCurrencyUseCase(): SelectedCurrencyUseCase
+    fun getSelectedTimeTypeUseCase(): SelectedTimeTypeUseCase
 }
 
 @Scope

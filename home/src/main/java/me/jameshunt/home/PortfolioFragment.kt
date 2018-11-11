@@ -10,8 +10,10 @@ import io.reactivex.rxkotlin.subscribeBy
 import me.jameshunt.appbase.template.*
 import me.jameshunt.appbase.template.card.CardLineChartData
 import me.jameshunt.appbase.template.card.CardTemplateData
+import me.jameshunt.appbase.template.card.CardTimeSelectData
 import me.jameshunt.base.CurrencyType
 import me.jameshunt.base.SelectedCurrencyUseCase
+import me.jameshunt.base.SelectedTimeTypeUseCase
 import me.jameshunt.base.TimeType
 import me.jameshunt.business.TimeTypePricesUseCase
 import me.jameshunt.currencyselect.CurrencySelectDialogManager
@@ -53,6 +55,7 @@ class PortfolioFragment : TemplateFragment<PortfolioViewModel>() {
 class PortfolioViewModel @Inject constructor(
         private val visibilityManager: HomeFragmentVisibilityManager,
         private val selectedCurrencyUseCase: SelectedCurrencyUseCase,
+        private val selectedTimeTypeUseCase: SelectedTimeTypeUseCase,
         private val timeTypePricesUseCase: TimeTypePricesUseCase,
         private val currencySelect: CurrencySelectDialogManager
 ) : TemplateViewModel {
@@ -97,25 +100,33 @@ class PortfolioViewModel @Inject constructor(
     }
 
     private fun getLineChart(currencyType: CurrencyType): Observable<CardTemplateData> {
+        return selectedTimeTypeUseCase.getSelectedTimeType().flatMap { timeType ->
 
-        val timeType = TimeType.DAY // todo
+             timeTypePricesUseCase.getTimeTypePrices(currencyType, timeType).map { timePrices ->
 
-        return timeTypePricesUseCase.getTimeTypePrices(currencyType, timeType).map { timePrices ->
+                val points = timePrices
+                        .map {
+                            CardLineChartData.Point(
+                                    x = (it.time / 10000000.0).toFloat(),
+                                    y = 1 / it.price.toFloat()
+                            )
+                        }
 
-            val points = timePrices
-                    .map {
-                        CardLineChartData.Point(
-                                x = (it.time / 10000000.0).toFloat(),
-                                y = 1 / it.price.toFloat()
+                CardTemplateData(listOf(
+                        CardLineChartData(
+                                points = points,
+                                timeType = timeType
+                        ),
+                        CardTimeSelectData(
+                                selected = timeType,
+                                hour = { selectedTimeTypeUseCase.setSelectedTimeType(TimeType.HOUR) },
+                                day = { selectedTimeTypeUseCase.setSelectedTimeType(TimeType.DAY) },
+                                week = { selectedTimeTypeUseCase.setSelectedTimeType(TimeType.WEEK) },
+                                month = { selectedTimeTypeUseCase.setSelectedTimeType(TimeType.MONTH) },
+                                year = { selectedTimeTypeUseCase.setSelectedTimeType(TimeType.YEAR) }
                         )
-                    }
-
-            CardTemplateData(listOf(
-                    CardLineChartData(
-                            points = points,
-                            timeType = timeType
-                    )
-            ))
+                ))
+            }
         }
     }
 
