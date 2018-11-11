@@ -11,10 +11,7 @@ import me.jameshunt.appbase.template.*
 import me.jameshunt.appbase.template.card.CardLineChartData
 import me.jameshunt.appbase.template.card.CardTemplateData
 import me.jameshunt.appbase.template.card.CardTimeSelectData
-import me.jameshunt.base.CurrencyType
-import me.jameshunt.base.SelectedCurrencyUseCase
-import me.jameshunt.base.SelectedTimeTypeUseCase
-import me.jameshunt.base.TimeType
+import me.jameshunt.base.*
 import me.jameshunt.business.TimeTypePricesUseCase
 import me.jameshunt.currencyselect.CurrencySelectDialogManager
 import timber.log.Timber
@@ -102,7 +99,7 @@ class PortfolioViewModel @Inject constructor(
     private fun getLineChart(currencyType: CurrencyType): Observable<CardTemplateData> {
         return selectedTimeTypeUseCase.getSelectedTimeType().flatMap { timeType ->
 
-             timeTypePricesUseCase.getTimeTypePrices(currencyType, timeType).map { timePrices ->
+            timeTypePricesUseCase.getTimeTypePrices(currencyType, timeType).map { timePrices ->
 
                 val points = timePrices
                         .map {

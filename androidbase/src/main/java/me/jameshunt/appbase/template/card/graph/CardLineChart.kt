@@ -44,17 +44,9 @@ class CardLineChart {
         }
 
         private fun getGraphData(data: CardLineChartData, color: Int): LineData {
-
-            val numPointsWanted = 100
-            val numPointsWeHave = data.points.size
-
-            val keepOneOutOf = numPointsWeHave / numPointsWanted
-
             val points = data
                     .points
-//                    .filterIndexed { index, _ ->
-//                        keepOneOutOf == 0 || index % keepOneOutOf == 0
-//                    }
+                    .let { it.smoothData() }
                     .map { Entry(it.x, it.y) }
 
 
@@ -77,6 +69,55 @@ class CardLineChart {
                 it.setDrawLabels(false)
                 it.setDrawGridLines(false)
             }
+        }
+
+        private fun List<CardLineChartData.Point>.smoothData(): List<CardLineChartData.Point> {
+
+            val earliestTime = this.firstOrNull()?.x ?: 0.0f
+            val latestTime = this.lastOrNull()?.x ?: 0.0f
+
+            val timeDiff = latestTime - earliestTime
+
+            val minTimeBetweenPoints = timeDiff / 200
+
+            data class Keep(
+                    val points: List<CardLineChartData.Point> = listOf(),
+                    val throwawaysToAverage: List<CardLineChartData.Point> = listOf()
+            ) {
+                fun averageRemainderForLastPoint(): Keep {
+                    return when (this.throwawaysToAverage.isEmpty()) {
+                        true -> this
+                        false -> Keep(
+                                points = this.points + this.throwawaysToAverage.average(),
+                                throwawaysToAverage = listOf()
+                        )
+                    }
+                }
+            }
+
+            return this
+                    .fold(Keep()) { acc, point ->
+                        acc.throwawaysToAverage
+                                .firstOrNull()
+                                ?.let { earliestInThisAverage ->
+                                    when (point.x > earliestInThisAverage.x + minTimeBetweenPoints) {
+                                        true -> Keep(
+                                                points = acc.points + acc.throwawaysToAverage.average(),
+                                                throwawaysToAverage = listOf(point)
+                                        )
+                                        false -> acc.copy(throwawaysToAverage = acc.throwawaysToAverage + point)
+                                    }
+                                } ?: acc.copy(throwawaysToAverage = listOf(point))
+                    }
+                    .averageRemainderForLastPoint()
+                    .points
+        }
+
+        private fun List<CardLineChartData.Point>.average(): CardLineChartData.Point {
+            return CardLineChartData.Point(
+                    x = this.map { it.x }.average().toFloat(),
+                    y = this.map { it.y }.average().toFloat()
+            )
         }
     }
 }
