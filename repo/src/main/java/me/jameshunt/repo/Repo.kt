@@ -61,6 +61,10 @@ class Repo(context: Any) : Repository {
         }
     }
 
+    override fun readTimePricesForTimeType(base: CurrencyType, target: CurrencyType, timeType: TimeType): Observable<List<TimePrice>> {
+        return timePriceDatabase.readTimeTypePrices(base, target, timeType)
+    }
+
     override fun writeTransactions(transactions: List<Transaction>): Completable {
         return transactionDatabase.writeTransactions(transactions)
     }

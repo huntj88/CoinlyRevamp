@@ -14,6 +14,36 @@ import me.jameshunt.repo.db.domain.*
 
 internal class TimePriceDatabase(private val box: BoxStore) {
 
+    fun readTimeTypePrices(base: CurrencyType, target: CurrencyType, timeType: TimeType): Observable<List<TimePrice>> {
+
+        fun TimeType.getMilliForTimeType(): Int = when (this) {
+            TimeType.HOUR -> 60 * 60
+            TimeType.DAY -> 60 * 60 * 24
+            TimeType.WEEK -> (60 * 60 * 24 * 7)
+            TimeType.MONTH -> (60 * 60 * 24 * 30)
+            TimeType.YEAR -> (60 * 60 * 24 * 365)
+        } * 1000
+
+        val timePriceBox = box.boxFor<TimePriceObjectBox>()
+
+        val currencyTypeConverter = CurrencyTypeConverter()
+
+        val after = System.currentTimeMillis() - timeType.getMilliForTimeType()
+
+        val query = timePriceBox
+                .query()
+                .greater(TimePriceObjectBox_.time, after)
+                .notEqual(TimePriceObjectBox_.updateCategory, TimePriceUpdateCategory.ExchangeRate.updateCategory)
+                .equal(TimePriceObjectBox_.base, currencyTypeConverter.convertToDatabaseValue(base))
+                .equal(TimePriceObjectBox_.target, currencyTypeConverter.convertToDatabaseValue(target))
+                .orderDesc(TimePriceObjectBox_.time)
+                .build()
+
+        return RxQuery.observable(query).map { timePrices ->
+            timePrices.map { it.fromObjectBox() }
+        }
+    }
+
     fun writeTimePrice(timePrices: List<TimePrice>, updateCategory: TimePriceUpdateCategory): Completable {
         return Completable.fromAction {
             val timePriceBox = box.boxFor<TimePriceObjectBox>()

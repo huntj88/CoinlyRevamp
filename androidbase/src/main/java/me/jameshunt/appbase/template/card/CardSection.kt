@@ -8,6 +8,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import me.jameshunt.appbase.R
 import me.jameshunt.appbase.SystemUtils
+import me.jameshunt.appbase.template.card.graph.CardLineChart
+import me.jameshunt.base.TimePrice
 import me.jameshunt.base.TimeType
 
 
@@ -35,6 +37,8 @@ data class CardTimeSelectData(
 data class CardSlidingData(val data: List<CardSlideItemData>) : CardSectionData {
     data class CardSlideItemData(val title: String, val value: String)
 }
+
+data class CardLineChartData(val pricesOverTime: List<TimePrice>, val timeType: TimeType) : CardSectionData
 
 class CardSectionFactory {
 
@@ -125,6 +129,7 @@ class CardSectionFactory {
 
                 view
             }
+            is CardLineChartData -> CardLineChart.create(cardSectionData, parentView)
             else -> throw NotImplementedError()
         }
 

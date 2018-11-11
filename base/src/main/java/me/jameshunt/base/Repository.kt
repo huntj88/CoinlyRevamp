@@ -15,6 +15,8 @@ interface Repository {
             exchangeType: ExchangeType
     ): Single<DataSource<TimePrice>>
 
+    fun readTimePricesForTimeType(base: CurrencyType, target: CurrencyType, timeType: TimeType): Observable<List<TimePrice>>
+
     fun writeTransactions(transactions: List<Transaction>): Completable
     fun readTransactions(currencyType: CurrencyType): Observable<DataSource<List<Transaction>>>
 }
