@@ -38,7 +38,7 @@ class CoinbaseViewModel @Inject constructor(
                 TemplateObservableWrapper(
                         observable = Observable.just(CardTemplateData(sections = listOf(
                                 CardHeaderData(text = "Coinbase"),
-                                CardDividerData(height = 1, margin = 0),
+                                CardDividerData(heightDp = 1, margin = 0),
                                 CardTextIconData(text = "do stuff", icon = R.drawable.leak_canary_icon, action = {
 
                                 })

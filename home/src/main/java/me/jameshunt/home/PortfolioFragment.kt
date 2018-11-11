@@ -8,9 +8,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import me.jameshunt.appbase.template.*
-import me.jameshunt.appbase.template.card.CardLineChartData
-import me.jameshunt.appbase.template.card.CardTemplateData
-import me.jameshunt.appbase.template.card.CardTimeSelectData
+import me.jameshunt.appbase.template.card.*
 import me.jameshunt.base.*
 import me.jameshunt.business.TimeTypePricesUseCase
 import me.jameshunt.currencyselect.CurrencySelectDialogManager
@@ -104,12 +102,14 @@ class PortfolioViewModel @Inject constructor(
                 val points = timePrices
                         .map {
                             CardLineChartData.Point(
-                                    x = (it.time / 10000000.0).toFloat(),
+                                    x = it.time / 1000000.0f,
                                     y = 1 / it.price.toFloat()
                             )
                         }
 
                 CardTemplateData(listOf(
+                        CardTitleTwoValueData(title = L10n.currency_price(currencyType.fullName), value = "blah", subValue = "23%"),
+                        CardDividerData(heightDp = 1, margin = 24),
                         CardLineChartData(
                                 points = points,
                                 timeType = timeType
@@ -121,7 +121,16 @@ class PortfolioViewModel @Inject constructor(
                                 week = { selectedTimeTypeUseCase.setSelectedTimeType(TimeType.WEEK) },
                                 month = { selectedTimeTypeUseCase.setSelectedTimeType(TimeType.MONTH) },
                                 year = { selectedTimeTypeUseCase.setSelectedTimeType(TimeType.YEAR) }
-                        )
+                        ),
+                        CardDividerData(heightDp = 15, margin = 0, color = R.color.colorAccent),
+                        CardDividerData(heightDp = 1, margin = 24),
+                        CardDividerData(heightDp = 10, margin = 0, color = R.color.colorAccent),
+                        CardSlidingData(listOf(
+                                CardSlidingData.CardSlideItemData("blah", "290"),
+                                CardSlidingData.CardSlideItemData("wow", "4302"),
+                                CardSlidingData.CardSlideItemData("sup", "12")
+                        )),
+                        CardDividerData(heightDp = 20, margin = 0, color = R.color.colorAccent)
                 ))
             }
         }

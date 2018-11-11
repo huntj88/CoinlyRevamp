@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.fragment_template.*
@@ -37,13 +38,17 @@ abstract class TemplateFragment<ViewModel : TemplateViewModel> : BaseFragment() 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         inject()
 
-        templateRecyclerView.layoutManager = LinearLayoutManager(context)
+        templateRecyclerView.apply {
+            this.layoutManager = LinearLayoutManager(this.context)
+            this.layoutAnimation = AnimationUtils.loadLayoutAnimation(this.context, R.anim.layout_animation_fall_down)
+        }
 
-        disposable = viewModel.getAdapterData().subscribeBy(
+        this.disposable = this.viewModel.getAdapterData().subscribeBy(
                 onNext = {
-                    adapter?.cleanUp()
-                    adapter = TemplateAdapter(it, templateFactory)
-                    templateRecyclerView.adapter = adapter
+                    this.adapter?.cleanUp()
+                    this.adapter = TemplateAdapter(it, this.templateFactory)
+                    templateRecyclerView.adapter = this.adapter
+                    templateRecyclerView.scheduleLayoutAnimation()
                 },
                 onError = { Timber.e(it) },
                 onComplete = { Timber.i("template fragment adapter observable completed") }

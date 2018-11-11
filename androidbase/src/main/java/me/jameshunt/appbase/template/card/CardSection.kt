@@ -19,7 +19,7 @@ data class CardHeaderData(val text: String) : CardSectionData
 
 data class CardHeaderActionData(val text: String, val actionText: String, val action: () -> Unit) : CardSectionData
 
-data class CardDividerData(val height: Int, val margin: Int, val color: Int? = null) : CardSectionData
+data class CardDividerData(val heightDp: Int, val margin: Int, val color: Int? = null) : CardSectionData
 
 data class CardTextIconData(val text: String, val icon: Int, val action: () -> Unit) : CardSectionData
 
@@ -64,7 +64,7 @@ class CardSectionFactory {
                 val color = cardSectionData.color ?: R.color.divider
                 view.setBackgroundColor(parentView.context.getColor(color))
 
-                val height = SystemUtils.dpToPx(cardSectionData.height, parentView.context)
+                val height = SystemUtils.dpToPx(cardSectionData.heightDp, parentView.context)
                 val margin = SystemUtils.dpToPx(cardSectionData.margin, parentView.context)
 
                 val layoutParams = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height)

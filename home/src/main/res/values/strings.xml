@@ -2,6 +2,7 @@
     <string name="gain_on_portfolio">Gain on Portfolio</string> <!-- unrealized + realized -->
     <string name="gain_on_currency">Gain on %1$s</string> <!-- unrealized + realized -->
     <string name="price">Price</string>
+    <string name="currency_price">%1$s Price</string>
     <string name="balance">Balance</string>
     <string name="value">Value</string>
     <string name="paid">Paid</string>

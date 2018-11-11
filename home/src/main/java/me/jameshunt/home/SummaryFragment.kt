@@ -71,14 +71,14 @@ class SummaryViewModel @Inject constructor(
                     selectedCurrencyUseCase.setSelectedTarget(target)
                     visibilityManager.showPortfolio()
                 }),
-                CardDividerData(height = 1, margin = 0),
+                CardDividerData(heightDp = 1, margin = 0),
                 CardTitleTwoValueData(
                         title = L10n.gain_on_currency(target.fullName),
                         value = totalGain,
                         subValue = "+121.21%"
                 ),
                 cardSlidingData,
-                CardDividerData(height = 20, margin = 0, color = R.color.colorAccent)
+                CardDividerData(heightDp = 20, margin = 0, color = R.color.colorAccent)
         ))
     }
 

@@ -39,7 +39,7 @@ class IntegrationsViewModel @Inject constructor(
                 TemplateObservableWrapper(
                         observable = Observable.just(CardTemplateData(sections = listOf(
                                 CardHeaderData(text = L10n.integrations),
-                                CardDividerData(height = 1, margin = 0),
+                                CardDividerData(heightDp = 1, margin = 0),
                                 CardTextIconData(text = "Coinbase", icon = R.drawable.leak_canary_icon, action = {
                                     when(integrationUseCase.coinbaseIntegrationStatus) {
                                         IntegrationStatus.NotIntegrated -> urlLauncher.launchUrl(CoinbaseIntegration.getAuthUrl())
