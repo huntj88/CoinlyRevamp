@@ -100,10 +100,19 @@ class PortfolioViewModel @Inject constructor(
 
         val timeType = TimeType.DAY // todo
 
-        return timeTypePricesUseCase.getTimeTypePrices(currencyType, timeType).map {
+        return timeTypePricesUseCase.getTimeTypePrices(currencyType, timeType).map { timePrices ->
+
+            val points = timePrices
+                    .map {
+                        CardLineChartData.Point(
+                                x = (it.time / 10000000.0).toFloat(),
+                                y = 1 / it.price.toFloat()
+                        )
+                    }
+
             CardTemplateData(listOf(
                     CardLineChartData(
-                            pricesOverTime = it,
+                            points = points,
                             timeType = timeType
                     )
             ))

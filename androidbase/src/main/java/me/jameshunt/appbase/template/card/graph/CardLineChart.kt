@@ -46,17 +46,16 @@ class CardLineChart {
         private fun getGraphData(data: CardLineChartData, color: Int): LineData {
 
             val numPointsWanted = 100
-            val numPointsWeHave = data.pricesOverTime.size
+            val numPointsWeHave = data.points.size
 
-            val test = numPointsWeHave / numPointsWanted
+            val keepOneOutOf = numPointsWeHave / numPointsWanted
 
-            val points = data.pricesOverTime
+            val points = data
+                    .points
                     .filterIndexed { index, _ ->
-                        test == 0 || index % test == 0
-                    }.map { timePrice ->
-                        val xValue = timePrice.time / 10000000.0
-                        Entry(xValue.toFloat(), 1/timePrice.price.toFloat())
+                        keepOneOutOf == 0 || index % keepOneOutOf == 0
                     }
+                    .map { Entry(it.x, it.y) }
 
 
             val lineDataSet = LineDataSet(points, "prices")
