@@ -18,23 +18,27 @@ class CardTemplate(view: View) : BaseTemplate<CardTemplateData>(view) {
     companion object {
 
         fun inflate(parent: ViewGroup): BaseTemplate<out BaseTemplateData> {
-            val wrapper = FrameLayout(parent.context)
-            wrapper.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            val wrapper = FrameLayout(parent.context).apply {
+                this.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            }
 
-            val cardView = CardView(parent.context)
-
-            val marginLayoutParams = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             val margin = SystemUtils.dpToPx(24, parent.context)
-            marginLayoutParams.setMargins(margin, margin / 3, margin, margin / 3)
 
-            cardView.layoutParams = marginLayoutParams
-            cardView.radius = SystemUtils.dpToPx(24f, parent.context)
-            cardView.cardElevation = SystemUtils.dpToPx(4f, parent.context)
+            val marginLayoutParams = ViewGroup.MarginLayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            ).apply { this.setMargins(margin, margin / 3, margin, margin / 3) }
 
+            val cardView = CardView(parent.context).apply {
+                this.layoutParams = marginLayoutParams
+                this.radius = SystemUtils.dpToPx(24f, parent.context)
+                this.cardElevation = SystemUtils.dpToPx(4f, parent.context)
+            }
 
-            val linearLayout = LinearLayout(parent.context)
-            linearLayout.gravity = Gravity.CENTER
-            linearLayout.orientation = LinearLayout.VERTICAL
+            val linearLayout = LinearLayout(parent.context).apply {
+                this.gravity = Gravity.CENTER
+                this.orientation = LinearLayout.VERTICAL
+            }
 
             cardView.addView(linearLayout)
             wrapper.addView(cardView)
