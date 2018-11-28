@@ -84,7 +84,7 @@ interface CryptoCompareApi {
     @GET("pricehistorical?markets=coinbase")
     fun getHistoricalPrice(
             @Query("fsym") base: CurrencyType,
-            @Query("tsyms") targets: String,
+            @Query("tsyms") target: CurrencyType,
             @Query("ts") time: Long, //seconds, not milli
             //todo made enum
             @Query("e") exchange: String

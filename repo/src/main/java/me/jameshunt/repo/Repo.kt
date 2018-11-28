@@ -47,12 +47,12 @@ class Repo(context: Any) : Repository {
                 is DataSource.Success -> Single.just(dataSource)
                 is DataSource.Error -> {
                     cryptoCompare
-                            .getHistoricalPrices(base = base, targets = setOf(target), time = milliSeconds, exchange = exchangeType)
+                            .getHistoricalPrices(base = base, target = target, time = milliSeconds, exchange = exchangeType)
                             .flatMapCompletable {
                                 when (it) {
                                     is DataSource.Error -> Completable.complete()
                                     is DataSource.Success -> timePriceDatabase
-                                            .writeTimePrice(it.data, TimePriceDatabase.TimePriceUpdateCategory.ExchangeRate)
+                                            .writeTimePrice(listOf(it.data), TimePriceDatabase.TimePriceUpdateCategory.ExchangeRate)
                                 }
                             }
                             .andThen(timePriceDatabase.getExchangeRateAtTime(base, target, milliSeconds, exchangeType))

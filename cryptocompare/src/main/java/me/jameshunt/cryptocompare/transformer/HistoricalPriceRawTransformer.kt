@@ -9,23 +9,24 @@ import me.jameshunt.cryptocompare.HistoricalPrice
 internal class HistoricalPriceRawTransformer(
         private val time: UnixMilliSeconds,
         private val exchange: ExchangeType
-) : SingleTransformer<List<HistoricalPrice>, DataSource<List<TimePrice>>> {
-    override fun apply(upstream: Single<List<HistoricalPrice>>): SingleSource<DataSource<List<TimePrice>>> {
+) : SingleTransformer<List<HistoricalPrice>, DataSource<TimePrice>> {
+    override fun apply(upstream: Single<List<HistoricalPrice>>): SingleSource<DataSource<TimePrice>> {
         return upstream
-                .map {
-                    it.map { raw ->
-                        object : TimePrice {
-                            private val data: HistoricalPrice = raw
+                .map { list ->
+                    list.first().let {
 
-                            override val base: CurrencyType = data.base
-                            override val target: CurrencyType = data.target
-                            override val price: CurrencyAmount = data.price
-                            override val time: UnixMilliSeconds = this@HistoricalPriceRawTransformer.time
-                            override val exchange: ExchangeType = this@HistoricalPriceRawTransformer.exchange
+                        val time = this.time
+                        val exchange = this.exchange
+
+                        object : TimePrice {
+                            override val base: CurrencyType = it.base
+                            override val target: CurrencyType = it.target
+                            override val price: CurrencyAmount = it.price
+                            override val time: UnixMilliSeconds = time
+                            override val exchange: ExchangeType = exchange
                         }
                     }
                 }
-                .map { DataSource.Success(it) as DataSource<List<TimePrice>> }
-                .onErrorReturn { DataSource.Error("Could not get price in past") }
+                .map { DataSource.Success(it) as DataSource<TimePrice> }
     }
 }

@@ -118,7 +118,7 @@ class PortfolioViewModel @Inject constructor(
                         .map {
                             CardLineChartData.Point(
                                     x = it.time / 1000.0f,
-                                    y = 1 / it.price.toFloat()
+                                    y = it.price.toFloat()
                             )
                         }
 

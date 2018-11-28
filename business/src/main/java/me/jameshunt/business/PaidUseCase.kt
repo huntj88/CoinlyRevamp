@@ -26,7 +26,9 @@ class PaidUseCase @Inject constructor(
     private fun getPurchaseAmount(purchases: List<Transaction>): DataSource<Double> {
         return purchases.asSequence()
                 .map { purchase ->
-                    when (selectedCurrencyUseCase.selectedBase == purchase.fromCurrencyType) {
+                    // TODO temp
+                    //when (selectedCurrencyUseCase.selectedBase == purchase.fromCurrencyType) {
+                    when (false) {
                         true -> DataSource.Success(purchase.fromAmount)
                         false -> exchangeRateUseCase
                                 .getExchangeRateAtTime(
@@ -43,7 +45,9 @@ class PaidUseCase @Inject constructor(
     private fun getSoldAmount(sales: List<Transaction>): DataSource<Double> {
         return sales.asSequence()
                 .map { sold ->
-                    when (selectedCurrencyUseCase.selectedBase == sold.toCurrencyType) {
+                    // TODO temp
+                    //when (selectedCurrencyUseCase.selectedBase == sold.toCurrencyType) {
+                    when (false) {
                         true -> DataSource.Success(sold.toAmount)
                         false -> exchangeRateUseCase
                                 .getExchangeRateAtTime(
